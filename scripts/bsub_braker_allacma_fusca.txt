@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#BSUB -o logs/braker.out.%J
+#BSUB -e logs/braker.err.%J
+#BSUB -q normal
+#BSUB -n 16
+#BSUB -M40960
+#BSUB -R "select[mem>40960] rusage[mem=40960]"
+
+export PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/BRAKER/scripts/:$PATH
+export AUGUSTUS_CONFIG_PATH=/lustre/scratch126/tol/teams/jaron/users/sam/software/Augustus/config
+export AUGUSTUS_BIN_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/Augustus/bin
+export AUGUSTUS_SCRIPTS_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/Augustus/scripts
+export GENEMARK_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/gmes_linux_64
+export PROTHINT_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/ProtHint/bin
+
+braker.pl --genome=data/workdir/braker/allacma_fusca/GCA_947179485.1.simple_header.fasta --bam=data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_10.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_1.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_2.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_3.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_4.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_5.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_6.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_7.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_8.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_9.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_10.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_1.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_2.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_3.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_4.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_5.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_6.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_7.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_8.sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_9.sorted.bam --species=allacma_fusca --workingdir=data/results/braker/allacma_fusca --softmasking --gff3 --cores 16

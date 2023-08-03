@@ -1,0 +1,14 @@
+#haploid selection pipeline
+
+
+#trim rnaseq
+parallel -j1 'bsub -o out.%J -e err.%J -q normal -n 3 -M 10000 -R "select[mem>10000] rusage[mem=10000]" {}' :::: fastp_commands.txt
+
+#fastqc pretrim
+parallel -j1 'bsub -o out.%J -e err.%J -q normal -n 1 -M 10000 -R "select[mem>10000] rusage[mem=10000]" {}' :::: fastqc_raw_commands.txt
+multiqc .
+#fastqc posttrim
+parallel -j1 'bsub -o out.%J -e err.%J -q normal -n 1 -M 10000 -R "select[mem>10000] rusage[mem=10000]" {}' :::: fastqc_trim_commands.txt
+multiqc .
+
+

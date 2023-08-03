@@ -1,0 +1,5 @@
+5_minibusco/
+data/
+logs/
+permission_trials/
+.nextflow*

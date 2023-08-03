@@ -1,0 +1,7 @@
+conda activate brakernew_env 
+export PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/BRAKER/scripts/:$PATH
+export AUGUSTUS_CONFIG_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/Augustus/config
+export AUGUSTUS_BIN_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/Augustus/bin
+export AUGUSTUS_SCRIPTS_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/Augustus/scripts
+export GENEMARK_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/gmes_linux_64
+export PROTHINT_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/ProtHint/bin

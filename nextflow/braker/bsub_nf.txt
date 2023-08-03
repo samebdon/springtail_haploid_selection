@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#BSUB -o out.%J
+#BSUB -e err.%J
+#BSUB -q normal
+#BSUB -n 10
+#BSUB -M10240
+#BSUB -R "select[mem>10240] rusage[mem=10240]"
+
+export PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/BRAKER/scripts/:$PATH
+export AUGUSTUS_CONFIG_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/Augustus/config
+export AUGUSTUS_BIN_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/Augustus/bin
+export AUGUSTUS_SCRIPTS_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/Augustus/scripts
+export GENEMARK_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/gmes_linux_64
+export PROTHINT_PATH=/lustre/scratch123/tol/teams/blaxter/users/ls30/software/braker/ProtHint/bin
+
+nextflow run braker_main.nf -with-conda /software/team360/miniconda/envs/braker
