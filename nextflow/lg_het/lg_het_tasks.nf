@@ -83,14 +83,14 @@ process bcftools {
 
         output:
         path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz")
-
+	path("vcfs/vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi")
+	
         script:
         """
 	mkdir vcfs
-	bcftools index ${vcf_f}
-        bcftools sort ${vcf_f} > sorted_vcf_f
-	bcftools filter -O z --include "RPL >=1 && RPR>=1 & SAF>=1 && SAR>=1 && N_MISSING=0" sorted_vcf_f > vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
-        bcftools index ${vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz}
+        bcftools sort ${vcf_f} -O z > ${vcf_f.baseName}.sorted.vcf.gz
+	bcftools filter -O z --include "RPL >=1 && RPR>=1 & SAF>=1 && SAR>=1 && N_MISSING=0" ${vcf_f.baseName}.sorted.vcf.gz > vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
+        bcftools index vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
 	"""
 }
 
