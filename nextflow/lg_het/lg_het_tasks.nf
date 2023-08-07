@@ -1,24 +1,39 @@
+process addRG {
+	
+	input:
+	tuple val(meta), path(bam_f)
+
+	output:
+	tuple val(meta), path("${bam_f.simpleName}.RG.bam")
+
+	script:
+	"""
+	java -Xms4G -Xmx4G -jar /software/team360/picard.jar AddOrReplaceReadGroups I=${bam_f} O=${bam_f.simpleName}}.RG.bam --RGLB ${meta} --RGPL ILLUMINA --RGPU ${meta} --RGSM ${meta}
+	"""
+
+}
+
 process markDupes {
 
         input:
-        path bam_f
+        tuple val(meta), path(bam_f)
 
         output:
-        path ("${bam_f.baseName}.marked.bam")
+        tuple val(meta), path("${bam_f.simpleName}.deduped.bam")
 
         script:
         """
-        java -Xms4G -Xmx4G -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${bam_f.baseName}.marked.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
+        java -Xms4G -Xmx4G -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${meta}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
 	"""
 }
 
 process sortBam{
 
         input:
-        path bam_f
+        tuple val(meta), path(bam_f)
 
         output:
-        path("${bam_f.baseName}.sorted.bam")
+        tuple val(meta), path("${bam_f.baseName}.sorted.bam")
 
         script:
         """
@@ -29,10 +44,10 @@ process sortBam{
 process indexBam{
 
         input:
-        path bam_f
+        tuple val(meta), path(bam_f)
 
         output:
-        path("${bam_f}.bai"), optional:true, emit: bai
+        tuple val(meta), path("${bam_f}.bai")
 
         script:
         """
@@ -44,30 +59,27 @@ process mosdepth {
 	publishDir params.outdir, mode:'copy'
 
         input:
-        path bam_f
-	path bam_index
+	tuple val(meta), path(bam_f), path(bam_index)
 
         output:
-        path("mosdepth/${bam_f.baseName}.CALLABLE.bed")
+        tuple val(meta), path("mosdepth/${bam_f.baseName}.CALLABLE.bed")
 
         script:
         """
         mkdir mosdepth
-	mosdepth -n --quantize 0:1:10:150: ${bam_f.baseName} ${bam_f}
-	zcat ${bam_f.baseName}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.CALLABLE.bed
+	mosdepth -n --quantize 0:1:10:150: ${meta} ${bam_f}
+	zcat ${meta}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.CALLABLE.bed
         """
 }
 
 process freebayes {
 
         input:
-        path genome_f
-	path bam_f
-	path bam_index
-	path bed_f
+	path(genome_f)
+        tuple val(meta), path(bam_f), path(bam_index), path(bed_f)
 
         output:
-        path("${bam_f.baseName}.${genome_f.baseName}.vcf")        
+        tuple val(meta), path("${bam_f.baseName}.${genome_f.baseName}.vcf")        
 
         script:
         """
@@ -79,33 +91,50 @@ process bcftools {
 	publishDir params.outdir, mode:'copy'
 
         input:
-        path vcf_f
+        tuple val(meta), path(vcf_f)
 
         output:
-        path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz")
-	path("vcfs/vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi")
+        tuple val(meta), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz"), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi")
 	
         script:
         """
 	mkdir vcfs
         bcftools sort ${vcf_f} -O z > ${vcf_f.baseName}.sorted.vcf.gz
 	bcftools filter -O z --include "RPL >=1 && RPR>=1 & SAF>=1 && SAR>=1 && N_MISSING=0" ${vcf_f.baseName}.sorted.vcf.gz > vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
-        bcftools index vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
+        bcftools index vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz -o vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi
 	"""
 }
 
 process getHet {
-	publishDir params.outdir, mode:'move'
+	publishDir params.outdir, mode:'copy'
 
         input:
-        path vcf_f
+        tuple val(meta), path(vcf_f), path(vcf_index), path(bed)
 
         output:
-        path("lg_het_tsvs/${vcf_f.baseName}.lg_het.tsv")
+        path("lg_het_tsvs/${meta}.lg_het.tsv")
 
         script:
         """
 	mkdir lg_het_tsvs
-        python getHet.py ${vcf_f} ${lg_het_tsvs/${vcf_f.baseName}.lg_het.tsv}
+        python ${launchDir}/scripts/getHet.py -v ${vcf_f} -b ${bed} -o lg_het_tsvs/${meta}
         """
 }
+
+process alleleCounter {
+	publishDir params.outdir, mode:'copy'
+
+        input:
+	path(genome)
+        tuple val(meta), path(vcf_f), path(vcf_index), path(bam_f), path(bam_index)
+
+        output:
+        tuple val(meta), path(alleleCounter/${meta}.allelecounter.tsv)
+
+        script:
+        """
+	mkdir alleleCounter
+        python ${launchDir}/scripts/allelecounter.py --vcf ${vcf_f} --sample ${meta} --bam ${bam_f} --ref ${genome} --min_cov 2 --out allelecounter/${meta}.allelecounter.tsv
+        """
+}
+

@@ -1,4 +1,4 @@
-params.genome = "$launchDir/data/workdir/braker/allacma_fusca/GCA_947179485.1.simple_header.fasta"
+params.genome = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.fasta"
 params.reads = "$launchDir/data/raw_data/rnaseq/AF_[MF]_*/*.{1,2}.fastq.gz"
 params.outdir = "$launchDir/data/results/rnaseq_aln/allacma_fusca/"
 

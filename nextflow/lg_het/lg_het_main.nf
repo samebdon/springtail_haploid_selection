@@ -1,5 +1,5 @@
-params.genome = "$launchDir/data/workdir/braker/allacma_fusca/GCA_947179485.1.simple_header.fasta"
-params.bams = "$launchDir/data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_1.sorted.bam"
+params.genome = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.fasta"
+params.bams = "$launchDir/data/results/rnaseq_aln/allacma_fusca/hisat2/bams/*"
 params.outdir = "$launchDir/data/results/lg_het/allacma_fusca/"
 
 log.info """\
@@ -14,7 +14,7 @@ log.info """\
 include { lg_het_flow } from './lg_het_flows.nf'
 
 workflow {
-        bam_ch = Channel.fromPath( params.bams, checkIfExists:true )
+        bam_ch = Channel.fromPath( params.bams, checkIfExists:true ).map { file -> tuple(file.simpleName, file) }
         lg_het_flow(params.genome, bam_ch)
 }
 
