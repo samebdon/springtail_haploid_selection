@@ -62,20 +62,21 @@ process indexGenomeHisat2 {
 }
 
 process mapToGenomeHisat2 {
-        publishDir params.outdir, mode:'move'
+        publishDir params.outdir, mode:'copy'
 
         input:
         path(index)
         tuple val(sample_id), path(reads)
 
         output:
-        path("hisat2/bams/${sample_id}.sorted.bam*")
+        path("hisat2/bams/${sample_id}.query_sorted.bam*")
 
         script:
         """
         mkdir -p hisat2/bams
         INDEX=`find -L ./ -name "*.1.ht2" | sed 's/\\.1.ht2\$//'`
-        hisat2 --dta -x \$INDEX -1 ${reads[0]} -2 ${reads[1]} | samtools view -bS | samtools sort -n -o hisat2/bams/${sample_id}.sorted.bam
-	samtools index hisat2/bams/${sample_id}.sorted.bam -o ${sample_id}.sorted.bam.bai
+        hisat2 --dta -x \$INDEX -1 ${reads[0]} -2 ${reads[1]} | samtools view -bS | samtools sort -n -o hisat2/bams/${sample_id}.query_sorted.bam
         """
 }
+
+

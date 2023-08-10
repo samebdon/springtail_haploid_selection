@@ -1,14 +1,28 @@
+process sortBam {
+
+        input:
+        tuple val(meta), path(bam_f)
+
+        output:
+        tuple val(meta), path("${meta}.coord_sorted.bam")
+
+        script:
+        """
+        samtools sort -m 4G -O bam -o ${meta}.coord_sorted.bam ${bam_f}
+        """
+}
+
 process addRG {
 	
 	input:
 	tuple val(meta), path(bam_f)
 
 	output:
-	tuple val(meta), path("${bam_f.simpleName}.RG.bam")
+	tuple val(meta), path("${bam_f.baseName}.RG.bam")
 
 	script:
 	"""
-	java -Xms4G -Xmx4G -jar /software/team360/picard.jar AddOrReplaceReadGroups I=${bam_f} O=${bam_f.simpleName}}.RG.bam --RGLB ${meta} --RGPL ILLUMINA --RGPU ${meta} --RGSM ${meta}
+	java -Xms4G -Xmx4G -jar /software/team360/picard.jar AddOrReplaceReadGroups I=${bam_f} O=${bam_f.baseName}.RG.bam RGLB=${meta} RGPL=ILLUMINA RGPU=${meta} RGSM=${meta}
 	"""
 
 }
@@ -19,26 +33,12 @@ process markDupes {
         tuple val(meta), path(bam_f)
 
         output:
-        tuple val(meta), path("${bam_f.simpleName}.deduped.bam")
+        tuple val(meta), path("${bam_f.baseName}.deduped.bam")
 
         script:
         """
-        java -Xms4G -Xmx4G -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${meta}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
+        java -Xms4G -Xmx4G -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${bam_f.baseName}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
 	"""
-}
-
-process sortBam{
-
-        input:
-        tuple val(meta), path(bam_f)
-
-        output:
-        tuple val(meta), path("${bam_f.baseName}.sorted.bam")
-
-        script:
-        """
-        samtools sort ${bam_f} > ${bam_f.baseName}.sorted.bam
-        """
 }
 
 process indexBam{
@@ -129,12 +129,30 @@ process alleleCounter {
         tuple val(meta), path(vcf_f), path(vcf_index), path(bam_f), path(bam_index)
 
         output:
-        tuple val(meta), path(alleleCounter/${meta}.allelecounter.tsv)
+        tuple val(meta), path("alleleCounter/${meta}.allelecounter.tsv")
 
         script:
         """
 	mkdir alleleCounter
-        python ${launchDir}/scripts/allelecounter.py --vcf ${vcf_f} --sample ${meta} --bam ${bam_f} --ref ${genome} --min_cov 2 --out allelecounter/${meta}.allelecounter.tsv
+        python ${launchDir}/scripts/allelecounter.py --vcf ${vcf_f} --sample ${meta} --bam ${bam_f} --ref ${genome} --min_cov 10 --min_baseq 1 --min_mapq 1 --out allelecounter/${meta}.allelecounter.tsv
         """
 }
 
+process gatk_aseReadCount {
+	publishDir params.outdir, mode:'copy'
+
+	input:
+        path(genome)
+	path(genome_index)
+	path(genome_dict)
+        tuple val(meta), path(vcf_f), path(vcf_index), path(bam_f), path(bam_index)
+
+	output:
+        tuple val(meta), path("aseReadCount/${meta}.allelecounter.tsv")
+
+	script:
+	"""
+	mkdir aseReadCount
+	gatk ASEReadCounter -R ${genome} -I ${bam_f} -V {vcf_f} -O aseReadCount/${meta}.aseReadCount.tsv
+	"""
+}

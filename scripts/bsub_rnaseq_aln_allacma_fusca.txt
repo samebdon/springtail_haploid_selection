@@ -2,9 +2,9 @@
 
 #BSUB -o logs/rnaseq_aln.out.%J
 #BSUB -e logs/rnaseq_aln.err.%J
-#BSUB -q oversubscribed
+#BSUB -q normal
 #BSUB -n 4
 #BSUB -M 4096
 #BSUB -R "select[mem>4096] rusage[mem=4096]"
 
-nextflow run nextflow/rnaseq_aln/rnaseq_main.nf -c nextflow/conf/nextflow.config -profile 'sanger_lsf' -with-conda /software/team360/miniconda/envs/transcriptomics -w data/workdir/rnaseq_aln -resume
+nextflow run nextflow/rnaseq_aln/rnaseq_main.nf -c nextflow/conf/nextflow.config -with-conda /software/team360/miniconda/envs/transcriptomics -w data/workdir/rnaseq_aln -resume
