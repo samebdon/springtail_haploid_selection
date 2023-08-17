@@ -57,7 +57,7 @@ write.table(as.data.frame(res) %>% rownames_to_column('Geneid'),
     quote = FALSE)
 
 write.table(as.data.frame(resFilt) %>% rownames_to_column('Geneid'), 
-    file=paste(results_dir, 'allacma_fusca.DEseq2_results_filtered.csv', sep = '/'), 
+    file=paste(results_dir, 'allacma_fusca.DEseq2_results_filtered.tsv', sep = '/'), 
     sep = '\t', 
     row.names = FALSE, 
     quote = FALSE)
