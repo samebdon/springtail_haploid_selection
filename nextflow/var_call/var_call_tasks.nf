@@ -1,30 +1,46 @@
+process bwaIndex {
+
+        input:
+        path(genome_f)
+
+        output:
+        path(genome_index)
+
+        script:
+        """
+
+        """
+}
+
+process bwaMem {
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        path(genome_f)
+        path(genome_index)
+        tuple val(meta), path(reads)
+
+        output:
+        tuple val(meta), path("${meta}.${genome.baseName}.bam")
+
+        script:
+        """
+        bwa mem -t 4 -R "@RG\tID:${meta}\tSM:${meta}\tPL:ILLUMINA\tPU:${meta}\tLB:${meta}\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} > ${meta}.${genome.baseName}.bam
+        """
+}
+
 process sortBam {
 
         input:
         tuple val(meta), path(bam_f)
 
         output:
-        tuple val(meta), path("${meta}.coord_sorted.bam")
+        tuple val(meta), path("${bam_f.baseName}.coord_sorted.bam")
 
         script:
         """
-        samtools sort -m 4G -O bam -o ${meta}.coord_sorted.bam ${bam_f}
+        samtools sort -@ 4 -m 4G -O bam -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
         """
-}
-
-process addRG {
-	
-	input:
-	tuple val(meta), path(bam_f)
-
-	output:
-	tuple val(meta), path("${bam_f.baseName}.RG.bam")
-
-	script:
-	"""
-	java -Xms4G -Xmx4G -jar /software/team360/picard.jar AddOrReplaceReadGroups I=${bam_f} O=${bam_f.baseName}.RG.bam RGLB=${meta} RGPL=ILLUMINA RGPU=${meta} RGSM=${meta}
-	"""
-
 }
 
 process markDupes {
@@ -61,7 +77,7 @@ process mosdepth {
 	tuple val(meta), path(bam_f), path(bam_index)
 
         output:
-        path("mosdepth/${bam_f.baseName}.CALLABLE.bed")
+        tuple val(meta), path("mosdepth/${bam_f.baseName}.CALLABLE.bed")
 
         script:
         """
@@ -75,8 +91,8 @@ process bedtoolsIntersect{
         publishDir params.outdir, mode:'copy'
 
         input:
-        path(a_bed)
-        path('*.bed')
+        tuple val(meta), path(a_bed)
+        tuple val(meta), path('*.bed')
         val(species)
 
         output:
@@ -88,14 +104,14 @@ process bedtoolsIntersect{
         """
 }
 
-process samtoolsMerge{
+process samtoolsMerge {
 
         input:
         tuple val(meta), path('*.bam'), path(bam_index)
         val(species)
 
         output:
-        path('${species}.bam')
+        tuple val(species), path('${species}.bam')
 
         script:
         """
@@ -103,7 +119,7 @@ process samtoolsMerge{
         """
 }
 
-process freebayesPop {
+process freebayes {
 
         input:
 	path(genome_f)
@@ -111,7 +127,7 @@ process freebayesPop {
         tuple val(species), path(bed_f)
 
         output:
-        path("${species}.vcf")        
+        tuple val(species), path("${species}.vcf")        
 
         script:
         """
@@ -123,10 +139,10 @@ process bcftools {
 	publishDir params.outdir, mode:'copy'
 
         input:
-        path(vcf_f)
+        tuple val(species), path(vcf_f)
 
         output:
-        path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz"), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi")
+        tuple val(species), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz"), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi")
 	
         script:
         """
