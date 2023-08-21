@@ -43,6 +43,13 @@ dds <- DESeqDataSetFromMatrix(countData=counts, colData=sampleInfo, design=~sex)
 
 dds <- DESeq(dds) #, betaPrior = betaPrior)
 resultsNames(dds) # lists the coefficients
+
+write.table(as.data.frame(counts(dds)) %>% rownames_to_column('Geneid'), 
+    file=paste(results_dir, 'allacma_fusca.DEseq2_counts.tsv', sep = '/'), 
+    sep = '\t', 
+    row.names = FALSE, 
+    quote = FALSE)
+
 res <- results(dds, name="sex_male_vs_female")
 resFilt <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1), ]
 # test: sex male vs female
