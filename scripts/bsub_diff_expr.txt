@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#BSUB -o logs/diff_expr.out.%J
+#BSUB -e logs/diff_expr.err.%J
+#BSUB -q normal
+#BSUB -n 4
+#BSUB -M 4096
+#BSUB -R "select[mem>4096] rusage[mem=4096]"
+
+export MOSDEPTH_Q0=NO_COVERAGE
+export MOSDEPTH_Q1=LOW_COVERAGE
+export MOSDEPTH_Q2=CALLABLE
+export MOSDEPTH_Q3=HIGH_COVERAGE
+
+nextflow run nextflow/diff_expr/diff_expr_main.nf -c nextflow/conf/nextflow.config -with-conda /software/team360/miniconda/envs/diff_expr -w data/workdir/diff_expr -resume

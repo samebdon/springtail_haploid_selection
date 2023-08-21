@@ -15,5 +15,6 @@ workflow lg_het_flow {
 	  freebayes(genome, markDupes.out.join(indexBam.out).join(mosdepth.out))
 	  bcftools(freebayes.out)
 	  getHet(bcftools.out.join(mosdepth.out))
-	  gatk_aseReadCount(genome, genome_index, genome_dict, bcftools.out.join(markDupes.out).join(indexBam.out))
+	  alleleCounter(genome, bcftools.out.join(markDupes.out).join(indexBam.out))
+	  // gatk_aseReadCount(genome, genome_index, genome_dict, bcftools.out.join(markDupes.out).join(indexBam.out))
 }

@@ -1,0 +1,1 @@
+cat data/results/braker/allacma_fusca/hint_support/tsebra.augustus.gtf | awk -v FS='\t' -v OFS='\t' '$3 == "gene" { print $1,$4,$5,$9 }' > data/results/braker/allacma_fusca/hint_support/allacma_fusca.tsebra.augustus.genes.bed
