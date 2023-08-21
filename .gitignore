@@ -3,3 +3,4 @@ data/
 logs/
 permission_trials/
 .nextflow*
+.DS_Store
