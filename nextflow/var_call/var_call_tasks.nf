@@ -21,11 +21,12 @@ process bwaMem {
         tuple val(meta), path(reads)
 
         output:
-        tuple val(meta), path("${meta}.${genome.baseName}.bam")
+        tuple val(meta), path("bwamem/${meta}.${genome.baseName}.bam")
 
         script:
         """
-        bwa mem -t 4 -R "@RG\tID:${meta}\tSM:${meta}\tPL:ILLUMINA\tPU:${meta}\tLB:${meta}\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} > ${meta}.${genome.baseName}.bam
+        mkdir bwamem
+        bwa mem -t 4 -R "@RG\tID:${meta}\tSM:${meta}\tPL:ILLUMINA\tPU:${meta}\tLB:${meta}\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} > bwamem/${meta}.${genome.baseName}.bam
         """
 }
 
