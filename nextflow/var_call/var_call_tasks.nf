@@ -83,8 +83,10 @@ process mosdepth {
         script:
         """
         mkdir mosdepth
-	mosdepth -n --quantize 0:1:10:150: ${meta} ${bam_f}
-	zcat ${meta}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.CALLABLE.bed
+        mosdepth --fast-mode -t 4 tmp ${bam_f}
+        MAX_DEPTH="$(python scripts/mean_depth.py -b tmp.per-base.bed.gz -m 2)" 
+	mosdepth -t 4 -n --quantize 0:1:8:\${MAX_DEPTH}: ${meta} ${bam_f}
+	zcat ${meta}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.callable.bed
         """
 }
 
@@ -148,8 +150,8 @@ process bcftools {
         script:
         """
 	mkdir vcfs
-        bcftools sort ${vcf_f} -O z > ${vcf_f.baseName}.sorted.vcf.gz
-	bcftools filter -O z --include "RPL >=1 && RPR>=1 & SAF>=1 && SAR>=1 && N_MISSING=0" ${vcf_f.baseName}.sorted.vcf.gz > vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
+        bcftools sort ${vcf_f} -O z | \
+	bcftools filter -O z --include "RPL >=1 && RPR>=1 & SAF>=1 && SAR>=1 && N_MISSING=0" > vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
         bcftools index vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz -o vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi
 	"""
 }
