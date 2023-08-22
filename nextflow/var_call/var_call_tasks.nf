@@ -99,11 +99,11 @@ process bedtoolsIntersect{
         val(species)
 
         output:
-        tuple val(species), path("${species}.callable.bed")
+        tuple val(species), path("${species}.intersect.bed")
 
         script:
         """
-        bedtools intersect -a ${a_bed} -b *.bed > ${species}.callable.bed 
+        bedtools intersect -a ${a_bed} -b *.bed > ${species}.intersect.bed 
         """
 }
 
@@ -138,20 +138,96 @@ process freebayes {
         """
 }
 
-process bcftools {
-	publishDir params.outdir, mode:'copy'
+process bcftools_filter {
 
         input:
         tuple val(species), path(vcf_f)
 
         output:
-        tuple val(species), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz"), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi")
+        tuple val(species), path("${vcf_f.baseName}.soft_filtered.vcf.gz")
 	
         script:
         """
-	mkdir vcfs
-        bcftools sort ${vcf_f} -O z | \
-	bcftools filter -O z --include "RPL >=1 && RPR>=1 & SAF>=1 && SAR>=1 && N_MISSING=0" > vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
-        bcftools index vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz -o vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi
-	"""
+        bcftools filter --threads 4 -Oz -s Qual -m+ -e 'QUAL<1' ${vcf_f} | \
+        bcftools filter --threads 4 -Oz -s Balance -m+ -e 'RPL<1 | RPR<1 | SAF<1 | SAR<1' | \
+        bcftools filter --threads 4 -Oz -m+ -s+ --SnpGap 2 | \
+        bcftools filter --threads 4 -Oz -e 'TYPE!="snp"' -s NonSnp -m+ > ${vcf_f.baseName}.soft_filtered.vcf.gz
+        """
+}
+
+process generate_fail_bed {
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        tuple val(species), path(vcf_f)
+
+        output:
+        tuple val(species), path("${species}.vcf_filter_fails.bed")
+
+        script:
+        """
+        bcftools view --threads 4 -H -i "%FILTER!='PASS'" ${vcf_f} | \
+        perl -lane '$pad=0; print($F[0]."\t".($F[1]-1)."\t".(($F[1]-1)+length($F[3]))."\t".$F[6])' | \
+        bedtools sort | \
+        bedtools merge > ${species}.vcf_filter_fails.bed
+        """
+}
+
+process generate_pass_vcf {
+
+        input:
+        tuple val(species), path(vcf_f)
+
+        output:
+        tuple val(species), path("${vcf_f.baseName}.sorted.hard_filtered.vcf.gz")
+
+        script:
+        """
+        bcftools view --threads 4 -Oz -f "PASS" ${vcf_f} > ${vcf_f.baseName}.sorted.hard_filtered.vcf.gz
+        """
+}
+
+process bedtools_subtract {
+
+        input:
+        tuple val(species), path(a.bed)
+        tuple val(species), path(b.bed)
+
+        output:
+        tuple val(species), path("{species}.callable.bed")
+
+        script:
+        """
+        bedtools subtract -a ${a.bed} -b ${b.bed} > ${species}.callable.bed
+        """
+}
+
+process bcftools_sort {
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        tuple val(species), path(vcf_f)
+
+        output:
+        tuple val(species), path("${species}.hard_filtered.sorted.vcf.gz")
+        
+        script:
+        """
+        bcftools sort --threads 4 -Oz ${vcf_f} > ${species}.hard_filtered.sorted.vcf.gz
+        """
+}        
+
+process bcftools_index {
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        tuple val(meta), path(vcf_f)
+
+        output:
+        tuple val(meta), , path("${vcf_f.baseName}.csi")
+
+        script:
+        """
+        bcftools index -t ${vcf_f} -o ${vcf_f.baseName}.csi
+        """
 }
