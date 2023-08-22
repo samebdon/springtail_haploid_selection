@@ -21,4 +21,3 @@ workflow {
         read_pairs_ch = Channel.fromFilePairs( params.reads, checkIfExists:true )
         var_call_flow(params.genome, params.genome_index, params.genome_dict, read_pairs_ch, params.species)
 }
-
