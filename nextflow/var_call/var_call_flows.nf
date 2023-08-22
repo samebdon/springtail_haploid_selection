@@ -1,6 +1,6 @@
 include { bwaIndex; bwaMem; sortBam; markDupes;  indexBam; mosdepth; bedtoolsIntersect; freebayes; bcftools; } from './var_call_tasks.nf'
-include { indexBam; } } from './var_call_tasks.nf' as indexMergedBam
-workflow lg_het_flow {
+include { indexBam as indexMergedBam } from './var_call_tasks.nf'
+workflow var_call_flow {
         take:
 	  genome
 	  genome_index
@@ -11,8 +11,7 @@ workflow lg_het_flow {
           bwaIndex(genome)
           bwaMem(genome, bwaIndex.out, read_files)
 	  sortBam(bwaMem.out)
-	  addRG(sortBam.out)
-          markDupes(addRG.out)
+          markDupes(sortBam.out)
 	  indexBam(markDupes.out)
           mosdepth(markDupes.out.join(indexBam.out))
           callables = mosdepth.out.collect().first()
