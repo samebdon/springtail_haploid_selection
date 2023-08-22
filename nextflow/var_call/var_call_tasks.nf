@@ -78,7 +78,7 @@ process mosdepth {
 	tuple val(meta), path(bam_f), path(bam_index)
 
         output:
-        tuple val(meta), path("mosdepth/${bam_f.baseName}.CALLABLE.bed")
+        path("mosdepth/${bam_f.baseName}.CALLABLE.bed")
 
         script:
         """
@@ -93,8 +93,8 @@ process mosdepth {
 process bedtoolsIntersect{
 
         input:
-        tuple val(meta), path(a_bed)
-        tuple val(meta), path('*.bed')
+        path(a_bed)
+        path('*.bed')
         val(species)
 
         output:
