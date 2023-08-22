@@ -1,5 +1,5 @@
 include { bwaIndex; bwaMem; sortBam; markDupes;  indexBam; mosdepth; bedtoolsIntersect; freebayes; bcftools_filter; generate_fail_bed; generate_pass_vcf; bedtools_subtract; bcftools_sort; bcftools_index} from './var_call_tasks.nf'
-include { indexBam; } } from './var_call_tasks.nf' as indexMergedBam
+include { indexBam as indexMergedBam } from './var_call_tasks.nf'
 workflow var_call_flow {
         take:
 	  genome
