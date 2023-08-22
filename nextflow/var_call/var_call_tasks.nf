@@ -91,8 +91,7 @@ process mosdepth {
 }
 
 process bedtoolsIntersect{
-        publishDir params.outdir, mode:'copy'
-
+        
         input:
         tuple val(meta), path(a_bed)
         tuple val(meta), path('*.bed')

@@ -14,7 +14,7 @@ workflow var_call_flow {
           markDupes(sortBam.out)
 	  indexBam(markDupes.out)
           mosdepth(markDupes.out.join(indexBam.out))
-          callables = mosdepth.out.collect().first()
+          callables = mosdepth.out.collect()
           bedtoolsIntersect(callables.last(), callables.until(callables.last()), species)
 	  samtoolsMerge(markDupes.out.join(indexBam.out).collect(), species)
 	  indexMergedBam(samtoolsMerge.out)
