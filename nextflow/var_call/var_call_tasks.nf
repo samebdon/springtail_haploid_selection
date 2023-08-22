@@ -4,7 +4,7 @@ process bwaIndex {
         path(genome_f)
 
         output:
-        path('${genome_f}.*')
+        path("${genome_f}.*")
 
         script:
         """
@@ -17,7 +17,6 @@ process bwaMem {
 
         input:
         path(genome_f)
-        path(genome_index)
         tuple val(meta), path(reads)
 
         output:
@@ -26,6 +25,7 @@ process bwaMem {
         script:
         """
         mkdir bwamem
+        bwa index ${genome_f}
         bwa mem -t 4 -R "@RG\tID:${meta}\tSM:${meta}\tPL:ILLUMINA\tPU:${meta}\tLB:${meta}\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} > bwamem/${meta}.${genome.baseName}.bam
         """
 }
@@ -91,7 +91,7 @@ process mosdepth {
 }
 
 process bedtoolsIntersect{
-        
+
         input:
         tuple val(meta), path(a_bed)
         tuple val(meta), path('*.bed')

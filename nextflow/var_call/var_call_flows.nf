@@ -1,4 +1,4 @@
-include { bwaIndex; bwaMem; sortBam; markDupes;  indexBam; mosdepth; bedtoolsIntersect; freebayes; bcftools_filter; generate_fail_bed; generate_pass_vcf; bedtools_subtract; bcftools_sort; bcftools_index} from './var_call_tasks.nf'
+include { bwaMem; sortBam; markDupes;  indexBam; mosdepth; bedtoolsIntersect; freebayes; bcftools_filter; generate_fail_bed; generate_pass_vcf; bedtools_subtract; bcftools_sort; bcftools_index} from './var_call_tasks.nf'
 include { indexBam as indexMergedBam } from './var_call_tasks.nf'
 workflow var_call_flow {
         take:
@@ -8,8 +8,8 @@ workflow var_call_flow {
 	  read_files
 	  species
         main:
-          bwaIndex(genome)
-          bwaMem(genome, bwaIndex.out, read_files)
+          /// bwaIndex(genome)
+          bwaMem(genome, read_files)
 	  sortBam(bwaMem.out)
           markDupes(sortBam.out)
 	  indexBam(markDupes.out)
