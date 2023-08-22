@@ -145,13 +145,15 @@ process bcftools {
         tuple val(species), path(vcf_f)
 
         output:
-        tuple val(species), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz"), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi")
+        tuple val(species), path("${vcf_f.baseName}.sorted.filtered.vcf.gz"), path("vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi")
 	
         script:
         """
-	mkdir vcfs
-        bcftools sort ${vcf_f} -O z | \
-	bcftools filter -O z --include "RPL >=1 && RPR>=1 & SAF>=1 && SAR>=1 && N_MISSING=0" > vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz
-        bcftools index vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz -o vcfs/${vcf_f.baseName}.sorted.filtered.vcf.gz.csi
-	"""
+        bcftools sort --threads 4 -Oz ${vcf_f} | \
+        bcftools filter --threads 4 -Oz -s Qual -m+ -e 'QUAL<1' | \
+        bcftools filter --threads 4 -Oz -s Balance -m+ -e 'RPL<1 | RPR<1 | SAF<1 | SAR<1' | \
+        bcftools filter --threads 4 -Oz -m+ -s+ --SnpGap 2 | \
+        bcftools filter --threads 4 -Oz -e 'TYPE!="snp"' -s NonSnp -m+ > ${vcf_f.baseName}.sorted.filtered.vcf.gz
+        bcftools index ${vcf_f.baseName}.sorted.filtered.vcf.gz -o ${vcf_f.baseName}.sorted.filtered.vcf.gz.csi
+        """
 }
