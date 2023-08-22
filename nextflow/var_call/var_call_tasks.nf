@@ -84,7 +84,7 @@ process mosdepth {
         """
         mkdir mosdepth
         mosdepth --fast-mode -t 4 tmp ${bam_f}
-        MAX_DEPTH="$(python scripts/mean_depth.py -b tmp.per-base.bed.gz -m 2)" 
+        MAX_DEPTH="\$(python scripts/mean_depth.py -b tmp.per-base.bed.gz -m 2)" 
 	mosdepth -t 4 -n --quantize 0:1:8:\${MAX_DEPTH}: ${meta} ${bam_f}
 	zcat ${meta}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.callable.bed
         """
@@ -224,7 +224,7 @@ process bcftools_index {
         tuple val(meta), path(vcf_f)
 
         output:
-        tuple val(meta), , path("${vcf_f.baseName}.csi")
+        tuple val(meta), path("${vcf_f.baseName}.csi")
 
         script:
         """
