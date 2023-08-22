@@ -10,7 +10,7 @@ log.info """\
          ===================================
          genome : ${params.genome}
          genome index : ${params.genome_index}
-         genome index : ${params.genome_dict}
+         genome dict : ${params.genome_dict}
 	 reads : ${params.reads}
          outdir : ${params.outdir}
          species : ${params.species}
