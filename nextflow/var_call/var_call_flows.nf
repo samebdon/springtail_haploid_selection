@@ -1,6 +1,6 @@
-include { bwaIndex; bwaMem; sortBam; markDupes;  indexBam; mosdepth; bedtoolsIntersect; freebayes; bcftools; } from './var_call_tasks.nf'
+include { bwaIndex; bwaMem; sortBam; markDupes;  indexBam; mosdepth; bedtoolsIntersect; freebayes; bcftools_filter; generate_fail_bed; generate_pass_vcf; bedtools_subtract; bcftools_sort; bcftools_index} from './var_call_tasks.nf'
 include { indexBam; } } from './var_call_tasks.nf' as indexMergedBam
-workflow lg_het_flow {
+workflow var_call_flow {
         take:
 	  genome
 	  genome_index
@@ -11,8 +11,7 @@ workflow lg_het_flow {
           bwaIndex(genome)
           bwaMem(genome, bwaIndex.out, read_files)
 	  sortBam(bwaMem.out)
-	  addRG(sortBam.out)
-          markDupes(addRG.out)
+          markDupes(sortBam.out)
 	  indexBam(markDupes.out)
           mosdepth(markDupes.out.join(indexBam.out))
           callables = mosdepth.out.collect().first()
@@ -20,5 +19,10 @@ workflow lg_het_flow {
 	  samtoolsMerge(markDupes.out.join(indexBam.out).collect(), species)
 	  indexMergedBam(samtoolsMerge.out)
 	  freebayes(genome, samtoolsMerge.out.join(indexMergedBam.out), bedtoolsIntersect.out)
-	  bcftools(freebayes.out)
+	  bcftools_filter(freebayes.out)
+	  generate_fail_bed(bcftools_filter.out)
+	  generate_pass_vcf(bcftools_filter.out)
+	  bedtools_subtract(bedtoolsIntersect.out, generate_fail_bed.out)
+	  bcftools_sort(generate_pass_vcf.out)
+	  bcftools_index(generate_pass_vcf.out)
 }

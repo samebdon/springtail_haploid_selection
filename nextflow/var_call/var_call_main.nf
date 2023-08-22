@@ -6,7 +6,7 @@ params.outdir = "$launchDir/data/results/var_call/allacma_fusca/"
 params.species = "allacma_fusca"
 
 log.info """\
-         LG HET   N F   P I P E L I N E    
+         V A R  C A L L   N F   P I P E L I N E    
          ===================================
          genome : ${params.genome}
 	 reads : ${params.reads}
