@@ -90,11 +90,10 @@ process mosdepth {
         """
 }
 
-process bedtoolsIntersect{
+process intersectBeds{
 
         input:
-        path(a_bed)
-        path('*.bed')
+        path(beds, stageAs: "inputs/*")
         val(species)
 
         output:
@@ -102,7 +101,7 @@ process bedtoolsIntersect{
 
         script:
         """
-        bedtools intersect -a ${a_bed} -b *.bed > ${species}.intersect.bed 
+        bedtools multiinter -i $beds | cut -f1-5 > ${species}.intersect.bed
         """
 }
 
@@ -113,11 +112,12 @@ process samtoolsMerge {
         val(species)
 
         output:
-        tuple val(species), path('${species}.bam')
+        tuple val(species), path('${species}.bam'), path("${species}.bam.bai")
 
         script:
         """
         samtools merge -o ${species}.bam *.bam
+        samtools index ${bam_f}           
         """
 }
 
