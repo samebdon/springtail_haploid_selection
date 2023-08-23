@@ -189,15 +189,15 @@ process generate_pass_vcf {
 process bedtools_subtract {
 
         input:
-        tuple val(species), path(a.bed)
-        tuple val(species), path(b.bed)
+        tuple val(species), path(a_bed)
+        tuple val(species), path(b_bed)
 
         output:
         tuple val(species), path("{species}.callable.bed")
 
         script:
         """
-        bedtools subtract -a ${a.bed} -b ${b.bed} > ${species}.callable.bed
+        bedtools subtract -a ${a_bed} -b ${b_bed} > ${species}.callable.bed
         """
 }
 
