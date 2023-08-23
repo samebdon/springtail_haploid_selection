@@ -16,7 +16,7 @@ workflow var_call_flow {
 	  indexBam(markDupes.out)
           mosdepth(markDupes.out.join(indexBam.out))
           callables = mosdepth.out.collect()
-          bedtoolsIntersect(callables.last(), callables.until(callables.last()), species)
+          bedtoolsIntersect(callables.last(), callables.until( it == callables.last() ), species)
 	  samtoolsMerge(markDupes.out.join(indexBam.out).collect(), species)
 	  indexMergedBam(samtoolsMerge.out)
 	  freebayes(genome, samtoolsMerge.out.join(indexMergedBam.out), bedtoolsIntersect.out)
