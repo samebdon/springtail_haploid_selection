@@ -53,7 +53,7 @@ process markDupes {
         tuple val(meta), path("${bam_f.baseName}.deduped.bam")
 
         script:
-        avail_mem = (task.memory.giga*0.8).intValue()
+        avail_mem = (task.memory.mega*0.8).intValue()
         """
         java -Xmx${avail_mem}M -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${bam_f.baseName}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
 	"""
@@ -148,10 +148,10 @@ process bcftools_filter {
 	
         script:
         """
-        bcftools filter --threads 4 -Oz -s Qual -m+ -e 'QUAL<1' ${vcf_f} | \
-        bcftools filter --threads 4 -Oz -s Balance -m+ -e 'RPL<1 | RPR<1 | SAF<1 | SAR<1' | \
-        bcftools filter --threads 4 -Oz -m+ -s+ --SnpGap 2 | \
-        bcftools filter --threads 4 -Oz -e 'TYPE!="snp"' -s NonSnp -m+ > ${vcf_f.baseName}.soft_filtered.vcf.gz
+        bcftools filter --threads ${task.cpus} -Oz -s Qual -m+ -e 'QUAL<1' ${vcf_f} | \
+        bcftools filter --threads ${task.cpus} -Oz -s Balance -m+ -e 'RPL<1 | RPR<1 | SAF<1 | SAR<1' | \
+        bcftools filter --threads ${task.cpus} -Oz -m+ -s+ --SnpGap 2 | \
+        bcftools filter --threads ${task.cpus} -Oz -e 'TYPE!="snp"' -s NonSnp -m+ > ${vcf_f.baseName}.soft_filtered.vcf.gz
         """
 }
 
