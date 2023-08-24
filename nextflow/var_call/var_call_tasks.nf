@@ -53,7 +53,7 @@ process markDupes {
         tuple val(meta), path("${bam_f.baseName}.deduped.bam")
 
         script:
-        avail_mem = (task.memory.giga*0.8).intValue()
+        avail_mem = (task.memory.mega*0.8).intValue()
         """
         java -Xmx${avail_mem}M -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${bam_f.baseName}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
 	"""
