@@ -15,9 +15,9 @@ log.info """\
          """
          .stripIndent()
 
-include { var_call_flow } from './var_call_flows.nf'
+include { var_call_flow_sambamba } from './var_call_flows.nf'
 
 workflow {
         read_pairs_ch = Channel.fromFilePairs( params.reads, checkIfExists:true )
-        var_call_flow(params.genome, params.genome_index, params.genome_dict, read_pairs_ch, params.species)
+        var_call_flow_sambamba(params.genome, params.genome_index, params.genome_dict, read_pairs_ch, params.species)
 }
