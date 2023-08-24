@@ -9,8 +9,6 @@ log.info """\
          V A R  C A L L   N F   P I P E L I N E    
          ===================================
          genome : ${params.genome}
-         genome index : ${params.genome_index}
-         genome dict : ${params.genome_dict}
 	 reads : ${params.reads}
          outdir : ${params.outdir}
          species : ${params.species}

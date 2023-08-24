@@ -26,7 +26,7 @@ process bwaMem {
         script:
         """
         mkdir bwamem
-        bwa mem -t 4 -R "@RG\\tID:${meta}\\tSM:${meta}\\tPL:ILLUMINA\\tPU:${meta}\\tLB:${meta}\\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} > bwamem/${meta}.${genome_f.baseName}.bam
+        bwa mem -t ${task.cpus} -R "@RG\\tID:${meta}\\tSM:${meta}\\tPL:ILLUMINA\\tPU:${meta}\\tLB:${meta}\\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} > bwamem/${meta}.${genome_f.baseName}.bam
         """
 }
 
@@ -40,7 +40,7 @@ process sortBam {
 
         script:
         """
-        samtools sort -@ 4 -m 4G -O bam -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
+        samtools sort -@ ${task.cpus} -O bam -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
         """
 }
 
@@ -53,8 +53,9 @@ process markDupes {
         tuple val(meta), path("${bam_f.baseName}.deduped.bam")
 
         script:
+        avail_mem = (task.memory.giga*0.8).intValue()
         """
-        java -Xms4G -Xmx4G -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${bam_f.baseName}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
+        java -Xmx${avail_mem}M -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${bam_f.baseName}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
 	"""
 }
 
@@ -83,9 +84,9 @@ process mosdepth {
         script:
         """
         mkdir mosdepth
-        mosdepth --fast-mode -t 4 tmp ${bam_f}
+        mosdepth --fast-mode -t ${task.cpus} tmp ${bam_f}
         MAX_DEPTH="\$(python scripts/mean_depth.py -b tmp.per-base.bed.gz -m 2)" 
-	mosdepth -t 4 -n --quantize 0:1:8:\${MAX_DEPTH}: ${meta} ${bam_f}
+	mosdepth -t ${task.cpus} -n --quantize 0:1:8:\${MAX_DEPTH}: ${meta} ${bam_f}
 	zcat ${meta}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.callable.bed
         """
 }
@@ -133,7 +134,7 @@ process freebayes {
 
         script:
         """
-        freebayes -f ${genome_f} -b ${bam_f} -t ${bed_f} --strict-vcf -v ${species}.vcf -T 0.01 -p 2 -i -X -u -E 0 -n 4 -m 20 --min-coverage 10 --min-mapping-quality 1 -C 2
+        freebayes -f ${genome_f} -b ${bam_f} -t ${bed_f} --strict-vcf -v ${species}.vcf -T 0.01 -p 2 -i -X -u -E 0 -n 4 -m 20 --min-coverage 8 -C 2
         """
 }
 
@@ -165,7 +166,7 @@ process generate_fail_bed {
 
         script:
         """
-        bcftools view --threads 4 -H -i "%FILTER!='PASS'" ${vcf_f} | \
+        bcftools view --threads ${task.cpus} -H -i "%FILTER!='PASS'" ${vcf_f} | \
         perl -lane '$pad=0; print($F[0]."\t".($F[1]-1)."\t".(($F[1]-1)+length($F[3]))."\t".$F[6])' | \
         bedtools sort | \
         bedtools merge > ${species}.vcf_filter_fails.bed
@@ -182,7 +183,7 @@ process generate_pass_vcf {
 
         script:
         """
-        bcftools view --threads 4 -Oz -f "PASS" ${vcf_f} > ${vcf_f.baseName}.sorted.hard_filtered.vcf.gz
+        bcftools view --threads ${task.cpus} -Oz -f "PASS" ${vcf_f} > ${vcf_f.baseName}.sorted.hard_filtered.vcf.gz
         """
 }
 
@@ -212,7 +213,7 @@ process bcftools_sort {
         
         script:
         """
-        bcftools sort --threads 4 -Oz ${vcf_f} > ${species}.hard_filtered.sorted.vcf.gz
+        bcftools sort --threads ${task.cpus} -Oz ${vcf_f} > ${species}.hard_filtered.sorted.vcf.gz
         """
 }        
 
