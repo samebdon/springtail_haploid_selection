@@ -13,7 +13,7 @@ workflow var_call_flow {
 	  sortBam(bwaMem.out)
           markDupes(sortBam.out)
 	  indexBam(markDupes.out)
-          mosdepth(markDupes.out.join(indexBam.out))
+          mosdepth(markDupes.out.join(indexBam.out), 8, 5)
           intersectBeds(mosdepth.out.collect(), species)
 	  samtoolsMerge(markDupes.out.join(indexBam.out).collect(), species)
 	  freebayes(genome, samtoolsMerge.out, intersectBeds.out)
@@ -25,3 +25,27 @@ workflow var_call_flow {
 	  bcftools_index(generate_pass_vcf.out)
 }
 
+workflow var_call_flow_sambamba {
+        take:
+	  genome
+	  genome_index
+	  genome_dict
+	  read_files
+	  species
+        main:
+          bwaIndex(genome)
+          bwaMem(genome, bwaIndex.out, read_files)
+	  sortBamSambamba(bwaMem.out)
+          markDupesSambamba(sortBam.out)
+	  indexBamSambamba(markDupes.out)
+          mosdepth(markDupes.out.join(indexBam.out), 8, 5)
+          intersectBeds(mosdepth.out.collect(), species)
+	  sambambaMerge(markDupes.out.join(indexBam.out).collect(), species)
+	  freebayes(genome, samtoolsMerge.out, intersectBeds.out)
+	  bcftools_filter(freebayes.out)
+	  generate_fail_bed(bcftools_filter.out)
+	  generate_pass_vcf(bcftools_filter.out)
+	  bedtools_subtract(intersectBeds.out, generate_fail_bed.out)
+	  bcftools_sort(generate_pass_vcf.out)
+	  bcftools_index(generate_pass_vcf.out)
+}

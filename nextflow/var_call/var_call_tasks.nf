@@ -44,6 +44,21 @@ process sortBam {
         """
 }
 
+process sortBamSambamba {
+
+        input:
+        tuple val(meta), path(bam_f)
+
+        output:
+        tuple val(meta), path("${bam_f.baseName}.coord_sorted.bam")
+
+        script:
+        avail_mem = (task.memory.mega*1).intValue()
+        """
+        sambamba-sort -n ${task.cpus} -m ${avail_mem}MB -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
+        """
+}
+
 process markDupes {
 
         input:
@@ -56,7 +71,21 @@ process markDupes {
         avail_mem = (task.memory.mega*0.8).intValue()
         """
         java -Xmx${avail_mem}M -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${bam_f.baseName}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
-	"""
+        """
+}
+
+process markDupesSambamba {
+
+        input:
+        tuple val(meta), path(bam_f)
+
+        output:
+        tuple val(meta), path("${bam_f.baseName}.deduped.bam")
+
+        script:
+        """
+        sambamba-markdup -t ${task.cpus} ${bam_f} ${bam_f.baseName}.deduped.bam
+        """
 }
 
 process indexBam{
@@ -73,10 +102,26 @@ process indexBam{
         """
 }
 
+process indexBamSambamba{
+
+        input:
+        tuple val(meta), path(bam_f)
+
+        output:
+        tuple val(meta), path("${bam_f}.bai")
+
+        script:
+        """
+        sambamba-index -t ${task.cpus} ${bam_f}             
+        """
+}
+
 process mosdepth {
 
         input:
 	tuple val(meta), path(bam_f), path(bam_index)
+        val(min_depth)
+        val(max_depth_factor)
 
         output:
         path("mosdepth/${bam_f.baseName}.CALLABLE.bed")
@@ -85,8 +130,8 @@ process mosdepth {
         """
         mkdir mosdepth
         mosdepth --fast-mode -t ${task.cpus} tmp ${bam_f}
-        MAX_DEPTH="\$(python scripts/mean_depth.py -b tmp.per-base.bed.gz -m 2)" 
-	mosdepth -t ${task.cpus} -n --quantize 0:1:8:\${MAX_DEPTH}: ${meta} ${bam_f}
+        MAX_DEPTH="\$(python scripts/mean_depth.py -b tmp.per-base.bed.gz -m ${max_depth_factor})" 
+	mosdepth -t ${task.cpus} -n --quantize 0:1:${min_depth}:\${MAX_DEPTH}: ${meta} ${bam_f}
 	zcat ${meta}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.callable.bed
         """
 }
@@ -118,7 +163,23 @@ process samtoolsMerge {
         script:
         """
         samtools merge -o ${species}.bam *.bam
-        samtools index ${bam_f}           
+        samtools index ${species}.bam        
+        """
+}
+
+process sambambaMerge {
+
+        input:
+        tuple val(meta), path('*.bam'), path(bam_index)
+        val(species)
+
+        output:
+        tuple val(species), path('${species}.bam'), path("${species}.bam.bai")
+
+        script:
+        """
+        sambamba-merge -t ${task.cpus} ${species}.bam *.bam
+        sambamba-index -t ${task.cpus} ${species}.bam         
         """
 }
 
@@ -134,7 +195,7 @@ process freebayes {
 
         script:
         """
-        freebayes -f ${genome_f} -b ${bam_f} -t ${bed_f} --strict-vcf -v ${species}.vcf -T 0.01 -p 2 -i -X -u -E 0 -n 4 -m 20 --min-coverage 8 -C 2
+        freebayes -f ${genome_f} -b ${bam_f} -t ${bed_f} --strict-vcf -v ${species}.vcf -T 0.01 -k -w -j -E 1
         """
 }
 
@@ -148,7 +209,7 @@ process bcftools_filter {
 	
         script:
         """
-        bcftools filter --threads ${task.cpus} -Oz -s Qual -m+ -e 'QUAL<1' ${vcf_f} | \
+        bcftools filter --threads ${task.cpus} -Oz -s Qual -m+ -e 'QUAL<10' ${vcf_f} | \
         bcftools filter --threads ${task.cpus} -Oz -s Balance -m+ -e 'RPL<1 | RPR<1 | SAF<1 | SAR<1' | \
         bcftools filter --threads ${task.cpus} -Oz -m+ -s+ --SnpGap 2 | \
         bcftools filter --threads ${task.cpus} -Oz -e 'TYPE!="snp"' -s NonSnp -m+ > ${vcf_f.baseName}.soft_filtered.vcf.gz
