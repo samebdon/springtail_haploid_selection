@@ -171,7 +171,7 @@ process samtoolsMerge {
 process sambambaMerge {
 
         input:
-        tuple val(meta), path(bams, stageAs: "?/*"), path(bam_index)
+        path(bams)
         val(species)
 
         output:
@@ -179,7 +179,7 @@ process sambambaMerge {
 
         script:
         """
-        sambamba merge -t ${task.cpus} ${species}.bam ${bams}
+        sambamba merge -t ${task.cpus} ${species}.bam ${bams.join(" ")}
         sambamba index -t ${task.cpus} ${species}.bam         
         """
 }
