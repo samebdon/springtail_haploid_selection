@@ -221,7 +221,7 @@ process bcftools_filter {
         """
 }
 
-process generate_fail_bed {q
+process generate_fail_bed {
         publishDir params.outdir, mode:'copy'
 
         input:
