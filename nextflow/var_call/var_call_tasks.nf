@@ -26,7 +26,8 @@ process bwaMem {
         script:
         """
         mkdir bwamem
-        bwa mem -t ${task.cpus} -R "@RG\\tID:${meta}\\tSM:${meta}\\tPL:ILLUMINA\\tPU:${meta}\\tLB:${meta}\\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} > bwamem/${meta}.${genome_f.baseName}.bam
+        bwa mem -t ${task.cpus} -R "@RG\\tID:${meta}\\tSM:${meta}\\tPL:ILLUMINA\\tPU:${meta}\\tLB:${meta}\\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} | \
+        sambamba view -t ${task.cpus} -S -f bam > bwamem/${meta}.${genome_f.baseName}.bam
         """
 }
 
@@ -55,7 +56,7 @@ process sortBamSambamba {
         script:
         avail_mem = (task.memory.mega*1).intValue()
         """
-        sambamba sort -n ${task.cpus} -m ${avail_mem}MB -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
+        sambamba sort -t ${task.cpus} -m ${avail_mem}MB -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
         """
 }
 
