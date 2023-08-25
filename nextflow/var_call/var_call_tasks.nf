@@ -131,7 +131,7 @@ process mosdepth {
         """
         mkdir mosdepth
         mosdepth --fast-mode -t ${task.cpus} tmp ${bam_f}
-        MAX_DEPTH="\$(python scripts/mean_depth.py -b tmp.per-base.bed.gz -m ${max_depth_factor})" 
+        MAX_DEPTH="\$(python ${launchDir}/scripts/mean_depth.py -b tmp.per-base.bed.gz -m ${max_depth_factor})" 
 	mosdepth -t ${task.cpus} -n --quantize 0:1:${min_depth}:\${MAX_DEPTH}: ${meta} ${bam_f}
 	zcat ${meta}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.callable.bed
         """
