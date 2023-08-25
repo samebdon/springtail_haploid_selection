@@ -81,7 +81,8 @@ process markDupesSambamba {
         tuple val(meta), path(bam_f)
 
         output:
-        tuple val(meta), path("${bam_f.baseName}.deduped.bam")
+        tuple val(meta), path("${bam_f.baseName}.deduped.bam"), emit: meta_bam
+        path("${bam_f.baseName}.deduped.bam"), emit: bam_only
 
         script:
         """
