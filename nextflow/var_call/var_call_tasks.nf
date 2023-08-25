@@ -179,7 +179,7 @@ process sambambaMerge {
 
         script:
         """
-        sambamba merge -t ${task.cpus} ${species}.bam ${bams}
+        sambamba merge -t ${task.cpus} ${species}.bam $bams
         sambamba index -t ${task.cpus} ${species}.bam         
         """
 }
