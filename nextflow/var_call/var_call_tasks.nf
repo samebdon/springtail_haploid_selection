@@ -180,11 +180,7 @@ process sambambaMerge {
 
         script:
         """
-<<<<<<< HEAD
-        sambamba merge -t ${task.cpus} ${species}.bam $bams
-=======
         sambamba merge -t ${task.cpus} ${species}.bam ${bams.join(" ")}
->>>>>>> ed37b97ffde0b6f750f40c4ae131680b7b184f3c
         sambamba index -t ${task.cpus} ${species}.bam         
         """
 }
