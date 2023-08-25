@@ -160,7 +160,7 @@ process samtoolsMerge {
         val(species)
 
         output:
-        tuple val(species), path('${species}.bam'), path("${species}.bam.bai")
+        tuple val(species), path("${species}.bam"), path("${species}.bam.bai")
 
         script:
         """
@@ -176,7 +176,7 @@ process sambambaMerge {
         val(species)
 
         output:
-        tuple val(species), path('${species}.bam'), path("${species}.bam.bai")
+        tuple val(species), path("${species}.bam"), path("${species}.bam.bai")
 
         script:
         """
