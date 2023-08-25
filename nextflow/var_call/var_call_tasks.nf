@@ -171,7 +171,7 @@ process samtoolsMerge {
 process sambambaMerge {
 
         input:
-        tuple val(meta), path('*.bam'), path(bam_index)
+        tuple val(meta), path(bams, stageAs: "?/*"), path(bam_index)
         val(species)
 
         output:
@@ -179,7 +179,7 @@ process sambambaMerge {
 
         script:
         """
-        sambamba merge -t ${task.cpus} ${species}.bam *.bam
+        sambamba merge -t ${task.cpus} ${species}.bam ${bams}
         sambamba index -t ${task.cpus} ${species}.bam         
         """
 }
@@ -221,7 +221,7 @@ process bcftools_filter {
         """
 }
 
-process generate_fail_bed {
+process generate_fail_bed {q
         publishDir params.outdir, mode:'copy'
 
         input:
