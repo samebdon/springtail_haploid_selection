@@ -5,7 +5,7 @@ mean_depth.py -b <FILE> [-h -m <INT>]
 
 Options:
 -b, --bed <FILE>	Mosdepth bed file
--m, --multiplier <INT> Multiplication factor
+-m, --multiplier <INT> Multiplication factor (default: 2)
 
 """
 
@@ -34,5 +34,6 @@ if __name__ == "__main__":
     if args["--multiplier"]:
         factor = int(args["--multiplier"])
     else:
-        factor = int(1)
-    print(factor * get_mean_depth_mosdepth(bed_f))
+        factor = int(2)
+        
+    print(int(factor * get_mean_depth_mosdepth(bed_f)))
