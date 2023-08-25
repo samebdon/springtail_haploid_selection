@@ -125,7 +125,7 @@ process mosdepth {
         val(max_depth_factor)
 
         output:
-        path("mosdepth/${bam_f.baseName}.CALLABLE.bed")
+        path("mosdepth/${bam_f.baseName}.callable.bed")
 
         script:
         """
