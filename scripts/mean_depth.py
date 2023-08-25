@@ -32,7 +32,7 @@ if __name__ == "__main__":
     args = docopt(__doc__)
     bed_f = args["--bed"]
     if args["--multiplier"]:
-        factor = args["--multiplier"]
+        factor = int(args["--multiplier"])
     else:
-        factor = 1
+        factor = int(1)
     print(factor * get_mean_depth_mosdepth(bed_f))
