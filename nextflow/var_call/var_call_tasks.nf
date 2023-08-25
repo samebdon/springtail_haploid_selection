@@ -55,7 +55,7 @@ process sortBamSambamba {
         script:
         avail_mem = (task.memory.mega*1).intValue()
         """
-        sambamba-sort -n ${task.cpus} -m ${avail_mem}MB -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
+        sambamba sort -n ${task.cpus} -m ${avail_mem}MB -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
         """
 }
 
@@ -84,7 +84,7 @@ process markDupesSambamba {
 
         script:
         """
-        sambamba-markdup -t ${task.cpus} ${bam_f} ${bam_f.baseName}.deduped.bam
+        sambamba markdup -t ${task.cpus} ${bam_f} ${bam_f.baseName}.deduped.bam
         """
 }
 
@@ -112,7 +112,7 @@ process indexBamSambamba{
 
         script:
         """
-        sambamba-index -t ${task.cpus} ${bam_f}             
+        sambamba index -t ${task.cpus} ${bam_f}             
         """
 }
 
@@ -178,8 +178,8 @@ process sambambaMerge {
 
         script:
         """
-        sambamba-merge -t ${task.cpus} ${species}.bam *.bam
-        sambamba-index -t ${task.cpus} ${species}.bam         
+        sambamba merge -t ${task.cpus} ${species}.bam *.bam
+        sambamba index -t ${task.cpus} ${species}.bam         
         """
 }
 
