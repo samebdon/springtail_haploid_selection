@@ -261,7 +261,7 @@ process bedtools_subtract {
         tuple val(species), path(b_bed)
 
         output:
-        tuple val(species), path("{species}.callable.bed")
+        tuple val(species), path("${species}.callable.bed")
 
         script:
         """
