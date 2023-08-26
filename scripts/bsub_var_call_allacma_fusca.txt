@@ -13,4 +13,4 @@ export MOSDEPTH_Q2=CALLABLE
 export MOSDEPTH_Q3=HIGH_COVERAGE
 
 module load nextflow/23.04.1-5866
-nextflow run nextflow/var_call/var_call_main.nf -c nextflow/conf/nextflow.config -with-conda /software/team360/miniconda/envs/lg_het -w data/workdir/var_call -resume # -with-report -with-trace -with-timeline -with-dag
+nextflow run nextflow/var_call/var_call_main.nf -c nextflow/conf/nextflow.config -with-conda /software/team360/miniconda/envs/lg_het -w data/workdir/var_call -resume -with-report -with-trace -with-timeline -with-dag

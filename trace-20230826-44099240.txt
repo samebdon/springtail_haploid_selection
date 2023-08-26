@@ -1,0 +1,10 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	ef/7f714d	32080632	var_call_flow_sambamba:bwaIndex	CACHED	0	2023-08-25 08:29:29.293	11m 54s	11m 50s	-	-	-	-	-
+8	85/7356a8	32080779	var_call_flow_sambamba:bwaMem (1)	CACHED	0	2023-08-25 08:49:42.405	38m 9s	38m 5s	-	-	-	-	-
+12	13/3efcea	32111861	var_call_flow_sambamba:bwaMem (2)	CACHED	0	2023-08-25 15:07:53.873	1h 5m 44s	1h 5m 5s	-	-	-	-	-
+14	3b/2a76fd	32081537	var_call_flow_sambamba:sortBamSambamba (1)	CACHED	0	2023-08-25 09:27:51.994	7m 29s	7m 25s	-	-	-	-	-
+15	3e/036219	32118430	var_call_flow_sambamba:sortBamSambamba (2)	CACHED	0	2023-08-25 16:13:38.741	12m 20s	12m 10s	-	-	-	-	-
+17	c1/d05db5	32118987	var_call_flow_sambamba:markDupesSambamba (2)	CACHED	0	2023-08-25 16:25:58.724	15m 5s	14m 45s	-	-	-	-	-
+16	d9/c65f75	32081550	var_call_flow_sambamba:markDupesSambamba (1)	CACHED	0	2023-08-25 09:35:21.684	12m 10s	12m 5s	-	-	-	-	-
+18	75/b35d35	32119942	var_call_flow_sambamba:indexBamSambamba (2)	CACHED	0	2023-08-25 16:41:03.674	1m 40s	60s	-	-	-	-	-
+19	4b/c9588c	32083336	var_call_flow_sambamba:indexBamSambamba (1)	CACHED	0	2023-08-25 09:47:31.709	3m 50s	3m 40s	-	-	-	-	-
