@@ -202,6 +202,7 @@ process freebayes {
 }
 
 process bcftools_filter {
+        publishDir params.outdir, mode:'copy'
 
         input:
         path(genome)
@@ -255,6 +256,7 @@ process generate_pass_vcf {
 }
 
 process bedtools_subtract {
+        publishDir params.outdir, mode:'copy'
 
         input:
         tuple val(species), path(a_bed)
