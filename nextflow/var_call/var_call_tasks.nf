@@ -189,6 +189,7 @@ process freebayes {
 
         input:
 	path(genome_f)
+        path(genome_index)
         tuple val(meta), path(bam_f), path(bam_index)
         tuple val(species), path(bed_f)
 
