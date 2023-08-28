@@ -202,6 +202,23 @@ process freebayes {
         """
 }
 
+process freebayesParallel {
+
+        input:
+        path(genome_f)
+        path(genome_index)
+        tuple val(meta), path(bam_f), path(bam_index)
+        tuple val(species), path(bed_f)
+
+        output:
+        tuple val(species), path("${species}.vcf")        
+
+        script:
+        """
+        freebayes-parallel <(fasta_generate_regions.py ${genome_f} 10000000) ${task.cpus}  -f ${genome_f} -b ${bam_f} -t ${bed_f} --strict-vcf -T 0.01 -k -w -j -E 1 > ${species}.vcf
+        """
+}
+
 process bcftools_filter {
         publishDir params.outdir, mode:'copy'
 
