@@ -17,7 +17,7 @@ workflow var_call_flow {
           intersectBeds(mosdepth.out.collect(), species)
 	  sambambaMerge(markDupesSambamba.out.bam_only.collect(), species)
 	  freebayes(genome, genome_index, sambambaMerge.out, intersectBeds.out.overlap)
-	  bcftools_filter(genome, freebayesParallel.out)
+	  bcftools_filter(genome, freebayes.out)
 	  generate_fail_bed(bcftools_filter.out)
 	  generate_pass_vcf(bcftools_filter.out)
 	  bedtools_subtract(intersectBeds.out.all, generate_fail_bed.out)
