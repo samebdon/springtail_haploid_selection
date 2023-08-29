@@ -67,6 +67,10 @@ process generateSFS{
         make dataframe with chrom, pos, geneid, SFS
         merge with transcript id, degeneracy
         write a tsv
-        """
 
+        could probably generate sfs and diversity to two diff files in same script
+
+        trick is probably to get to the appropriate genotype array to perform operations on
+        get pipeline running up to subset vcf, then download the two files locally to work on this script
+        """
 }
