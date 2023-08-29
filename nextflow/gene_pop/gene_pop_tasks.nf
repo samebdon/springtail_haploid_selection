@@ -1,4 +1,6 @@
 process degenotate {
+        cpus 1
+        memory = '2 GB'
         publishDir params.outdir, mode:'copy'
 
         input:
