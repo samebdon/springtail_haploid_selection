@@ -6,7 +6,7 @@ process degenotate {
         input:
         path(genome_f)
         path(annotation_f)
-        path(species)
+        val(species)
 
         output:
         tuple val(species), path("degenotate/*")
