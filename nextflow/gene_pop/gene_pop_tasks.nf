@@ -13,7 +13,7 @@ process degenotate {
 
         script:
         """
-        degenotate.py -g ${genome_f} -a ${annotation_f} -o degenotate -x 04 -c ${species}.cds-nt.fa -ca ${species}.cds-aa.fa -l ${species}.cds-nt-longest.fa -la ${species}.cds-aa-longest.fa
+        degenotate.py -g ${genome_f} -a <(cat ${annotation_f} | awk -v OFS='\\t' '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}') -o degenotate -x 04 -c ${species}.cds-nt.fa -ca ${species}.cds-aa.fa -l ${species}.cds-nt-longest.fa -la ${species}.cds-aa-longest.fa
         """
 }
 
@@ -71,5 +71,6 @@ process generateSFS{
 
         trick is probably to get to the appropriate genotype array to perform operations on
         get pipeline running up to subset vcf, then download the two files locally to work on this script
+        might need to write a process to write a transcript to gene mapping function
         """
 }
