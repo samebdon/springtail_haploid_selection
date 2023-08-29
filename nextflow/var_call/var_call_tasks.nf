@@ -152,7 +152,7 @@ process intersectBeds{
         """
         N_FILES="\$(ls inputs/*.bed | wc -l)"
         bedtools multiinter -i $beds | cut -f1-5 > ${species}.intersect.bed
-        cat ${species}.intersect.bed | awk '\$4==\${N_FILES}' | cut -f1-3 > ${species}.intersect.all_overlap.bed
+        cat ${species}.intersect.bed | -v var=\$N_FILES '\$4==var'  | cut -f1-3 > ${species}.intersect.all_overlap.bed
         """
 }
 
