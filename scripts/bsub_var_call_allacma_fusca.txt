@@ -2,7 +2,7 @@
 
 #BSUB -o logs/var_call.out.%J
 #BSUB -e logs/var_call.err.%J
-#BSUB -q normal
+#BSUB -q basement
 #BSUB -n 4
 #BSUB -M 4096
 #BSUB -R "select[mem>4096] rusage[mem=4096]"
