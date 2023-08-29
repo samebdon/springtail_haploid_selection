@@ -13,7 +13,6 @@ process degenotate {
 
         script:
         """
-        mkdir degenotate
         degenotate.py -g ${genome_f} -a ${annotation_f} -o degenotate -x 04 -c ${species}.cds-nt.fa -ca ${species}.cds-aa.fa -l ${species}.cds-nt-longest.fa -la ${species}.cds-aa-longest.fa
         """
 }
