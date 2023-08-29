@@ -145,11 +145,14 @@ process intersectBeds{
         val(species)
 
         output:
-        tuple val(species), path("${species}.intersect.bed")
+        tuple val(species), path("${species}.intersect.bed"), emit: all
+        tuple val(species), path("${species}.intersect.all_overlap.bed"), emit: overlap
 
         script:
         """
+        N_FILES="\$(ls *.bed | wc -l)"
         bedtools multiinter -i $beds | cut -f1-5 > ${species}.intersect.bed
+        cat ${species}.intersect.bed | awk '\$4==\${N_FILES}' | cut -f1-3 > ${species}.intersect.all_overlap.bed
         """
 }
 
@@ -186,6 +189,7 @@ process sambambaMerge {
 }
 
 process freebayes {
+        cpus 1
 
         input:
 	path(genome_f)
