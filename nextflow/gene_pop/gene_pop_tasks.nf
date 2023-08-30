@@ -1,3 +1,38 @@
+process getGeneBed {
+        cpus 1
+        memory = '2 GB'
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        path(gtf_f)
+        val(species)
+
+        output:
+        tuple val(species), path("${species}.gene.bed")
+
+        script:
+        """
+        cat ${gtf_f} |  awk 'OFS="\t" {if (\$3=="gene") {print \$1,\$4-1,\$5,\$10}}' | tr -d '";'> ${species}.gene.bed
+        """
+}
+
+
+process splitBed {
+        cpus 1
+        memory = '2 GB'
+
+        input:
+        tuple val(species), path(bed_f)
+
+        output:
+        path("beds/*")
+
+        script:
+        """
+        bash ${launchDir}/scripts/splitBed.sh ${bed_f}
+        """
+}
+
 process degenotate {
         cpus 1
         memory = '2 GB'
@@ -18,59 +53,87 @@ process degenotate {
 }
 
 process filterBed{
+        cpus 1
+        memory = '1 GB'
         publishDir params.outdir, mode:'copy'
 
         input:
         tuple val(species), path("degenotate/*")
 
         output:
-        tuple val(species), path("${species}.degeneracy.longest_isoforms.bed")
+        tuple val(species), path("${species}.0D.longest_isoforms.bed"), path("${species}.4D.longest_isoforms.bed")
 
         script:
         """
-        get transcript names from longest isoform file
-        filter degeneracy all sites bed by longest isoforms
-        output scaffold, start, end, transcript, degeneracy
+        join degenotate/degeneracy-all-sites.bed <(grep '>' degenotate/${species}.cds-nt-longest.fa | cut -f1- -d'>') -1 4 -2 1 > ${species}.04D.longest_isoforms.bed
+        split ${species}.04D.longest_isoforms.bed into 0D and 4D
         """
 }
 
 process subsetVCF{
-        publishDir params.outdir, mode:'copy'
 
         input:
-        tuple val(species), path(bed_f)
+        tuple val(species), path(0D_bed_f), path(4D_bed_f)
         path(vcf_f)
 
         output:
-        tuple val(species), path("${species}.04D.longest_isoforms.vcf.gz")
+        tuple val(species), path("${species}.0D.longest_isoforms.vcf.gz"), path("${species}.0D.longest_isoforms.vcf.gz")
 
         script:
         """
-        bcftools view --threads ${task.cpus} -Oz -R <(cat ${bed_f} | cut -f1-3) -o ${species}.04D.longest_isoforms.vcf.gz ${vcf_f}
+        bcftools view --threads ${task.cpus} -Oz -R <(cat ${0D_bed_f} | cut -f1-3) -o ${species}.0D.longest_isoforms.vcf.gz ${vcf_f}
+        bcftools view --threads ${task.cpus} -Oz -R <(cat ${4D_bed_f} | cut -f1-3) -o ${species}.4D.longest_isoforms.vcf.gz ${vcf_f}
         """
 }
 
-process generateSFS{
+process calculatePiBed{
+        cpus 1
+        memory = '2 GB'
 
         input:
-        tuple val(species), path(vcf_f), path(bed_f)
+        tuple val(species), path(0D_vcf_f), path(4D_vcf_f)
+        tuple val(species), path(0D_bed_f), path(4D_bed_f)
+        path(gene_bed_f)
 
         output:
-        tuple val(species), path("${species}.04D.longest_isoforms.sfs.tsv")
+        tuple val(species), val(gene_bed_f.simpleName), path("${species}.0D.longest_isoforms.theta.tsv"), path("${species}.4D.longest_isoforms.theta.tsv")
 
         script:
         """
-        custom python script i think
-        load degeneracy bed, create data frame. generate gene name from transcript name
-        load vcf, for each variant (should be just 0D and 4D SNPs in genes) calculate SFS or pi?
-        make dataframe with chrom, pos, geneid, SFS
-        merge with transcript id, degeneracy
-        write a tsv
+        python ${launchDir}/scripts/calculatePiBed.py -v ${0D_vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${0D_bed_f} | cut -f1-3) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi
+        python ${launchDir}/scripts/calculatePiBed.py -v ${4D_vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${4D_bed_f} | cut -f1-3) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi
+        """
+}
 
-        could probably generate sfs and diversity to two diff files in same script
+process join{
+        cpus 1
+        memory = '2 GB'
 
-        trick is probably to get to the appropriate genotype array to perform operations on
-        get pipeline running up to subset vcf, then download the two files locally to work on this script
-        might need to write a process to write a transcript to gene mapping function
+        input:
+        tuple val(species), val(chrom), path(0D_f), path(4D_f)
+
+        output:
+        tuple val(species), path("${species}.${chrom}.longest_isoforms.pi.tsv")
+
+        script:
+        """
+        join -1 2 -2 1 ${0D_f} <(cat ${4D_F} | cut -f2-3) > ${species}.${chrom}.longest_isoforms.pi.tsv
+        """
+}
+
+process concat_all{
+        cpus 1
+        memory = '2 GB'
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        tuple val(species), path(files, stageAs: "inputs/*")
+
+        output:
+        tuple val(species), path(output_f)
+        
+        script:
+        """
+        awk '(NR == 1) || (FNR > 1)' inputs/* > ${species}.longest_isoforms.pi.tsv
         """
 }
