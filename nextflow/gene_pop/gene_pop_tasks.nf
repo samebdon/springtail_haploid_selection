@@ -48,7 +48,8 @@ process degenotate {
 
         script:
         """
-        degenotate.py -g ${genome_f} -a <(cat ${annotation_f} | awk -v OFS='\\t' '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}') -o degenotate -x 04 -c ${species}.cds-nt.fa -ca ${species}.cds-aa.fa -l ${species}.cds-nt-longest.fa -la ${species}.cds-aa-longest.fa
+        cat ${annotation_f} | awk -v OFS='\\t' '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}' > tmp.gtf
+        degenotate.py -g ${genome_f} -a tmp.gtf -o degenotate -x 04 -c ${species}.cds-nt.fa -ca ${species}.cds-aa.fa -l ${species}.cds-nt-longest.fa -la ${species}.cds-aa-longest.fa
         """
 }
 
@@ -73,7 +74,7 @@ process filterBed{
 process subsetVCF{
 
         input:
-        tuple val(species), path(0D_bed_f), path(4D_bed_f)
+        tuple val(species), path(zero_bed_f), path(four_bed_f)
         path(vcf_f)
 
         output:
@@ -81,8 +82,8 @@ process subsetVCF{
 
         script:
         """
-        bcftools view --threads ${task.cpus} -Oz -R <(cat ${0D_bed_f} | cut -f1-3) -o ${species}.0D.longest_isoforms.vcf.gz ${vcf_f}
-        bcftools view --threads ${task.cpus} -Oz -R <(cat ${4D_bed_f} | cut -f1-3) -o ${species}.4D.longest_isoforms.vcf.gz ${vcf_f}
+        bcftools view --threads ${task.cpus} -Oz -R <(cat ${zero_bed_f} | cut -f1-3) -o ${species}.0D.longest_isoforms.vcf.gz ${vcf_f}
+        bcftools view --threads ${task.cpus} -Oz -R <(cat ${four_bed_f} | cut -f1-3) -o ${species}.4D.longest_isoforms.vcf.gz ${vcf_f}
         """
 }
 
@@ -91,8 +92,8 @@ process calculatePiBed{
         memory = '2 GB'
 
         input:
-        tuple val(species), path(0D_vcf_f), path(4D_vcf_f)
-        tuple val(species), path(0D_bed_f), path(4D_bed_f)
+        tuple val(species), path(zero_vcf_f), path(four_vcf_f)
+        tuple val(species), path(zero_bed_f), path(four_bed_f)
         path(gene_bed_f)
 
         output:
@@ -100,24 +101,24 @@ process calculatePiBed{
 
         script:
         """
-        python ${launchDir}/scripts/calculatePiBed.py -v ${0D_vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${0D_bed_f} | cut -f1-3) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi
-        python ${launchDir}/scripts/calculatePiBed.py -v ${4D_vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${4D_bed_f} | cut -f1-3) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi
+        python ${launchDir}/scripts/calculatePiBed.py -v ${zero_vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${zero_bed_f} | cut -f1-3) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi
+        python ${launchDir}/scripts/calculatePiBed.py -v ${four_vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${four_bed_f} | cut -f1-3) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi
         """
 }
 
-process join{
+process joinPi{
         cpus 1
         memory = '2 GB'
 
         input:
-        tuple val(species), val(chrom), path(0D_f), path(4D_f)
+        tuple val(species), val(chrom), path(zero_f), path(four_f)
 
         output:
         tuple val(species), path("${species}.${chrom}.longest_isoforms.pi.tsv")
 
         script:
         """
-        join -1 2 -2 1 ${0D_f} <(cat ${4D_F} | cut -f2-3) > ${species}.${chrom}.longest_isoforms.pi.tsv
+        join -1 2 -2 1 ${zero_f} <(cat ${four_F} | cut -f2-3) > ${species}.${chrom}.longest_isoforms.pi.tsv
         """
 }
 

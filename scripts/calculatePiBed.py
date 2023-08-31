@@ -51,9 +51,9 @@ def parse_vcf(vcf, chromosome):
 
     return snp_pos, ac
 
-def get_accessible(bed):
+def get_accessible(bed, chrom):
     df = pd.read_csv(bed, sep = '\t', columns = ["chrom","start","stop"])
-    degen_pos = df["stop"].to_numpy()
+    degen_pos = df[df['chrom']==chrom]["stop"].to_numpy()
     return degen_pos
 
 if __name__ == "__main__":
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     results = []
 
     #could skip the vcf filtering step since is_accessible will only consider the right sites
-    accessible_array = get_accessible(bed_df)
+    accessible_array = get_accessible(bed_df, name)
     snp_pos, ac = parse_vcf(vcf_f, chromosome=name)
     bed = pybedtools.BedTool(bed_f)
 
