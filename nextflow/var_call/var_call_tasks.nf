@@ -207,6 +207,7 @@ process freebayes {
 }
 
 process freebayesParallel {
+        queue 'long'
 
         input:
         path(genome_f)
