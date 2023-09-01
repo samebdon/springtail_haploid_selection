@@ -189,6 +189,7 @@ process sambambaMerge {
 }
 
 process freebayes {
+        queue 'long'
         cpus 1
 
         input:
