@@ -202,7 +202,7 @@ process freebayes {
 
         script:
         """
-        freebayes -f ${genome_f} -b ${bam_f} -t ${bed_f} --strict-vcf -v ${species}.vcf -T 0.01 -k -w -j -E 1
+        freebayes -f ${genome_f} -b ${bam_f} -t ${bed_f} --strict-vcf -v ${species}.vcf -T 0.01 -k -w -j -E 1 --use-best-n-alleles 4
         """
 }
 

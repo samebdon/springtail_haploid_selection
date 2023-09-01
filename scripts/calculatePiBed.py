@@ -81,6 +81,8 @@ if __name__ == "__main__":
     results = []
 
     #could skip the vcf filtering step since is_accessible will only consider the right sites
+    #the filtering itself is quite slow 
+    #but, the vcf loading is slow and will be loaded for every chromosome
     accessible_array = get_accessible(bed_df, name)
     snp_pos, ac = parse_vcf(vcf_f, chromosome=name)
     bed = pybedtools.BedTool(bed_f)

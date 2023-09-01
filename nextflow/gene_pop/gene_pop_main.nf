@@ -2,8 +2,9 @@ params.genome = "$launchDir/data/results/gene_pop_data/GCA_947179485.1.simple_he
 params.genome_index = "$launchDir/data/results/gene_pop_data/GCA_947179485.1.simple_header.fasta.fai"
 params.genome_dict = "$launchDir/data/results/gene_pop_data/GCA_947179485.1.simple_header.dict"
 params.vcf = "$launchDir/data/results/gene_pop_data/AF_M_6.coord_sorted.RG.deduped.GCA_947179485.1.simple_header.sorted.filtered.vcf.gz"
-params.annotation = "$launchDir/data/results/braker/allacma_fusca/hint_support/tsebra.augustus.gtf"
-params.outdir = "$launchDir/data/results/var_call/allacma_fusca/"
+params.vcf_index = "$launchDir/data/results/gene_pop_data/AF_M_6.coord_sorted.RG.deduped.GCA_947179485.1.simple_header.sorted.filtered.vcf.gz.csi"
+params.annotation = "$launchDir/data/results/gene_pop_data/augustus.hints.agat.gff3"
+params.outdir = "$launchDir/data/results/gene_pop"
 params.species = "allacma_fusca"
 
 log.info """\
@@ -16,8 +17,8 @@ log.info """\
          """
          .stripIndent()
 
-include { gene_pop_flow } from './gene_pop_flows.nf'
+include { gene_pop_flow_GTF; gene_pop_flow_GFF } from './gene_pop_flows.nf'
 
 workflow {
-        gene_pop_flow(params.genome, params.vcf, params.annotation, params.species)
+        gene_pop_flow_GFF(params.genome, params.vcf,params.vcf_index, params.annotation, params.species)
 }
