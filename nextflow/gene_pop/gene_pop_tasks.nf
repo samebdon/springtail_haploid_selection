@@ -146,7 +146,7 @@ process calculatePiBed{
         """
 }
 
-process joinPi{
+process mergePi{
         cpus 1
         memory = '2 GB'
 
@@ -158,7 +158,7 @@ process joinPi{
 
         script:
         """
-        join -1 2 -2 1 ${zero_f} <(cat ${four_f} | cut -f2-3) > ${species}.${chrom}.longest_isoforms.pi.tsv
+        python ${launchDir}/scripts/mergePi.py -z ${zero_f} -f ${four_f} -o ${species}.${chrom}.longest_isoforms.pi.tsv
         """
 }
 
