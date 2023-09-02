@@ -16,7 +16,6 @@ process makeGenomeFile{
 
 process getGeneBedGTF {
         cpus 1
-        memory = '2 GB'
         publishDir params.outdir, mode:'copy'
 
         input:
@@ -34,7 +33,6 @@ process getGeneBedGTF {
 
 process getGeneBedGFF {
         cpus 1
-        memory = '2 GB'
         publishDir params.outdir, mode:'copy'
 
         input:
@@ -52,7 +50,6 @@ process getGeneBedGFF {
 
 process splitBed {
         cpus 1
-        memory = '2 GB'
 
         input:
         tuple val(species), path(bed_f)
@@ -68,7 +65,6 @@ process splitBed {
 
 process degenotate {
         cpus 1
-        memory = '2 GB'
         publishDir params.outdir, mode:'copy'
 
         input:
@@ -90,7 +86,6 @@ process degenotate {
 
 process filterBed{
         cpus 1
-        memory = '5 GB'
         publishDir params.outdir, mode:'copy'
 
         input:
@@ -127,7 +122,6 @@ process subsetVCF{
 
 process calculatePiBed{
         cpus 1
-        memory = '2 GB'
 
         input:
         path(vcf_f)
@@ -148,7 +142,6 @@ process calculatePiBed{
 
 process mergePi{
         cpus 1
-        memory = '2 GB'
 
         input:
         tuple val(species), val(chrom), path(zero_f), path(four_f)
@@ -164,7 +157,6 @@ process mergePi{
 
 process concat_all{
         cpus 1
-        memory = '2 GB'
         publishDir params.outdir, mode:'copy'
 
         input:
