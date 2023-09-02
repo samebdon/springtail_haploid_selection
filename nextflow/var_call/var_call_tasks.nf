@@ -259,7 +259,7 @@ process generate_fail_bed {
 
         script:
         """
-        bcftools view --threads ${task.cpus} -H -i "%FILTER!='PASS'" ${vcf_f} | \
+        bcftools view --threads ${task.cpus} -H -i "FILTER!='PASS'" ${vcf_f} | \
         perl -lane '\$pad=0; print(\$F[0]."\\t".(\$F[1]-1)."\\t".((\$F[1]-1)+length(\$F[3]))."\\t".\$F[6])' | \
         bedtools sort | \
         bedtools merge > ${species}.vcf_filter_fails.bed
@@ -281,6 +281,7 @@ process generate_pass_vcf {
 }
 
 process bedtools_subtract {
+        cpus 1
         publishDir params.outdir, mode:'copy'
 
         input:
@@ -297,6 +298,7 @@ process bedtools_subtract {
 }
 
 process bcftools_sort {
+        cpus 1
         publishDir params.outdir, mode:'copy'
 
         input:
@@ -307,11 +309,12 @@ process bcftools_sort {
         
         script:
         """
-        bcftools sort --threads ${task.cpus} -Oz ${vcf_f} > ${species}.hard_filtered.sorted.vcf.gz
+        bcftools sort -Oz ${vcf_f} > ${species}.hard_filtered.sorted.vcf.gz
         """
 }        
 
 process bcftools_index {
+        cpus 1
         publishDir params.outdir, mode:'copy'
 
         input:

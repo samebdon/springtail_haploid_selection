@@ -22,5 +22,21 @@ workflow var_call_flow {
 	  generate_pass_vcf(bcftools_filter.out)
 	  bedtools_subtract(intersectBeds.out.all, generate_fail_bed.out)
 	  bcftools_sort(generate_pass_vcf.out)
-	  bcftools_index(generate_pass_vcf.out)
+	  bcftools_index(bcftools_index.out)
+}
+
+workflow filter_vcf {
+
+	take:
+	genome
+	vcf
+	callable_bed
+
+	main:
+	bcftools_filter(genome, vcf)
+	generate_fail_bed(bcftools_filter.out)
+	generate_pass_vcf(bcftools_filter.out)
+	bedtools_subtract(callable_bed, generate_fail_bed.out)
+	bcftools_sort(generate_pass_vcf.out)
+	bcftools_index(bcftools_index.out)
 }

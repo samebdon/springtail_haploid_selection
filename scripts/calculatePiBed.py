@@ -1,7 +1,7 @@
 """calculatePiBed.py
 
 Usage:
-calculatePiBed.py -v <FILE> -b <FILE> -a <FILE> [-h -n <STR> -o <FILE> -l <STR>]
+calculatePiBed.py -v <FILE> -b <FILE> -a <FILE> -g <FILE> [-h -n <STR> -o <FILE> -l <STR>]
 
 Options:
 -v, --vcf <FILE>	       VCF file
@@ -10,6 +10,7 @@ Options:
 -n, --name <STR>           Chromosome name
 -o, --output <FILE>	       Output file name
 -l, --label <STR>          Result label
+-g, --genome <FILE>        Genome file, left column chrom name right column total length
 
 """
 
@@ -24,7 +25,6 @@ from docopt import docopt
 
 def parse_vcf(vcf, chromosome):
     query_fields = [
-        "samples",
         "calldata/GT",
         "variants/CHROM",
         "variants/POS",
@@ -36,8 +36,6 @@ def parse_vcf(vcf, chromosome):
         fields=query_fields,
         region=chromosome
     )
-
-    read_groups = vcf_dict["samples"]
 
     is_SNP_array = vcf_dict["variants/is_snp"]
 
@@ -52,9 +50,16 @@ def parse_vcf(vcf, chromosome):
     return snp_pos, ac
 
 def get_accessible(bed, chrom):
-    df = pd.read_csv(bed, sep = '\t', columns = ["chrom","start","stop"])
-    degen_pos = df[df['chrom']==chrom]["stop"].to_numpy()
-    return degen_pos
+    df = pd.read_csv(bed, sep = '\t', names = ["chrom","start","stop"])
+    degen_pos = df[df['chrom']==chrom]["start"].to_numpy()
+    n = get_length(chrom, genome_df)
+    acc_arr = np.full((n), False)
+    acc_arr[degen_pos]=True
+    return acc_arr
+
+def get_length(chrom, genome_df):
+    length = genome_df.loc[genome_df['chrom']==chrom, 'length'].iloc[0]
+    return length
 
 if __name__ == "__main__":
     args = docopt(__doc__)
@@ -62,6 +67,7 @@ if __name__ == "__main__":
     vcf_f = args["--vcf"]
     bed_f = args["--bed"]
     acc_bed_f = args["--accessible"]
+    genome_file = args["--genome"]
 
     if args["--name"]:
         name = str(args["--name"])
@@ -73,24 +79,26 @@ if __name__ == "__main__":
     else:
         out_f = "bed_pi.tsv"
 
-    if args["--label"]
+    if args["--label"]:
         result_label = str(args["--label"])
     else:
         result_label = "pi"
 
     results = []
 
-    #could skip the vcf filtering step since is_accessible will only consider the right sites
-    #the filtering itself is quite slow 
-    #but, the vcf loading is slow and will be loaded for every chromosome
-    accessible_array = get_accessible(bed_df, name)
+    genome_df = pd.read_csv(genome_file, sep = '\t', names = ['chrom','length'])
+    accessible_array = get_accessible(acc_bed_f, name)
     snp_pos, ac = parse_vcf(vcf_f, chromosome=name)
+    idx = allel.SortedIndex(snp_pos)
     bed = pybedtools.BedTool(bed_f)
 
     for interval in bed:
-        (str(chrom), int(start), int(stop), str(feature)) = interval
-        pi = allele.sequence_diversity(snp_pos, ac, start=start+1, stop=stop, is_accessible=accessible_array)
-        results.append((chrom, feature, pi))
+        (chrom, start, stop, feature) = interval
+        try:
+            pi = allel.sequence_diversity(idx, ac, start=int(start)+1, stop=int(stop), is_accessible=accessible_array)
+            results.append((chrom, feature, pi))
+        except KeyError:
+            results.append((chrom, feature, 'NaN'))
 
     pd.DataFrame(results, columns=["chrom","feature", result_label]).to_csv(
         out_f, sep="\t", index=False

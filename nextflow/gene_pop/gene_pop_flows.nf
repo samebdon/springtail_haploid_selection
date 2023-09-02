@@ -1,4 +1,4 @@
-include {getGeneBedGTF; getGeneBedGFF; splitBed; degenotate; filterBed; subsetVCF; calculatePiBed; joinPi; concat_all} from './gene_pop_tasks.nf'
+include {makeGenomeFile; getGeneBedGTF; getGeneBedGFF; splitBed; degenotate; filterBed; subsetVCF; calculatePiBed; joinPi; concat_all} from './gene_pop_tasks.nf'
 
 workflow gene_pop_flow_GTF {
         take:
@@ -21,17 +21,20 @@ workflow gene_pop_flow_GTF {
 workflow gene_pop_flow_GFF {
         take:
         	genome
+        	genome_dict
         	vcf 
         	vcf_index
         	annotation
         	species
         main:
+        	makeGenomeFile(genome_dict, species)
         	getGeneBedGFF(annotation, species)
         	splitBed(getGeneBedGFF.out)
+        	bam_ch = splitBed.out.flatten()
         	degenotate(genome, annotation, species)
         	filterBed(degenotate.out.degen, degenotate.out.longest_isoforms)
-        	subsetVCF(filterBed.out, vcf, vcf_index)
-        	calculatePiBed(subsetVCF.out, filterBed.out, Channel.of(splitBed.out))
+        	// subsetVCF(filterBed.out, vcf, vcf_index)
+        	calculatePiBed(vcf, vcf_index, filterBed.out, bam_ch, makeGenomeFile.out)
         	joinPi(calculatePiBed.out)
-        	concat_all(joinPi.out.collect())
+        	concat_all(joinPi.out.collect(), species)
 }

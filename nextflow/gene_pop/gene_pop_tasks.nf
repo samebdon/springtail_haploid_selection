@@ -1,3 +1,19 @@
+process makeGenomeFile{
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        path(genome_dict)
+        val(species)
+
+        output:
+        tuple val(species), path("${species}.genomefile")
+
+        script:
+        """
+        cat ${genome_dict} | grep '^@SQ' | cut -f2-3 | perl -lpe 's/SN:|LN://g' > ${species}.genomefile
+        """
+}
+
 process getGeneBedGTF {
         cpus 1
         memory = '2 GB'
@@ -42,7 +58,7 @@ process splitBed {
         tuple val(species), path(bed_f)
 
         output:
-        path("beds/*")
+        path("beds/OX*[567890].1.bed")
 
         script:
         """
@@ -98,12 +114,14 @@ process subsetVCF{
         path(vcf_index)
 
         output:
-        tuple val(species), path("${species}.0D.longest_isoforms.vcf.gz"), path("${species}.4D.longest_isoforms.vcf.gz")
+        tuple val(species), path("${species}.0D.longest_isoforms.vcf.gz"), path("${species}.4D.longest_isoforms.vcf.gz"), path("${species}.0D.longest_isoforms.vcf.gz.tbi"), path("${species}.4D.longest_isoforms.vcf.gz.tbi")
 
         script:
         """
-        bcftools view --threads ${task.cpus} -Oz -R ${zero_bed_f} -o ${species}.0D.longest_isoforms.vcf.gz ${vcf_f}
-        bcftools view --threads ${task.cpus} -Oz -R ${four_bed_f} -o ${species}.4D.longest_isoforms.vcf.gz ${vcf_f}
+        bcftools view --threads ${task.cpus} -Ov -R ${zero_bed_f} -o ${species}.0D.longest_isoforms.vcf ${vcf_f}
+        bcftools view --threads ${task.cpus} -Ov -R ${four_bed_f} -o ${species}.4D.longest_isoforms.vcf ${vcf_f}
+        bgzip ${species}.0D.longest_isoforms.vcf && tabix ${species}.0D.longest_isoforms.vcf.gz
+        bgzip ${species}.4D.longest_isoforms.vcf && tabix ${species}.4D.longest_isoforms.vcf.gz
         """
 }
 
@@ -112,17 +130,19 @@ process calculatePiBed{
         memory = '2 GB'
 
         input:
-        tuple val(species), path(zero_vcf_f), path(four_vcf_f)
+        path(vcf_f)
+        path(vcf_index)
         tuple val(species), path(zero_bed_f), path(four_bed_f)
         path(gene_bed_f)
+        tuple val(species), path(genome_file)
 
         output:
-        tuple val(species), val(gene_bed_f.simpleName), path("${species}.0D.longest_isoforms.theta.tsv"), path("${species}.4D.longest_isoforms.theta.tsv")
+        tuple val(species), val(gene_bed_f.simpleName), path("${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv"), path("${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv")
 
         script:
         """
-        python ${launchDir}/scripts/calculatePiBed.py -v ${zero_vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${zero_bed_f} | cut -f1-3) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi
-        python ${launchDir}/scripts/calculatePiBed.py -v ${four_vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${four_bed_f} | cut -f1-3) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi
+        python ${launchDir}/scripts/calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${zero_bed_f} ) -n ${gene_bed_f.simpleName}.1 -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi -g ${genome_file}
+        python ${launchDir}/scripts/calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${four_bed_f} ) -n ${gene_bed_f.simpleName}.1 -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi -g ${genome_file}
         """
 }
 
@@ -134,11 +154,11 @@ process joinPi{
         tuple val(species), val(chrom), path(zero_f), path(four_f)
 
         output:
-        tuple val(species), path("${species}.${chrom}.longest_isoforms.pi.tsv")
+        path("${species}.${chrom}.longest_isoforms.pi.tsv")
 
         script:
         """
-        join -1 2 -2 1 ${zero_f} <(cat ${four_F} | cut -f2-3) > ${species}.${chrom}.longest_isoforms.pi.tsv
+        join -1 2 -2 1 ${zero_f} <(cat ${four_f} | cut -f2-3) > ${species}.${chrom}.longest_isoforms.pi.tsv
         """
 }
 
@@ -148,10 +168,11 @@ process concat_all{
         publishDir params.outdir, mode:'copy'
 
         input:
-        tuple val(species), path(files, stageAs: "inputs/*")
+        path(files, stageAs: "inputs/*")
+        val(species)
 
         output:
-        tuple val(species), path(output_f)
+        tuple val(species), path("${species}.longest_isoforms.pi.tsv")
         
         script:
         """
