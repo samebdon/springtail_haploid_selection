@@ -325,6 +325,6 @@ process bcftools_index {
 
         script:
         """
-        bcftools index -t ${vcf_f} -o ${vcf_f.baseName}.csi
+        bcftools index -t ${vcf_f} -o ${vcf_f}.csi
         """
 }
