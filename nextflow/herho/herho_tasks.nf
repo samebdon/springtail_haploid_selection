@@ -3,6 +3,7 @@ process herhoTally {
 
         input:
         path(vcf)
+	path(vcf_index)
 	path(bed)
 	val(species)
 
@@ -11,7 +12,7 @@ process herhoTally {
 
         script:
         """
-        python /software/team360/heRho/heRho/heRho_tally_pairwise_counts_vcf.py -v ${vcf} -b ${bed} -d 1000 -t ${task.cpus} -c OX359345.1,OX359346.1,OX359347.1,OX359348.1,OX359349.1,OX359350.1 -f ${species}
+        python /software/team360/heRho/heRho/heRho_tally_pairwise_counts_vcf.py -v ${vcf} -b ${bed} -d 1000 -t ${task.cpus} -c OX359245.1,OX359246.1,OX359247.1,OX359248.1,OX359249.1,OX359250.1 -f ${species}
         """
 }
 

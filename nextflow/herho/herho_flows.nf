@@ -3,10 +3,11 @@ include {herhoTally; herhoStandAlone} from './herho_tasks.nf'
 workflow herho_flow {
 	take:
 		vcf
+		vcf_index
 		bed
 		species
 	main:
-		herhoTally(vcf, bed, species)
+		herhoTally(vcf, vcf_index, bed, species)
 		herhoStandAlone(herhoTally.out)
 }
 

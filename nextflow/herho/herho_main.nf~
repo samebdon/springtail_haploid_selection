@@ -1,5 +1,5 @@
 params.vcf =  "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz"
-params.vcf_index = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz.cso"
+params.vcf_tabix = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz.tbi"
 params.bed = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.all.callable.bed"
 params.outdir = "$launchDir/data/results/herho/allacma_fusca/"
 params.species = "allacma_fusca"
@@ -17,5 +17,5 @@ log.info """\
 include { herho_flow } from './herho_flows.nf'
 
 workflow {
-	herho_flow(params.vcf, params.vcf_index,  params.bed, params.species)
+	herho_flow(params.vcf, params.vcf_tabix,  params.bed, params.species)
 }
