@@ -157,7 +157,7 @@ process mergePi{
 
 process concat_all{
         cpus 1
-q        publishDir params.outdir, mode:'copy'
+        publishDir params.outdir, mode:'copy'
 
         input:
         path(files, stageAs: "inputs/*")

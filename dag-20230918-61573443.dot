@@ -1,0 +1,22 @@
+digraph "dag2023091861573443" {
+p0 [shape=point,label="",fixedsize=true,width=0.1];
+p3 [label="herho_flow:herhoTally"];
+p0 -> p3 [label="vcf"];
+
+p1 [shape=point,label="",fixedsize=true,width=0.1];
+p3 [label="herho_flow:herhoTally"];
+p1 -> p3 [label="bed"];
+
+p2 [shape=point,label="",fixedsize=true,width=0.1];
+p3 [label="herho_flow:herhoTally"];
+p2 -> p3 [label="species"];
+
+p3 [label="herho_flow:herhoTally"];
+p4 [label="herho_flow:herhoStandAlone"];
+p3 -> p4;
+
+p4 [label="herho_flow:herhoStandAlone"];
+p5 [shape=point];
+p4 -> p5;
+
+}

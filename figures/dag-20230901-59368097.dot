@@ -1,0 +1,134 @@
+digraph "dag2023090159368097" {
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.fromFilePairs"];
+p4 [label="var_call_flow:bwaMem"];
+p0 -> p4 [label="read_files"];
+
+p1 [shape=point,label="",fixedsize=true,width=0.1];
+p2 [label="var_call_flow:bwaIndex"];
+p1 -> p2 [label="genome_f"];
+
+p2 [label="var_call_flow:bwaIndex"];
+p4 [label="var_call_flow:bwaMem"];
+p2 -> p4;
+
+p3 [shape=point,label="",fixedsize=true,width=0.1];
+p4 [label="var_call_flow:bwaMem"];
+p3 -> p4 [label="genome_f"];
+
+p4 [label="var_call_flow:bwaMem"];
+p5 [label="var_call_flow:sortBamSambamba"];
+p4 -> p5;
+
+p5 [label="var_call_flow:sortBamSambamba"];
+p6 [label="var_call_flow:markDupesSambamba"];
+p5 -> p6;
+
+p6 [label="var_call_flow:markDupesSambamba"];
+p7 [label="var_call_flow:indexBamSambamba"];
+p6 -> p7;
+
+p6 [label="var_call_flow:markDupesSambamba"];
+p15 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p6 -> p15;
+
+p7 [label="var_call_flow:indexBamSambamba"];
+p8 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p7 -> p8;
+
+p6 [label="var_call_flow:markDupesSambamba"];
+p8 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p6 -> p8;
+
+p8 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p11 [label="var_call_flow:mosdepth"];
+p8 -> p11;
+
+p9 [shape=point,label="",fixedsize=true,width=0.1];
+p11 [label="var_call_flow:mosdepth"];
+p9 -> p11 [label="min_depth"];
+
+p10 [shape=point,label="",fixedsize=true,width=0.1];
+p11 [label="var_call_flow:mosdepth"];
+p10 -> p11 [label="max_depth_factor"];
+
+p11 [label="var_call_flow:mosdepth"];
+p12 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p11 -> p12;
+
+p12 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p14 [label="var_call_flow:intersectBeds"];
+p12 -> p14;
+
+p13 [shape=point,label="",fixedsize=true,width=0.1];
+p14 [label="var_call_flow:intersectBeds"];
+p13 -> p14 [label="species"];
+
+p14 [label="var_call_flow:intersectBeds"];
+p25 [label="var_call_flow:bedtools_subtract"];
+p14 -> p25;
+
+p14 [label="var_call_flow:intersectBeds"];
+p20 [label="var_call_flow:freebayes"];
+p14 -> p20;
+
+p15 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p17 [label="var_call_flow:sambambaMerge"];
+p15 -> p17;
+
+p16 [shape=point,label="",fixedsize=true,width=0.1];
+p17 [label="var_call_flow:sambambaMerge"];
+p16 -> p17 [label="species"];
+
+p17 [label="var_call_flow:sambambaMerge"];
+p20 [label="var_call_flow:freebayes"];
+p17 -> p20;
+
+p18 [shape=point,label="",fixedsize=true,width=0.1];
+p20 [label="var_call_flow:freebayes"];
+p18 -> p20 [label="genome_f"];
+
+p19 [shape=point,label="",fixedsize=true,width=0.1];
+p20 [label="var_call_flow:freebayes"];
+p19 -> p20 [label="genome_index"];
+
+p20 [label="var_call_flow:freebayes"];
+p22 [label="var_call_flow:bcftools_filter"];
+p20 -> p22;
+
+p21 [shape=point,label="",fixedsize=true,width=0.1];
+p22 [label="var_call_flow:bcftools_filter"];
+p21 -> p22 [label="genome"];
+
+p22 [label="var_call_flow:bcftools_filter"];
+p23 [label="var_call_flow:generate_fail_bed"];
+p22 -> p23;
+
+p23 [label="var_call_flow:generate_fail_bed"];
+p25 [label="var_call_flow:bedtools_subtract"];
+p23 -> p25;
+
+p22 [label="var_call_flow:bcftools_filter"];
+p24 [label="var_call_flow:generate_pass_vcf"];
+p22 -> p24;
+
+p24 [label="var_call_flow:generate_pass_vcf"];
+p27 [label="var_call_flow:bcftools_sort"];
+p24 -> p27;
+
+p25 [label="var_call_flow:bedtools_subtract"];
+p26 [shape=point];
+p25 -> p26;
+
+p27 [label="var_call_flow:bcftools_sort"];
+p28 [shape=point];
+p27 -> p28;
+
+p24 [label="var_call_flow:generate_pass_vcf"];
+p29 [label="var_call_flow:bcftools_index"];
+p24 -> p29;
+
+p29 [label="var_call_flow:bcftools_index"];
+p30 [shape=point];
+p29 -> p30;
+
+}
