@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#BSUB -o logs/BUSCO.out.%J
+#BSUB -e logs/BUSCO.err.%J
+#BSUB -q normal
+#BSUB -n 8
+#BSUB -M 8192
+#BSUB -R "select[mem>8192] rusage[mem=8192]"
+
+module load busco/5.5.0--pyhdfd78af_0
+### busco -i /lustre/scratch126/tol/teams/jaron/projects/springtails_haploid_selection/data/raw_data/Smithurus_viridis_Clem/Svir.primary_haploid_assembly.fa -l arthropoda_odb10 -o data/results/busco/sminthurus_viridis_clem -m genome --download_path /lustre/scratch123/tol/resources/busco/v5/ --miniprot -c 8 -f --offline
+### busco -i /lustre/scratch126/tol/teams/jaron/projects/springtails_haploid_selection/data/results/genomes/allacma_fusca/GCA_947179485.1.fasta -l arthropoda_odb10 -o data/results/busco/allacma_fusca -m genome --download_path /lustre/scratch123/tol/resources/busco/v5/ --miniprot -c 8 -f --offline
+### busco -i /lustre/scratch126/tol/teams/jaron/users/sasha/scaffolding/SmiAqu/4_yahs_scaff/scaffolds/SmiAqu.scaff_scaffolds_final.fa -l arthropoda_odb10 -o data/results/busco/sminthurides_aquaticus -m genome --download_path /lustre/scratch123/tol/resources/busco/v5/ --miniprot -c 8 -f  --offline
+### busco -i /lustre/scratch126/tol/teams/jaron/projects/dicyrtomina/data/draft_genome/qeDicMinu4_1.curated_primary.no_mt.unscrubbed.fa -l arthropoda_odb10 -o data/results/busco/dicyrtomina_minuta -m genome --download_path /lustre/scratch123/tol/resources/busco/v5/ --miniprot -c 8 -f --offline
+### busco -i data/results/braker3/allacma_fusca/braker.aa -l arthropoda_odb10 -o data/results/busco/allacma_fusca_annotation -m proteins --download_path /lustre/scratch123/tol/resources/busco/v5/ --miniprot -c 8 -f --offline
+busco -i data/results/braker2/svir_clem/braker.aa -l arthropoda_odb10 -o data/results/busco/svir_clem_annotation -m proteins --download_path /lustre/scratch123/tol/resources/busco/v5/ --miniprot -c 8 -f --offline
+

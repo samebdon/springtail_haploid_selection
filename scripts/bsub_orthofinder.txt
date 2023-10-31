@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#BSUB -o logs/orthofinder.out.%J
+#BSUB -e logs/orthofinder.err.%J
+#BSUB -q normal
+#BSUB -n 64
+#BSUB -M 4096
+#BSUB -R "select[mem>4096] rusage[mem=4096]"
+
+orthofinder -f data/workdir/orthofinder/fastas/ -t 64

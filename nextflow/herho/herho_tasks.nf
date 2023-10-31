@@ -1,5 +1,7 @@
 process herhoTally {
-	cpus 5
+	cpus 6
+	memory '40G'
+	queue 'long'
 
         input:
         path(vcf)
@@ -12,7 +14,7 @@ process herhoTally {
 
         script:
         """
-        python /software/team360/heRho/heRho/heRho_tally_pairwise_counts_vcf.py -v ${vcf} -b ${bed} -d 1000 -t ${task.cpus} -c OX359245.1,OX359246.1,OX359247.1,OX359248.1,OX359249.1,OX359250.1 -f ${species}
+        python /software/team360/heRho/heRho/heRho_tally_pairwise_counts_vcf.py -v ${vcf} -b ${bed} -d 25000 -t ${task.cpus} -c OX359245.1,OX359246.1,OX359247.1,OX359248.1,OX359249.1,OX359250.1 -f ${species}
         """
 }
 

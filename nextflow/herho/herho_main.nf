@@ -1,6 +1,6 @@
 params.vcf =  "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz"
-params.vcf_index = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz.cso"
-params.bed = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.all.callable.bed"
+params.vcf_index = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz.csi"
+params.bed = "$launchDir/data/results/braker/allacma_fusca/allacma_fusca.intergenic.bed"
 params.outdir = "$launchDir/data/results/herho/allacma_fusca/"
 params.species = "allacma_fusca"
 

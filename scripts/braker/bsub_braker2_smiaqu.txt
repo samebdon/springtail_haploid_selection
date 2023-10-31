@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#BSUB -o logs/braker2.smiaqu.out.%J
+#BSUB -e logs/braker2.smiaqu.err.%J
+#BSUB -q long
+#BSUB -n 32
+#BSUB -M40960
+#BSUB -R "select[mem>40960] rusage[mem=40960]"
+
+module load ISG/singularity/3.9.0
+export BRAKER_SIF=/software/team360/src/braker3.sif
+singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --genome=data/results/genomes/sminthurides_aquaticus/SmiAqu.scaffolds.final.earlGrey_masked.fa --softmasking --workingdir=./data/results/braker2/sminthurides_aquaticus --GENEMARK_PATH=${ETP}/gmes --threads 32 --species=sminthurides_aquaticus --gff3 --prot_seq=./data/workdir/braker3/Arthropoda.allacmaFusca.fa --useexisting

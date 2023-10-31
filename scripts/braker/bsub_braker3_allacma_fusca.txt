@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#BSUB -o logs/braker3.out.%J
+#BSUB -e logs/braker3.err.%J
+#BSUB -q long
+#BSUB -n 32
+#BSUB -M40960
+#BSUB -R "select[mem>40960] rusage[mem=40960]"
+
+module load ISG/singularity/3.9.0
+export BRAKER_SIF=/software/team360/src/braker3.sif
+singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --genome=./data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta --bam=data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_10.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_1.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_2.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_3.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_4.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_5.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_6.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_7.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_8.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_F_9.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_10.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_1.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_2.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_3.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_4.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_5.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_6.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_7.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_8.query_sorted.bam,data/results/rnaseq_aln/allacma_fusca/hisat2/bams/AF_M_9.query_sorted.bam --softmasking --workingdir=./data/results/braker3/allacma_fusca --GENEMARK_PATH=${ETP}/gmes --threads 32 --species=allacma_fusca --gff3 --prot_seq=./data/workdir/braker3/Arthropoda.fa --useexisting

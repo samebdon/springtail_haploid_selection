@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#BSUB -o logs/braker3.svirclem.out.%J
+#BSUB -e logs/braker3.svirclem.err.%J
+#BSUB -q long
+#BSUB -n 32
+#BSUB -M40960
+#BSUB -R "select[mem>40960] rusage[mem=40960]"
+
+module load ISG/singularity/3.9.0
+export BRAKER_SIF=/software/team360/src/braker3.sif
+singularity exec -B ${PWD}:${PWD} ${BRAKER_SIF} braker.pl --genome=data/results/genomes/sminthurus_viridis/Svir.primary_haploid_assembly.earlGrey_masked.fasta --softmasking --workingdir=./data/results/braker2/svir_clem --GENEMARK_PATH=${ETP}/gmes --threads 32 --species=sminthurus_viridis_clem --gff3 --prot_seq=./data/workdir/braker3/Arthropoda.allacmaFusca.fa --useexisting
