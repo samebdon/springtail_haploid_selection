@@ -1,3 +1,5 @@
+#!/usr/bin/env python3 
+
 """mean_depth.py
 
 Usage:

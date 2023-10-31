@@ -31,20 +31,6 @@ process bwaMem {
         """
 }
 
-process sortBam {
-
-        input:
-        tuple val(meta), path(bam_f)
-
-        output:
-        tuple val(meta), path("${bam_f.baseName}.coord_sorted.bam")
-
-        script:
-        """
-        samtools sort -@ ${task.cpus} -O bam -o ${bam_f.baseName}.coord_sorted.bam ${bam_f}
-        """
-}
-
 process sortBamSambamba {
 
         input:
@@ -60,21 +46,6 @@ process sortBamSambamba {
         """
 }
 
-process markDupes {
-
-        input:
-        tuple val(meta), path(bam_f)
-
-        output:
-        tuple val(meta), path("${bam_f.baseName}.deduped.bam")
-
-        script:
-        avail_mem = (task.memory.mega*0.8).intValue()
-        """
-        java -Xmx${avail_mem}M -jar /software/team360/picard.jar MarkDuplicates I=${bam_f} O=${bam_f.baseName}.deduped.bam M=${bam_f.baseName}.metrics.txt ASO=queryname
-        """
-}
-
 process markDupesSambamba {
 
         input:
@@ -87,20 +58,6 @@ process markDupesSambamba {
         script:
         """
         sambamba markdup -t ${task.cpus} ${bam_f} ${bam_f.baseName}.deduped.bam
-        """
-}
-
-process indexBam{
-
-        input:
-        tuple val(meta), path(bam_f)
-
-        output:
-        tuple val(meta), path("${bam_f}.bai")
-
-        script:
-        """
-	samtools index ${bam_f}           
         """
 }
 
@@ -132,7 +89,7 @@ process mosdepth {
         """
         mkdir mosdepth
         mosdepth --fast-mode -t ${task.cpus} tmp ${bam_f}
-        MAX_DEPTH="\$(python ${launchDir}/scripts/mean_depth.py -b tmp.per-base.bed.gz -m ${max_depth_factor})" 
+        MAX_DEPTH="\$(mean_depth.py -b tmp.per-base.bed.gz -m ${max_depth_factor})" 
 	mosdepth -t ${task.cpus} -n --quantize 0:1:${min_depth}:\${MAX_DEPTH}: ${meta} ${bam_f}
 	zcat ${meta}.quantized.bed.gz | grep 'CALLABLE' > mosdepth/${bam_f.baseName}.callable.bed
         """
@@ -153,22 +110,6 @@ process intersectBeds{
         N_FILES="\$(ls inputs/*.bed | wc -l)"
         bedtools multiinter -i $beds | cut -f1-5 > ${species}.intersect.bed
         cat ${species}.intersect.bed | awk -v var=\$N_FILES '\$4==var'  | cut -f1-3 > ${species}.intersect.all_overlap.bed
-        """
-}
-
-process samtoolsMerge {
-
-        input:
-        tuple val(meta), path('*.bam'), path(bam_index)
-        val(species)
-
-        output:
-        tuple val(species), path("${species}.bam"), path("${species}.bam.bai")
-
-        script:
-        """
-        samtools merge -o ${species}.bam *.bam
-        samtools index ${species}.bam        
         """
 }
 
