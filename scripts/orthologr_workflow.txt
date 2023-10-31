@@ -1,0 +1,48 @@
+bsub -q normal -G team360-grp -Is -n 32 -M 4096 -R "select[mem>4096] rusage[mem=4096]" bash -l 
+
+mamba activate orthologr
+R
+
+### INSTALLATION
+# Install Bioconductor
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install()
+
+# Install package dependencies
+BiocManager::install(c(
+        "Biostrings",
+        "GenomicRanges",
+        "GenomicFeatures",
+        "Rsamtools",
+        "rtracklayer"
+))
+
+# install CRAN dependencies
+install.packages(c("doParallel", "foreach", "ape", "Rdpack", "benchmarkme", "devtools"))
+
+# install BLAST dependency metablastr from GitHub
+devtools::install_github("drostlab/metablastr")
+
+# install DIAMOND dependency rdiamond from GitHub
+devtools::install_github("drostlab/rdiamond")
+
+# install orthologr from GitHub
+devtools::install_github("drostlab/orthologr")
+###
+
+library(orthologr)
+# get a dNdS table using:
+# 1) reciprocal best hit for orthology inference (RBH)
+# 2) Needleman-Wunsch for pairwise amino acid alignments
+# 3) pal2nal for codon alignments
+# 4) Comeron for dNdS estimation
+# 5) single core processing 'comp_cores = 1'
+dNdS(query_file      = system.file('data/workdir/orthofinder/fastas/afusca.braker.fa', package = 'orthologr'),
+     subject_file    = system.file('data/workdir/orthofinder/fastas/svir.clem.braker.fa', package = 'orthologr'),
+     ortho_detection = "RBH", 
+     aa_aln_type     = "pairwise",
+     aa_aln_tool     = "NW", 
+     codon_aln_tool  = "pal2nal", 
+     dnds_est.method = "Comeron", 
+     comp_cores      = 32)
