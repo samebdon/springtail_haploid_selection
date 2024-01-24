@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#BSUB -o logs/make_chains.out.%J
+#BSUB -e logs/make_chains.err.%J
+#BSUB -q basement
+#BSUB -n 4
+#BSUB -M 4096
+#BSUB -R "select[mem>4096] rusage[mem=4096]"
+
+module load nextflow/23.04.1-5866
+make_chains.py GCA_947179485 SmiAqu data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta data/results/genomes/sminthurides_aquaticus/SmiAqu.scaffolds.final.earlGrey_masked.fa --executor lsf --cluster_queue normal --project_dir data/workdir/make_chains/afusca_smiaqu -f --chaining_memory 16 --cluster_queue long
+#make_chains.py GCA_947179485 Svir data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta data/results/genomes/sminthurus_viridis/Svir.primary_haploid_assembly.earlGrey_masked.fasta --executor lsf --cluster_queue normal --project_dir data/workdir/make_chains -f --chaining_memory 16 --cluster_queue long

@@ -3,7 +3,7 @@ params.genome_index = "$launchDir/data/results/genomes/allacma_fusca/GCA_9471794
 params.genome_dict = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.dict"
 params.vcf = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz"
 params.vcf_index = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz.csi"
-params.annotation = "$launchDir/data/results/braker/allacma_fusca/augustus.hints.agat.gff3"
+params.annotation = "$launchDir/data/results/braker3/allacma_fusca/braker.agat.gff3"
 params.outdir = "$launchDir/data/results/gene_pop"
 params.species = "allacma_fusca"
 

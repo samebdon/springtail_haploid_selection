@@ -1,0 +1,31 @@
+preprocessing:
+	rename read files with sample names
+	simplify genome fasta headers
+	create genome index
+	create genome dict
+	scripts BUSCO
+	nextflow rnaseq_aln
+check male expression: 
+	nextflow lg_het
+annotation:
+	unmasked or masked input genome variable
+	scripts earlgrey
+	scripts braker
+	scripts describe_gtf.py
+	scripts agat
+differential expression:
+	scripts featurecounts
+	scripts R deseq2.R
+	scripts jupyter SBG exploration
+pop gen initial:
+	nextflow var_call
+	nextflow gene_pop
+dn/ds
+	route 1:
+		scripts orthofinder
+	route 2:
+		scripts R orthologr
+	route 3:
+		scripts toga_annotation_preprocessing.sh
+		scripts make_chains
+		scripts TOGA

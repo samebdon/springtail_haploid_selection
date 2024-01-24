@@ -262,10 +262,10 @@ process bcftools_index {
         tuple val(meta), path(vcf_f)
 
         output:
-        tuple val(meta), path("${vcf_f.baseName}.csi")
+        tuple val(meta), path("${vcf_f}.csi")
 
         script:
         """
-        bcftools index -t ${vcf_f} -o ${vcf_f}.csi
+        bcftools index -c ${vcf_f} -o ${vcf_f}.csi
         """
 }

@@ -8,4 +8,4 @@
 #BSUB -R "select[mem>4096] rusage[mem=4096]"
 
 module load nextflow/23.04.1-5866
-nextflow run nextflow/gene_pop/gene_pop_main.nf -c nextflow/conf/nextflow.config -with-conda /software/team360/miniconda/envs/gene_pop -w data/workdir/gene_pop -resume -with-report -with-trace -with-timeline -with-dag
+nextflow run nextflow/gene_pop/gene_pop_main.nf -c nextflow/conf/nextflow.config -with-conda /software/team360/miniconda/envs/gene_pop -w data/workdir/gene_pop -resume # -with-report -with-trace -with-timeline -with-dag
