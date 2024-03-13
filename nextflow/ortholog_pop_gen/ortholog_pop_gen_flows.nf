@@ -1,4 +1,4 @@
-include { seqtk_get_callable_cds; mask_fasta; get_samples; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; seqtk_get_callable_cds; mask_fasta; get_samples; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow generate_haplotypes_flow {
         take:
