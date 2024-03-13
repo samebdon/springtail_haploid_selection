@@ -63,8 +63,8 @@ process seqtk_get_callable_cds {
 
         script:
         """
-        cut -f1 ${callable_cds_bed} | sort | uniq > chroms.lst
-        seqtk subseq ${cds_fasta} chroms.lst > ${meta}.callable.cds.fasta
+        cut -f4 ${callable_cds_bed} | sort | uniq > callable_cds.lst
+        seqtk subseq ${cds_fasta} callable_cds.lst > ${meta}.callable.cds.fasta
         """
 }
 
