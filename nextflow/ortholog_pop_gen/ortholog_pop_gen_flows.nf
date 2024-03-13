@@ -21,7 +21,7 @@ workflow generate_haplotypes_flow {
           generate_effective_fastas(generate_loci.out, get_best_cds_bed.out)
 
         emit:
-          generate_effective_fastas.out
+          generate_effective_fastas.out.collect()
           get_best_pep_fasta.out
 }
 
@@ -30,8 +30,8 @@ workflow generate_haplotypes_flow {
 workflow ortholog_pop_gen_flow {
         take:
           nuc_fastas_1
-          nuc_fastas_2
           prot_fasta_1
+          nuc_fastas_2
           prot_fasta_2
         main:
           orthofinder(prot_fasta_1, prot_fasta_2) // might have to do a stageas for these

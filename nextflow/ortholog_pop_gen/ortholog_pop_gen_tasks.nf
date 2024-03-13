@@ -112,6 +112,7 @@ process generate_loci {
 
         script:
         """
+        tabix -p vcf ${vcf}
         bcftools consensus -f ${masked_fasta} -o ${meta}.${fasta_meta}.snp.1.callable.fasta -H 1 -s ${meta} ${vcf}
         bcftools consensus -f ${masked_fasta} -o ${meta}.${fasta_meta}.snp.2.callable.fasta -H 2 -s ${meta} ${vcf}
         """
