@@ -8,7 +8,7 @@ process get_best_cds_bed {
 
         output:
         tuple val(meta), path("${meta}.cds.bed")
-        
+
         script:
         """
         agat_sp_keep_longest_isoform.pl -gff ${annotation} -o ${meta}.cds.gff3
@@ -86,11 +86,11 @@ process get_samples{
         path(vcf)
 
         output:
-        path("${vcf.baseName}.sample_IDs.txt")
+        stdout
 
         script:
         """
-        bcftools query -l ${vcf} > ${vcf.baseName}.sample_IDs.txt
+        bcftools query -l ${vcf} 
         """
 }
 
