@@ -150,7 +150,7 @@ process freebayes {
 
 process freebayesParallel {
         queue 'long'
-        n '30G'
+        memory '30G'
 
         input:
         path(genome_f)

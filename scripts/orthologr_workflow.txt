@@ -1,4 +1,4 @@
-bsub -q normal -G team360-grp -Is -n 32 -M 4096 -R "select[mem>4096] rusage[mem=4096]" bash -l 
+bsub -q normal -G team360-grp -Is -n 32 -M 40000 -R "select[mem>40000] rusage[mem=40000]" bash -l 
 
 mamba activate orthologr
 R
@@ -38,11 +38,26 @@ library(orthologr)
 # 3) pal2nal for codon alignments
 # 4) Comeron for dNdS estimation
 # 5) single core processing 'comp_cores = 1'
-dNdS(query_file      = system.file('data/workdir/orthofinder/fastas/afusca.braker.fa', package = 'orthologr'),
-     subject_file    = system.file('data/workdir/orthofinder/fastas/svir.clem.braker.fa', package = 'orthologr'),
-     ortho_detection = "RBH", 
-     aa_aln_type     = "pairwise",
-     aa_aln_tool     = "NW", 
-     codon_aln_tool  = "pal2nal", 
-     dnds_est.method = "Comeron", 
-     comp_cores      = 32)
+
+dnds_result = dNdS(query_file ='./data/results/braker3/allacma_fusca/afusca.braker.codingseq', subject_file = './data/results/braker2/svir_clem/svir_clem.braker.codingseq', ortho_detection = "RBH", aa_aln_type     = "pairwise",aa_aln_tool     = "NW", codon_aln_tool  = "pal2nal", dnds_est.method = "Comeron", comp_cores      = 32)
+
+write.table(dnds_result, file = './data/results/afusca.svir_clem.braker_cds.dnds.orthologr.csv')
+
+dnds_result = dNdS(query_file ='./data/results/braker3/allacma_fusca/braker.codingseq', subject_file = './data/results/braker2/sminthurides_aquaticus/saquaticus.braker.codingseq', ortho_detection = "RBH", aa_aln_type     = "pairwise",aa_aln_tool     = "NW", codon_aln_tool  = "pal2nal", dnds_est.method = "Comeron", comp_cores      = 32)
+
+write.table(dnds_result, file = './data/results/afusca.saquaticus.braker_cds.dnds.orthologr.csv')
+
+dnds_result = dNdS(query_file ='./data/results/braker2/sminthurides_aquaticus/saquaticus.braker.codingseq', subject_file = './data/results/braker2/svir_clem/svir_clem.braker.codingseq', ortho_detection = "RBH", aa_aln_type     = "pairwise",aa_aln_tool     = "NW", codon_aln_tool  = "pal2nal", dnds_est.method = "Comeron", comp_cores      = 32)
+
+write.table(dnds_result, file = './data/results/saquaticus.svir_clem.braker_cds.dnds.orthologr.csv')
+
+
+dnds_result = dNdS(
+    query_file ='./data/results/toga/afusca_svir_clem/processed/one2one.codon.reference.edited.fasta', 
+    subject_file = './data/results/toga/afusca_svir_clem/processed/one2one.codon.query.edited.fasta', 
+    ortho_detection = "RBH", 
+    aa_aln_type     = "pairwise",
+    aa_aln_tool     = "NW", 
+    codon_aln_tool  = "pal2nal", 
+    dnds_est.method = "Comeron", 
+    comp_cores      = 32)
