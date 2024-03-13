@@ -29,9 +29,9 @@ process get_best_pep_fasta {
         // this cut.bed bit might make a mistake since the bed file will be different from the transdecoder bed
         script:
         """
-        cut -f8 ${cds_bed} > cut.bed
+        cut -f4 ${cds_bed} > prots.lst
         fastaqual_select.pl -f ${pep_fasta} | cut -f1 -d" " > selected.pep
-        grep --no-group-separator -A1 -wFf cut.bed selected.pep | sed "s/>/&{2}./g" > ${meta}.best.pep.fasta
+        grep --no-group-separator -A1 -wFf prots.lst selected.pep | sed "s/>/&{2}./g" > ${meta}.best.pep.fasta
         """
 }
 
@@ -72,7 +72,7 @@ process mask_fasta {
 
         input:
         tuple val(meta), path(callable_cds_fasta)
-        path(callable_cds_bed)
+        tuple val(cds_meta), path(callable_cds_bed)
         path(genome_file)
 
         output:
