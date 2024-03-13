@@ -80,7 +80,7 @@ process mask_fasta {
 
         script:
         """
-        sort -Vk1 ${callable_bed} > sorted.bed
+        sort -Vk1 ${callable_cds_bed} > sorted.bed
         bedtools complement -i sorted_bed -g ${genome_file} > complement.bed
         bedtools maskfasta -fi ${callable_cds_fasta} -bed complement.bed -fo ${meta}.callable.cds.masked.fasta -mc - 
         """
