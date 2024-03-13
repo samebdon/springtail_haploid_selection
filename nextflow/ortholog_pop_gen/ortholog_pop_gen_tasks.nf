@@ -26,9 +26,12 @@ process get_best_pep_fasta {
         output:
         tuple val(meta), path("${meta}.best.pep.fasta")
 
+        // this cut.bed bit might make a mistake since the bed file will be different from the transdecoder bed
         script:
         """
-        grep --no-group-separator -A1 -wFf <(cut -f8 ${cds_bed}) fastaqual_select.pl -f ${pep_fasta} | cut -f1 -d" ") | sed "s/>/&{2}./g" > ${meta}.best.pep.fasta
+        cut -f8 ${cds_bed} > cut.bed
+        fastaqual_select.pl -f ${pep_fasta} | cut -f1 -d" " > selected.pep
+        grep --no-group-separator -A1 -wFf cut.bed selected.pep | sed "s/>/&{2}./g" > ${meta}.best.pep.fasta
         """
 }
 
@@ -60,7 +63,8 @@ process seqtk_get_callable_cds {
 
         script:
         """
-        seqtk subseq ${cds_fasta} <(cut -f1 ${callable_cds_bed} | sort | uniq) > ${meta}.callable.cds.fasta
+        cut -f1 ${callable_cds_bed} | sort | uniq > chroms.lst
+        seqtk subseq ${cds_fasta} chroms.lst > ${meta}.callable.cds.fasta
         """
 }
 
@@ -76,7 +80,9 @@ process mask_fasta {
 
         script:
         """
-        bedtools maskfasta -fi ${callable_cds_fasta} -bed <(bedtools complement -i <(sort -Vk1 ${callable_bed}) -g ${genome_file}) -fo ${meta}.callable.cds.masked.fasta -mc - 
+        sort -Vk1 ${callable_bed} > sorted.bed
+        bedtools complement -i sorted_bed -g ${genome_file} > complement.bed
+        bedtools maskfasta -fi ${callable_cds_fasta} -bed complement.bed -fo ${meta}.callable.cds.masked.fasta -mc - 
         """
 }
 
