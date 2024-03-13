@@ -38,7 +38,7 @@ include { generate_haplotypes_flow as generate_haplotypes_flow_2 } from './ortho
 include { ortholog_pop_gen_flow } from './ortholog_pop_gen_flows.nf'
 
 workflow {
-        generate_haplotypes_flow_1(params.species_1, params.genome_file_1, params.vcf_file_1, params.callable_bed_1, params.annot_1 params.cds_bed_1, params.cds_fasta_1)
+        generate_haplotypes_flow_1(params.species_1, params.genome_file_1, params.vcf_file_1, params.callable_bed_1, params.annot_1, params.cds_bed_1, params.cds_fasta_1)
         // generate_haplotypes_flow_2(params.species_2, params.genome_file_2, params.vcf_file_2, params.callable_bed_2, params.annot_2, params.cds_bed_2, params.cds_fasta_2)
         // ortholog_pop_gen_flow(generate_haplotypes_flow_1.out, generate_haplotypes_flow_2.out, params.prot_fasta_1, params.prot_fasta_2)
 }
