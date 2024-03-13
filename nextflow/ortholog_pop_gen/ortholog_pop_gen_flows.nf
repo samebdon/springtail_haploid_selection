@@ -17,7 +17,7 @@ workflow generate_haplotypes_flow {
           seqtk_get_callable_cds(get_callable_cds_bed.out, cds_fasta)
           mask_fasta(seqtk_get_callable_cds.out, get_callable_cds_bed.out, genome_file)
           get_samples(vcf)
-          generate_loci(get_samples.out.splitText( by: 1 ), mask_fasta.out, vcf)
+          generate_loci(get_samples.out.splitText( by: 1 ).map{it -> it.trim()}, mask_fasta.out, vcf)
           generate_effective_fastas(generate_loci.out, get_best_cds_bed.out)
 
         emit:
