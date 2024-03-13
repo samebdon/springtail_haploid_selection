@@ -6,19 +6,24 @@ workflow generate_haplotypes_flow {
           genome_file
           vcf
           callable_bed
-          cds_bed
+          annotation
           cds_fasta
+          pep_fasta
 
         main:
-          seqtk_get_callable_cds(species, cds_fasta, callable_bed)
-          mask_fasta(seqtk_get_callable_cds.out, callable_bed, genome_file)
+          get_best_cds_bed(species, annotation)
+          get_best_pep_fasta(get_best_cds_bed.out, pep_fasta)
+          get_callable_cds_bed(get_best_cds_bed.out, callable_bed)
+          seqtk_get_callable_cds(get_callable_cds_bed.out, cds_fasta)
+          mask_fasta(seqtk_get_callable_cds.out, get_callable_cds_bed.out, genome_file)
           get_samples(vcf)
           sample_ch = Channel.value(file(get_samples.out).readlines())
           generate_loci(sample_ch, mask_fasta.out, vcf)
-          generate_effective_fastas(generate_loci.out, cds_bed)
+          generate_effective_fastas(generate_loci.out, get_best_cds_bed.out)
 
         emit:
           generate_effective_fastas.out
+          get_best_pep_fasta.out
 }
 
 // assuming 2 protein files in prot_dir for now. should generalise for any number of samples

@@ -1,19 +1,66 @@
 // Output of the pairwise comparisons could be a matrix of sample comparisons at each gene at 0d and 4d sites, where the diagonal would be diversity
 
+process get_best_cds_bed {
+
+        input:
+        val(meta)
+        val(annotation)
+
+        output:
+        tuple val(meta), path("${meta}.cds.bed")
+        
+        script:
+        """
+        agat_sp_keep_longest_isoform.pl -gff ${annotation} -o ${meta}.cds.gff3
+        awk '\$3=="transcript"' ${meta}.cds.gff3 > ${meta}.transcripts.cds.gff3
+        agat_convert_sp_gff2bed.pl --gff ${meta}.transcripts.cds.gff3 -o ${meta}.cds.bed
+        """
+}
+
+process get_best_pep_fasta {
+
+        input:
+        tuple val(meta), path(cds_bed)
+        path(pep_fasta)
+
+        output:
+        tuple val(meta), path("${meta}.best.pep.fasta")
+
+        script:
+        """
+        grep --no-group-separator -A1 -wFf <(cut -f8 ${cds_bed}) fastaqual_select.pl -f ${pep_fasta} | cut -f1 -d" ") | sed "s/>/&{2}./g" > ${meta}.best.pep.fasta
+        """
+}
+
+process get_callable_cds_bed {
+
+        input:
+        tuple val(meta), path(cds_bed)
+        path(callable_bed)
+
+        output:
+        tuple val(meta), path("${meta}.callable.cds.bed")
+
+
+        script:
+        """
+        bedtools intersect -a ${cds_bed} -b ${callable_bed} > ${meta}.callable.cds.bed
+        """
+}
+
 process seqtk_get_callable_cds {
         // get cds in callable regions
 
         input:
-        val(meta)
+        tuple val(meta), path(callable_cds_bed)
         path(cds_fasta)
-        path(callable_bed)
 
         output:
         tuple val(meta), path("${meta}.callable.cds.fasta")
 
         script:
         """
-        seqtk subseq ${cds_fasta} <(cut -f1 ${callable_bed} | sort | uniq) > ${meta}.callable.cds.fasta
+        seqtk subseq ${cds_fasta} <(cut -f1 ${callable_cds_bed} | sort | uniq) > ${meta}.callable.cds.fasta
         """
 }
 
@@ -21,7 +68,7 @@ process mask_fasta {
 
         input:
         tuple val(meta), path(callable_cds_fasta)
-        path(callable_bed)
+        path(callable_cds_bed)
         path(genome_file)
 
         output:
@@ -68,7 +115,7 @@ process generate_effective_fastas {
 
         input:
         tuple val(meta), val(fasta_meta), path(consensus_fasta_1), path(consensus_fasta_2)
-        path(cds_bed)
+        tuple val(cds_meta), path(cds_bed)
 
         output:
         tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.effective.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.effective.cds.fasta")
