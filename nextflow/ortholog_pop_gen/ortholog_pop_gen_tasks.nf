@@ -31,7 +31,7 @@ process get_best_pep_fasta {
         """
         cut -f4 ${cds_bed} > prots.lst
         fastaqual_select.pl -f ${pep_fasta} | cut -f1 -d" " > selected.pep
-        grep --no-group-separator -A1 -wFf prots.lst selected.pep | sed "s/>/&{2}./g" > ${meta}.best.pep.fasta
+        grep --no-group-separator -A1 -wFf prots.lst selected.pep | sed "s/>/&${meta}./g" > ${meta}.best.pep.fasta
         """
 }
 
