@@ -138,27 +138,6 @@ process generate_loci {
         """
 }
 
-process generate_effective_fastas {
-
-        input:
-        tuple val(meta), val(fasta_meta), path(consensus_fasta_1), path(consensus_fasta_2)
-        tuple val(cds_meta), path(cds_bed)
-
-        output:
-        tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.cds.fasta")
-
-        // removed interleaved since i dont think i need it. if i do include here at a future date
-        // now complaining about the bed file i think
-        // bedtools getfasta -name -s -fi WW5-1.allacma_fusca.snp.1.fasta -bed allacma_fusca.cds.bed -split -fo WW5-1.allacma_fusca.snp.1.cds.fasta
-        // im trying to just get just the CDS now but could i try get everything and the non CDS should be masked?
-        script:
-        """
-        cut -f -4 ${cds_bed} > simple.bed
-        bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed simple.bed -split -fo ${meta}.${fasta_meta}.snp.1.cds.fasta
-        bedtools getfasta -name -s -fi ${consensus_fasta_2} -bed simple.bed -split -fo ${meta}.${fasta_meta}.snp.2.cds.fasta
-        """
-}
-
 process generate_effective_fasta_AGAT {
 
         input:
@@ -175,18 +154,22 @@ process generate_effective_fasta_AGAT {
         """
 }
 
+// I think it seems ok for now, its at least given me individuals with two haplotypes different from the reference
+// but i havent seen a heterozygous individual yet
+// I might go with this for now and if in the future it hasnt applied the haplotypes right i can fix it then
+
 process orthofinder {
         cpus 64
 
         input:
-        path(fasta_dir)
+        path(protein_fastas, stageAs: "fastas/*")
 
         output:
-        path("${fasta_dir}/OrthoFinder/Results_*/Single_Copy_orthologue_sequences/*")
+        path("fastas/OrthoFinder/Results_*/Single_Copy_orthologue_sequences/*")
 
         script:
         """
-        orthofinder -f ${fasta_dir} -t ${task.cpus} -a ${task.cpus}
+        orthofinder -f fastas -t ${task.cpus} -a ${task.cpus}
         """
 }
 

@@ -1,4 +1,4 @@
-include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fastas; generate_effective_fasta_AGAT; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow gen_haps_flow {
         take:
@@ -18,11 +18,10 @@ workflow gen_haps_flow {
           get_samples(vcf)
           remove_missing_vcf(species, vcf)
           generate_loci(get_samples.out.splitText( by: 1 ).map{it -> it.trim()}, get_mask_bed.out, genome_fasta, remove_missing_vcf.out)
-          // generate_effective_fastas(generate_loci.out, get_best_cds_bed.out.bed)
           generate_effective_fasta_AGAT(generate_loci.out, get_best_cds_bed.out.gff)
 
         emit:
-          // generate_effective_fastas.out.collect()
+          generate_effective_fasta_AGAT.out.collect()
           get_best_pep_fasta.out
 }
 
