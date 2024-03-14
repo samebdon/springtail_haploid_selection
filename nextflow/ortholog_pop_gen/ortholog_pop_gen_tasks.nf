@@ -68,16 +68,15 @@ process make_genome_file {
         """
 }
 
-process mask_fasta {
+process get_mask_bed {
 
         input:
         val(meta)
         path(callable_bed)
-        path(genome_fasta)
         path(genome_file)
 
         output:
-        tuple val(meta), path("${meta}.callable.masked.fasta")
+        tuple val(meta), path("${meta}.mask.bed")
 
         // Now masking only callable and at the end cutting out CDS
         // I think im using wrong callable file, check whats used for vcf
@@ -87,8 +86,7 @@ process mask_fasta {
         script:
         """
         sort -Vk1 ${callable_bed} > sorted.bed
-        bedtools complement -i sorted.bed -g ${genome_file} > complement.bed
-        bedtools maskfasta -fi ${genome_fasta} -bed complement.bed -fo ${meta}.callable.masked.fasta
+        bedtools complement -i sorted.bed -g ${genome_file} > ${meta}.mask.bed
         """
 }
 
@@ -111,11 +109,12 @@ process generate_loci {
 
         input:
         val(meta)
-        tuple val(fasta_meta), path(masked_fasta)
+        tuple val(bed_meta), path(mask_bed)
+        path(fasta)
         path(vcf)
 
         output:
-        tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.callable.fasta"), path("${meta}.${fasta_meta}.snp.2.callable.fasta")
+        tuple val(meta), val(bed_meta), path("${meta}.${bed_meta}.snp.1.callable.fasta"), path("${meta}.${fasta_meta}.snp.2.callable.fasta")
 
         // this is tabixing the vcf each time a sample is run should make its own process really
         // or include index
@@ -128,8 +127,8 @@ process generate_loci {
         script:
         """
         tabix -p vcf ${vcf}
-        bcftools consensus -f ${masked_fasta} -o ${meta}.${fasta_meta}.snp.1.fasta -H 1 -s ${meta} ${vcf}
-        bcftools consensus -f ${masked_fasta} -o ${meta}.${fasta_meta}.snp.2.fasta -H 2 -s ${meta} ${vcf}
+        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.1.fasta -H 1 -s ${meta} ${vcf}
+        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.2.fasta -H 2 -s ${meta} ${vcf}
         """
 }
 
