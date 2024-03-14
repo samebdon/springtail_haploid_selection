@@ -85,8 +85,7 @@ process get_mask_bed {
         script:
         """
         sort -Vk1 ${callable_bed} > sorted.bed
-        bed12ToBed6 -i sorted.bed > sorted.unstacked.bed
-        bedtools complement -i sorted.unstacked.bed -g ${genome_file} > ${meta}.mask.bed
+        bedtools complement -i sorted.bed -g ${genome_file} > ${meta}.mask.bed
         """
 }
 
