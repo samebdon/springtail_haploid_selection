@@ -54,27 +54,6 @@ process get_callable_cds_bed {
         """
 }
 
-process seqtk_get_callable_cds {
-        // get cds in callable regions
-
-        input:
-        tuple val(meta), path(callable_cds_bed)
-        path(cds_fasta)
-
-        output:
-        tuple val(meta), path("${meta}.callable.cds.fasta")
-
-        // This just gets the names of transcripts that are callable for further operations
-        // Later need to get the CDS out of the transcripts?
-        // Or is it already cds because of the braker fasta so i skip the last step?
-        // I THINK CAN REMOVE THIS
-        script:
-        """
-        cut -f4 ${callable_cds_bed} | sort | uniq > callable_cds.lst
-        seqtk subseq ${cds_fasta} callable_cds.lst > ${meta}.callable.cds.fasta
-        """
-}
-
 process make_genome_file {
 
         input:
@@ -98,13 +77,6 @@ process mask_fasta {
 
         output:
         tuple val(meta), path("${meta}.callable.masked.fasta")
-
-        // This takes those cds's with callable regions from seqtk and
-        // masks the non callable regions using the callable bed
-        // is nothing getting masked? need to check
-        // this should probably mask the whole genome rather than the callable cds
-        // fasta though right? If so do i need run seqtk on the whole genome or just the callable regions?
-        // can generate the genomefile in the script if im giving the genomefile anyway
 
         // RUN THIS ON THE GENOME SO MASK EVERYTHING THAT ISNT CALLABLE CDS
         script:
@@ -142,10 +114,6 @@ process generate_loci {
 
         // this is tabixing the vcf each time a sample is run should make its own process really
         // or include index
-        // This takes the CDS fasta with masked non callable sites and creates each haplotype based on the vcf
-        // Im a bit confused how it can know where the variants are with the information given?
-        // Need to look at the previous files to see what they looked like
-        // It could be that this should actually be applied to the reference genome and then cut the CDS out of it in the next step?
 
         // GENERATE LOCI FROM WHOLE GENOME MASKED CDS
         script:
@@ -156,17 +124,6 @@ process generate_loci {
         """
 }
 
-// This bit isnt working, producing no output
-// I still dont exactly get what this adds from the previous one
-// I should probably look at a positive example to figure it out and see exactly if its necessary
-// Looks like its looking for chromosome in fasta file, not the transcript
-// Double check if i need to put chromosome name in the fasta file to make this work or if i can just skip?
-// I've taken the longest transcripts, in the annotation does this include introns or do i need to select the CDSs
-// So should this last step be cutting the CDS's out of the transcripts? I think so
-
-// In theory, given we use the CDS file from braker we shouldnt need to cut the cds out of the haplotypes
-// Previously i guess this might have been transcripts and then needed to get out the CDS's
-// Figure out if this is the case
 process generate_effective_fastas {
 
         input:

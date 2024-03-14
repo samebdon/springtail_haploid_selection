@@ -3,7 +3,7 @@
 
 // Species 1 data files
 params.species_1 = "allacma_fusca"
-params.genome_fasta_1 = "$launchDir/data/results/genomes/allacma_fusca/allacma_fusca.fasta"
+params.genome_fasta_1 = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta"
 params.vcf_1 = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz"
 // should I be using the all callable bed? should decide this before doing any final analysis...\
 // feels like i should be but since the all callable file looked much older i should make sure if i didnt make a different decision
