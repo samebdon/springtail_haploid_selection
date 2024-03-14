@@ -139,9 +139,8 @@ process generate_loci {
 
         script:
         """
-        bcftools index -c ${vcf} -o ${vcf}.csi
-        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.1.fasta -H 1 -i 'GT="."' -s ${meta} ${vcf}
-        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.2.fasta -H 2 -i 'GT="."' -s ${meta} ${vcf}
+        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.1.fasta -H 1 -s ${meta} ${vcf}
+        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.2.fasta -H 2 -s ${meta} ${vcf}
         """
 }
 
