@@ -78,9 +78,7 @@ process get_mask_bed {
         output:
         tuple val(meta), path("${meta}.mask.bed")
 
-        // Now masking only callable and at the end cutting out CDS
-        // I think im using wrong callable file, check whats used for vcf
-        // Im going to try use all callable loci, worth knowing another option would be to try use the callable loci for each genome
+        // Using all callable loci, worth knowing another option would be to try use the callable loci for each genome
         // I think this should just be the fasta used for variant calling 
 
         script:
@@ -98,7 +96,6 @@ process get_samples{
         output:
         stdout
 
-        // gets sample names in vcf to create a channel
         script:
         """
         bcftools query -l ${vcf} 
@@ -126,9 +123,9 @@ process generate_loci {
         // Should also double check i guess which callable sites file is definitely correct
         script:
         """
-        tabix -p vcf ${vcf}
-        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.1.fasta -H 1 -s ${meta} ${vcf}
-        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.2.fasta -H 2 -s ${meta} ${vcf}
+        bcftools index -c ${vcf} -o ${vcf}.csi
+        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.1.fasta -H 1 -i 'GT="."' -s ${meta} ${vcf}
+        bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.2.fasta -H 2 -i 'GT="."' -s ${meta} ${vcf}
         """
 }
 
