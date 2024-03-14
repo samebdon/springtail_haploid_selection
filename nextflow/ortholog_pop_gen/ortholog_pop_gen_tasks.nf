@@ -128,14 +128,7 @@ process generate_loci {
         tuple path(vcf), path(vcf_index)
 
         output:
-        tuple val(meta), val(bed_meta), path("${meta}.${bed_meta}.snp.1.callable.fasta"), path("${meta}.${fasta_meta}.snp.2.callable.fasta")
-
-        // this is tabixing the vcf each time a sample is run should make its own process really
-        // or include index
-
-
-        // This is giving me an error with too few alts for a file
-        // Should I filter the vcf for the sample and index before doing the consensus?
+        tuple val(meta), val(bed_meta), path("${meta}.${bed_meta}.snp.1.fasta"), path("${meta}.${fasta_meta}.snp.2.fasta")
 
         script:
         """
@@ -151,18 +144,13 @@ process generate_effective_fastas {
         tuple val(cds_meta), path(cds_bed)
 
         output:
-        tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.effective.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.effective.cds.fasta")
+        tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.cds.fasta")
 
         // removed interleaved since i dont think i need it. if i do include here at a future date
-        // EXTRACT CDS USING CDS BED FROM WHOLE GENOME HAPLOTYPES
-        // The other option is instead of doing this on the whole genome is to apply
-        // the cds location to fasta headers
-        // this way is more generalisable though i could make it for intergenic regions quite easily
-        // might need to do this if current way doesnt work? although dont know how to apply bcftools consensus to just CDS's
         script:
         """
-        bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed ${cds_bed} -fo ${meta}.${fasta_meta}.snp.1.cds.fasta
-        bedtools getfasta -name -s -fi ${consensus_fasta_2} -bed ${cds_bed} -fo ${meta}.${fasta_meta}.snp.2.cds.fasta
+        bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed ${cds_bed} -split -fo ${meta}.${fasta_meta}.snp.1.cds.fasta
+        bedtools getfasta -name -s -fi ${consensus_fasta_2} -bed ${cds_bed} -split -fo ${meta}.${fasta_meta}.snp.2.cds.fasta
         """
 }
 
