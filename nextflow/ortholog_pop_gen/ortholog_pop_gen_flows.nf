@@ -1,4 +1,4 @@
-include { get_best_cds_bed; get_best_pep_fasta; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow gen_haps_flow {
         take:
