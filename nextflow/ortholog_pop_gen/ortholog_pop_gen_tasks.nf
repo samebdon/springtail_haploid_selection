@@ -80,6 +80,7 @@ process mask_fasta {
         tuple val(meta), path("${meta}.callable.masked.fasta")
 
         // Now masking only callable and at the end cutting out CDS
+        // I think im using wrong callable file, check whats used for vcf
         script:
         """
         sort -Vk1 ${callable_bed} > sorted.bed

@@ -20,7 +20,7 @@ workflow var_call_flow {
 	  bcftools_filter(genome, freebayes.out)
 	  generate_fail_bed(bcftools_filter.out)
 	  generate_pass_vcf(bcftools_filter.out)
-	  bedtools_subtract(intersectBeds.out.all, generate_fail_bed.out)
+	  bedtools_subtract(intersectBeds.out.overlap, generate_fail_bed.out)
 	  bcftools_sort(generate_pass_vcf.out)
 	  bcftools_index(bcftools_sort.out)
 }
