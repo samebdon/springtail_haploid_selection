@@ -109,11 +109,13 @@ process remove_missing_vcf {
         path(vcf)
 
         output:
-        path("${meta}.no_missing.vcf.gz")
+        tuple path("${meta}.no_missing.vcf.gz"), path("${meta}.no_missing.vcf.gz.csi")
 
         script:
         """
+        bcftools index -c ${vcf} -o ${vcf}.csi
         bcftools filter -O z --include "N_MISSING=0" ${vcf} ${meta}.no_missing.vcf.gz
+        bcftools index -c ${meta}.no_missing.vcf.gz -o ${meta}.no_missing.vcf.gz.csi
         """
 }
 
@@ -123,7 +125,7 @@ process generate_loci {
         val(meta)
         tuple val(bed_meta), path(mask_bed)
         path(fasta)
-        path(vcf)
+        tuple path(vcf), path(vcf_index)
 
         output:
         tuple val(meta), val(bed_meta), path("${meta}.${bed_meta}.snp.1.callable.fasta"), path("${meta}.${fasta_meta}.snp.2.callable.fasta")
