@@ -102,6 +102,21 @@ process get_samples{
         """
 }
 
+process remove_missing_vcf {
+
+        input:
+        val(meta)
+        path(vcf)
+
+        output:
+        path("${meta}.no_missing.vcf.gz")
+
+        script:
+        """
+        bcftools filter -O z --include "N_MISSING=0" ${vcf} ${meta}.no_missing.vcf.gz
+        """
+}
+
 process generate_loci {
 
         input:
@@ -116,11 +131,10 @@ process generate_loci {
         // this is tabixing the vcf each time a sample is run should make its own process really
         // or include index
 
-        // GENERATE LOCI FROM WHOLE GENOME MASKED CDS
-        // Got an error because of variants outside of CDS
-        // I could give this all callable loci because thats what the vcf went with
-        // Surely though i can get it to ignore masked sites though
-        // Should also double check i guess which callable sites file is definitely correct
+
+        // This is giving me an error with too few alts for a file
+        // Should I filter the vcf for the sample and index before doing the consensus?
+
         script:
         """
         bcftools index -c ${vcf} -o ${vcf}.csi
@@ -143,6 +157,7 @@ process generate_effective_fastas {
         // The other option is instead of doing this on the whole genome is to apply
         // the cds location to fasta headers
         // this way is more generalisable though i could make it for intergenic regions quite easily
+        // might need to do this if current way doesnt work? although dont know how to apply bcftools consensus to just CDS's
         script:
         """
         bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed ${cds_bed} -fo ${meta}.${fasta_meta}.snp.1.cds.fasta

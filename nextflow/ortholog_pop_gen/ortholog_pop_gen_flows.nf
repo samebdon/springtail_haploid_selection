@@ -1,4 +1,4 @@
-include { get_best_cds_bed; get_best_pep_fasta; make_genome_file; get_mask_bed; get_samples; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow generate_haplotypes_flow {
         take:
@@ -16,7 +16,8 @@ workflow generate_haplotypes_flow {
           get_mask_bed(species, callable_bed, make_genome_file.out)
           // it really doesnt like the masked fasta, could i mask after?
           get_samples(vcf)
-          generate_loci(get_samples.out.splitText( by: 1 ).map{it -> it.trim()}, get_mask_bed.out, genome_fasta, vcf)
+          remove_missing_vcf(species, vcf)
+          generate_loci(get_samples.out.splitText( by: 1 ).map{it -> it.trim()}, get_mask_bed.out, genome_fasta, remove_missing_vcf.out)
           generate_effective_fastas(generate_loci.out, get_best_cds_bed.out)
 
         emit:
