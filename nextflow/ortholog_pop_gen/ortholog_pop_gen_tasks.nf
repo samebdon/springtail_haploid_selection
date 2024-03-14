@@ -71,8 +71,7 @@ process make_genome_file {
 process get_mask_bed {
 
         input:
-        val(meta)
-        path(callable_bed)
+        tuple val(meta), path(callable_bed)
         path(genome_file)
 
         output:
@@ -147,6 +146,9 @@ process generate_effective_fastas {
         tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.cds.fasta")
 
         // removed interleaved since i dont think i need it. if i do include here at a future date
+        // now complaining about the bed file i think
+        // bedtools getfasta -name -s -fi WW1-2.allacma_fusca.snp.1.fasta -bed allacma_fusca.cds.bed -split -fo WW1-2.allacma_fusca.snp.1.cds.fasta
+        // im trying to just get just the CDS now but could i try get everything and the non CDS should be masked?
         script:
         """
         bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed ${cds_bed} -split -fo ${meta}.${fasta_meta}.snp.1.cds.fasta
