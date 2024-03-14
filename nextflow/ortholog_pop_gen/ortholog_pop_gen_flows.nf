@@ -1,6 +1,6 @@
 include { get_best_cds_bed; get_best_pep_fasta; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
 
-workflow generate_haplotypes_flow {
+workflow gen_haps_flow {
         take:
           species
           genome_fasta
@@ -26,7 +26,7 @@ workflow generate_haplotypes_flow {
 
 // assuming 2 protein files in prot_dir for now. should generalise for any number of samples
 // maybe can just do all pairwise combinations of samples but take proteins by species
-workflow ortholog_pop_gen_flow {
+workflow orthodiver_flow {
         take:
           nuc_fastas_1
           prot_fasta_1
@@ -40,7 +40,7 @@ workflow ortholog_pop_gen_flow {
 }
 
 // should be able to make a workflow that doesnt need generate haplotypes and so just gets dxy not pi
-workflow ortholog_div_flow {
+workflow orthodiver_nopi_flow {
         take:
           prot_dir
         main:

@@ -128,7 +128,7 @@ process generate_loci {
         tuple path(vcf), path(vcf_index)
 
         output:
-        tuple val(meta), val(bed_meta), path("${meta}.${bed_meta}.snp.1.fasta"), path("${meta}.${fasta_meta}.snp.2.fasta")
+        tuple val(meta), val(bed_meta), path("${meta}.${bed_meta}.snp.1.fasta"), path("${meta}.${bed_meta}.snp.2.fasta")
 
         script:
         """
