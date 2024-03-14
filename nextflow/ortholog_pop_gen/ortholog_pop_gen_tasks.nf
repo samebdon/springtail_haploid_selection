@@ -147,12 +147,13 @@ process generate_effective_fastas {
 
         // removed interleaved since i dont think i need it. if i do include here at a future date
         // now complaining about the bed file i think
-        // bedtools getfasta -name -s -fi WW1-2.allacma_fusca.snp.1.fasta -bed allacma_fusca.cds.bed -split -fo WW1-2.allacma_fusca.snp.1.cds.fasta
+        // bedtools getfasta -name -s -fi WW5-1.allacma_fusca.snp.1.fasta -bed allacma_fusca.cds.bed -split -fo WW5-1.allacma_fusca.snp.1.cds.fasta
         // im trying to just get just the CDS now but could i try get everything and the non CDS should be masked?
         script:
         """
-        bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed ${cds_bed} -split -fo ${meta}.${fasta_meta}.snp.1.cds.fasta
-        bedtools getfasta -name -s -fi ${consensus_fasta_2} -bed ${cds_bed} -split -fo ${meta}.${fasta_meta}.snp.2.cds.fasta
+        cut -f -4 ${cds_bed} > simple.bed
+        bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed simple.bed -split -fo ${meta}.${fasta_meta}.snp.1.cds.fasta
+        bedtools getfasta -name -s -fi ${consensus_fasta_2} -bed simple.bed -split -fo ${meta}.${fasta_meta}.snp.2.cds.fasta
         """
 }
 
