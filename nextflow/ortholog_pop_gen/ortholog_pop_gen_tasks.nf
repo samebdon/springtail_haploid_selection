@@ -1,5 +1,6 @@
 // Output of the pairwise comparisons could be a matrix of sample comparisons at each gene at 0d and 4d sites, where the diagonal would be diversity
 
+
 process get_best_cds_bed {
 
         input:
@@ -9,11 +10,13 @@ process get_best_cds_bed {
         output:
         tuple val(meta), path("${meta}.cds.bed")
 
+        // The bed file at the end of this produces one line per transcript with all the
+        // exon start positions relative to the transcript start in the last column
         script:
         """
-        agat_sp_keep_longest_isoform.pl -gff ${annotation} -o ${meta}.cds.gff3
-        awk '\$3=="transcript"' ${meta}.cds.gff3 > ${meta}.transcripts.cds.gff3
-        agat_convert_sp_gff2bed.pl --gff ${meta}.transcripts.cds.gff3 -o ${meta}.cds.bed
+        agat_sp_keep_longest_isoform.pl -gff ${annotation} -o ${meta}.longest_isoform.gff3
+        awk '\$3=="exon"' ${meta}.longest_isoform.gff3 > ${meta}.longest_isoform.cds.gff3
+        agat_convert_sp_gff2bed.pl --gff ${meta}.longest_isoforms.cds.gff3 -o ${meta}.cds.bed
         """
 }
 
@@ -26,7 +29,7 @@ process get_best_pep_fasta {
         output:
         tuple val(meta), path("${meta}.best.pep.fasta")
 
-        // this cut.bed bit might make a mistake since the bed file will be different from the transdecoder bed
+        // Should be fine, check best.pep.fasta looks ok
         script:
         """
         cut -f4 ${cds_bed} > prots.lst
@@ -44,10 +47,10 @@ process get_callable_cds_bed {
         output:
         tuple val(meta), path("${meta}.callable.cds.bed")
 
-
+        // -split selects exons from the bed12 only
         script:
         """
-        bedtools intersect -a ${cds_bed} -b ${callable_bed} > ${meta}.callable.cds.bed
+        bedtools intersect -split -a ${cds_bed} -b ${callable_bed} > ${meta}.callable.cds.bed
         """
 }
 
@@ -61,6 +64,9 @@ process seqtk_get_callable_cds {
         output:
         tuple val(meta), path("${meta}.callable.cds.fasta")
 
+        // This just gets the names of transcripts that are callable for further operations
+        // Later need to get the CDS out of the transcripts?
+        // Or is it already cds because of the braker fasta so i skip the last step?
         script:
         """
         cut -f4 ${callable_cds_bed} | sort | uniq > callable_cds.lst
@@ -78,6 +84,8 @@ process mask_fasta {
         output:
         tuple val(meta), path("${meta}.callable.cds.masked.fasta")
 
+        // This takes those cds's with callable regions from seqtk and
+        // masks the non callable regions using the callable bed
         script:
         """
         sort -Vk1 ${callable_cds_bed} > sorted.bed
@@ -94,6 +102,7 @@ process get_samples{
         output:
         stdout
 
+        // gets sample names in vcf to create a channel
         script:
         """
         bcftools query -l ${vcf} 
@@ -110,6 +119,10 @@ process generate_loci {
         output:
         tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.callable.fasta"), path("${meta}.${fasta_meta}.snp.2.callable.fasta")
 
+        // this is tabixing the vcf each time a sample is run should make its own process really
+        // or include index
+        // This takes the CDS fasta with masked non callable sites and creates each haplotype based on the vcf
+
         script:
         """
         tabix -p vcf ${vcf}
@@ -118,6 +131,17 @@ process generate_loci {
         """
 }
 
+// This bit isnt working, producing no output
+// I still dont exactly get what this adds from the previous one
+// I should probably look at a positive example to figure it out and see exactly if its necessary
+// Looks like its looking for chromosome in fasta file, not the transcript
+// Double check if i need to put chromosome name in the fasta file to make this work or if i can just skip?
+// I've taken the longest transcripts, in the annotation does this include introns or do i need to select the CDSs
+// So should this last step be cutting the CDS's out of the transcripts? I think so
+
+// In theory, given we use the CDS file from braker we shouldnt need to cut the cds out of the haplotypes
+// Previously i guess this might have been transcripts and then needed to get out the CDS's
+// Figure out if this is the case
 process generate_effective_fastas {
 
         input:
