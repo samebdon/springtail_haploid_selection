@@ -16,7 +16,7 @@ process get_best_cds_bed {
         """
         agat_sp_keep_longest_isoform.pl -gff ${annotation} -o ${meta}.longest_isoform.gff3
         awk '\$3=="exon"' ${meta}.longest_isoform.gff3 > ${meta}.longest_isoform.cds.gff3
-        agat_convert_sp_gff2bed.pl --gff ${meta}.longest_isoforms.cds.gff3 -o ${meta}.cds.bed
+        agat_convert_sp_gff2bed.pl --gff ${meta}.longest_isoform.cds.gff3 -o ${meta}.cds.bed
         """
 }
 
