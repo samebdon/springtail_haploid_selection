@@ -71,17 +71,18 @@ process make_genome_file {
 process mask_fasta {
 
         input:
-        tuple val(meta), path(callable_cds_bed)
+        val(meta)
+        path(callable_bed)
         path(genome_fasta)
         path(genome_file)
 
         output:
         tuple val(meta), path("${meta}.callable.masked.fasta")
 
-        // RUN THIS ON THE GENOME SO MASK EVERYTHING THAT ISNT CALLABLE CDS
+        // Now masking only callable and at the end cutting out CDS
         script:
         """
-        sort -Vk1 ${callable_cds_bed} > sorted.bed
+        sort -Vk1 ${callable_bed} > sorted.bed
         bedtools complement -i sorted.bed -g ${genome_file} > complement.bed
         bedtools maskfasta -fi ${genome_fasta} -bed complement.bed -fo ${meta}.callable.masked.fasta -mc - 
         """
@@ -116,11 +117,15 @@ process generate_loci {
         // or include index
 
         // GENERATE LOCI FROM WHOLE GENOME MASKED CDS
+        // Got an error because of variants outside of CDS
+        // I could give this all callable loci because thats what the vcf went with
+        // Surely though i can get it to ignore masked sites though
+        // Should also double check i guess which callable sites file is definitely correct
         script:
         """
         tabix -p vcf ${vcf}
-        bcftools consensus -f ${masked_fasta} -o ${meta}.${fasta_meta}.snp.1.callable.fasta -H 1 -s ${meta} ${vcf}
-        bcftools consensus -f ${masked_fasta} -o ${meta}.${fasta_meta}.snp.2.callable.fasta -H 2 -s ${meta} ${vcf}
+        bcftools consensus -f ${masked_fasta} -o ${meta}.${fasta_meta}.snp.1.fasta -H 1 -s ${meta} ${vcf}
+        bcftools consensus -f ${masked_fasta} -o ${meta}.${fasta_meta}.snp.2.fasta -H 2 -s ${meta} ${vcf}
         """
 }
 
@@ -135,10 +140,13 @@ process generate_effective_fastas {
 
         // removed interleaved since i dont think i need it. if i do include here at a future date
         // EXTRACT CDS USING CDS BED FROM WHOLE GENOME HAPLOTYPES
+        // The other option is instead of doing this on the whole genome is to apply
+        // the cds location to fasta headers
+        // this way is more generalisable though i could make it for intergenic regions quite easily
         script:
         """
-        bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed ${cds_bed} -fo ${meta}.${fasta_meta}.snp.1.effective.cds.fasta
-        bedtools getfasta -name -s -fi ${consensus_fasta_2} -bed ${cds_bed} -fo ${meta}.${fasta_meta}.snp.2.effective.cds.fasta
+        bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed ${cds_bed} -fo ${meta}.${fasta_meta}.snp.1.cds.fasta
+        bedtools getfasta -name -s -fi ${consensus_fasta_2} -bed ${cds_bed} -fo ${meta}.${fasta_meta}.snp.2.cds.fasta
         """
 }
 
