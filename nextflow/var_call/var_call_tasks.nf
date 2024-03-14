@@ -214,11 +214,11 @@ process generate_pass_vcf {
         tuple val(species), path(vcf_f)
 
         output:
-        tuple val(species), path("${vcf_f.baseName}.sorted.hard_filtered.vcf.gz")
+        tuple val(species), path("${vcf_f.baseName}.hard_filtered.vcf.gz")
 
         script:
         """
-        bcftools view --threads ${task.cpus} -Oz -f "PASS" ${vcf_f} > ${vcf_f.baseName}.sorted.hard_filtered.vcf.gz
+        bcftools view --threads ${task.cpus} -Oz -f "PASS" ${vcf_f} > ${vcf_f.baseName}.hard_filtered.vcf.gz
         """
 }
 

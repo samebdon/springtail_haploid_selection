@@ -82,11 +82,13 @@ process mask_fasta {
         // Now masking only callable and at the end cutting out CDS
         // I think im using wrong callable file, check whats used for vcf
         // Im going to try use all callable loci, worth knowing another option would be to try use the callable loci for each genome
+        // I think this should just be the fasta used for variant calling 
+
         script:
         """
         sort -Vk1 ${callable_bed} > sorted.bed
         bedtools complement -i sorted.bed -g ${genome_file} > complement.bed
-        bedtools maskfasta -fi ${genome_fasta} -bed complement.bed -fo ${meta}.callable.masked.fasta -mc - 
+        bedtools maskfasta -fi ${genome_fasta} -bed complement.bed -fo ${meta}.callable.masked.fasta
         """
 }
 
