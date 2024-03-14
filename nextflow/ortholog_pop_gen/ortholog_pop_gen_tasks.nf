@@ -8,7 +8,8 @@ process get_best_cds_bed {
         val(annotation)
 
         output:
-        tuple val(meta), path("${meta}.cds.bed")
+        tuple val(meta), path("${meta}.longest_isoform.gff3"), emit: gff
+        tuple val(meta), path("${meta}.cds.bed"), emit: bed
 
         // The bed file at the end of this produces one line per transcript with all the
         // exon start positions relative to the transcript start in the last column
@@ -79,11 +80,13 @@ process get_mask_bed {
 
         // Using all callable loci, worth knowing another option would be to try use the callable loci for each genome
         // I think this should just be the fasta used for variant calling 
-
+        // i think complement is not using the exons in the bed12 to mask just the intervals
+        // can i convert the bed12 here to normal bed ?
         script:
         """
         sort -Vk1 ${callable_bed} > sorted.bed
-        bedtools complement -i sorted.bed -g ${genome_file} > ${meta}.mask.bed
+        bed12ToBed6 -i sorted.bed > sorted.unstacked.bed
+        bedtools complement -i sorted.unstacked.bed -g ${genome_file} > ${meta}.mask.bed
         """
 }
 
@@ -154,6 +157,22 @@ process generate_effective_fastas {
         cut -f -4 ${cds_bed} > simple.bed
         bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed simple.bed -split -fo ${meta}.${fasta_meta}.snp.1.cds.fasta
         bedtools getfasta -name -s -fi ${consensus_fasta_2} -bed simple.bed -split -fo ${meta}.${fasta_meta}.snp.2.cds.fasta
+        """
+}
+
+process generate_effective_fasta_AGAT {
+
+        input:
+        tuple val(meta), val(fasta_meta), path(consensus_fasta_1), path(consensus_fasta_2)
+        tuple val(gff_meta), path(gff)
+
+        output:
+        tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.cds.fasta")
+
+        script:
+        """
+        agat_sp_extract_sequences.pl --gff ${gff} --fasta ${consensus_fasta_1} -t exon --merge -o ${meta}.${fasta_meta}.snp.1.cds.fasta
+        agat_sp_extract_sequences.pl --gff ${gff} --fasta ${consensus_fasta_2} -t exon --merge -o ${meta}.${fasta_meta}.snp.2.cds.fasta
         """
 }
 

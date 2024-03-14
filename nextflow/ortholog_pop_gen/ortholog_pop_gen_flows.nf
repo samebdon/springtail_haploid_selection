@@ -11,17 +11,18 @@ workflow gen_haps_flow {
 
         main:
           get_best_cds_bed(species, annotation)
-          get_best_pep_fasta(get_best_cds_bed.out, pep_fasta)
-          get_callable_cds_bed(get_best_cds_bed.out, callable_bed)
+          get_best_pep_fasta(get_best_cds_bed.out.bed, pep_fasta)
+          get_callable_cds_bed(get_best_cds_bed.out.bed, callable_bed)
           make_genome_file(genome_fasta)
           get_mask_bed(get_callable_cds_bed.out, make_genome_file.out)
           get_samples(vcf)
           remove_missing_vcf(species, vcf)
           generate_loci(get_samples.out.splitText( by: 1 ).map{it -> it.trim()}, get_mask_bed.out, genome_fasta, remove_missing_vcf.out)
-          generate_effective_fastas(generate_loci.out, get_best_cds_bed.out)
+          // generate_effective_fastas(generate_loci.out, get_best_cds_bed.out.bed)
+          generate_effective_fasta_AGAT(generate_loci.out, get_best_cds_bed.out.gff)
 
         emit:
-          generate_effective_fastas.out.collect()
+          // generate_effective_fastas.out.collect()
           get_best_pep_fasta.out
 }
 
