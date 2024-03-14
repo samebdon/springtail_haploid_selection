@@ -67,6 +67,7 @@ process seqtk_get_callable_cds {
         // This just gets the names of transcripts that are callable for further operations
         // Later need to get the CDS out of the transcripts?
         // Or is it already cds because of the braker fasta so i skip the last step?
+        // I THINK CAN REMOVE THIS
         script:
         """
         cut -f4 ${callable_cds_bed} | sort | uniq > callable_cds.lst
@@ -74,23 +75,43 @@ process seqtk_get_callable_cds {
         """
 }
 
+process make_genome_file {
+
+        input:
+        path(genome_fasta)
+
+        output:
+        path("${genome_fasta.baseName}.genomefile")
+
+        script:
+        """
+        samtools faidx ${genome_fasta} && cut -f1,2 ${genome_fasta}.fai | sort -Vk1 > ${genome_fasta.baseName}.genomefile
+        """
+}
+
 process mask_fasta {
 
         input:
-        tuple val(meta), path(callable_cds_fasta)
-        tuple val(cds_meta), path(callable_cds_bed)
+        tuple val(meta), path(callable_cds_bed)
+        path(genome_fasta)
         path(genome_file)
 
         output:
-        tuple val(meta), path("${meta}.callable.cds.masked.fasta")
+        tuple val(meta), path("${meta}.callable.masked.fasta")
 
         // This takes those cds's with callable regions from seqtk and
         // masks the non callable regions using the callable bed
+        // is nothing getting masked? need to check
+        // this should probably mask the whole genome rather than the callable cds
+        // fasta though right? If so do i need run seqtk on the whole genome or just the callable regions?
+        // can generate the genomefile in the script if im giving the genomefile anyway
+
+        // RUN THIS ON THE GENOME SO MASK EVERYTHING THAT ISNT CALLABLE CDS
         script:
         """
         sort -Vk1 ${callable_cds_bed} > sorted.bed
         bedtools complement -i sorted.bed -g ${genome_file} > complement.bed
-        bedtools maskfasta -fi ${callable_cds_fasta} -bed complement.bed -fo ${meta}.callable.cds.masked.fasta -mc - 
+        bedtools maskfasta -fi ${genome_fasta} -bed complement.bed -fo ${meta}.callable.masked.fasta -mc - 
         """
 }
 
@@ -122,7 +143,11 @@ process generate_loci {
         // this is tabixing the vcf each time a sample is run should make its own process really
         // or include index
         // This takes the CDS fasta with masked non callable sites and creates each haplotype based on the vcf
+        // Im a bit confused how it can know where the variants are with the information given?
+        // Need to look at the previous files to see what they looked like
+        // It could be that this should actually be applied to the reference genome and then cut the CDS out of it in the next step?
 
+        // GENERATE LOCI FROM WHOLE GENOME MASKED CDS
         script:
         """
         tabix -p vcf ${vcf}
@@ -152,6 +177,7 @@ process generate_effective_fastas {
         tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.effective.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.effective.cds.fasta")
 
         // removed interleaved since i dont think i need it. if i do include here at a future date
+        // EXTRACT CDS USING CDS BED FROM WHOLE GENOME HAPLOTYPES
         script:
         """
         bedtools getfasta -name -s -fi ${consensus_fasta_1} -bed ${cds_bed} -fo ${meta}.${fasta_meta}.snp.1.effective.cds.fasta

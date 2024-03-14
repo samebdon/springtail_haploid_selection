@@ -1,21 +1,20 @@
-include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; seqtk_get_callable_cds; mask_fasta; get_samples; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; mask_fasta; get_samples; generate_loci; generate_effective_fastas; orthofinder; mafft; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow generate_haplotypes_flow {
         take:
           species
-          genome_file
+          genome_fasta
           vcf
           callable_bed
           annotation
-          cds_fasta
           pep_fasta
 
         main:
           get_best_cds_bed(species, annotation)
           get_best_pep_fasta(get_best_cds_bed.out, pep_fasta)
           get_callable_cds_bed(get_best_cds_bed.out, callable_bed)
-          seqtk_get_callable_cds(get_callable_cds_bed.out, cds_fasta)
-          mask_fasta(seqtk_get_callable_cds.out, get_callable_cds_bed.out, genome_file)
+          make_genome_file(genome_fasta)
+          mask_fasta(get_callable_cds_bed.out, genome_fasta, make_genome_file.out)
           get_samples(vcf)
           generate_loci(get_samples.out.splitText( by: 1 ).map{it -> it.trim()}, mask_fasta.out, vcf)
           generate_effective_fastas(generate_loci.out, get_best_cds_bed.out)
