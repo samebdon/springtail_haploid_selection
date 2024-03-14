@@ -7,7 +7,7 @@ params.genome_fasta_1 = "$launchDir/data/results/genomes/allacma_fusca/GCA_94717
 params.vcf_1 = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz"
 // should I be using the all callable bed? should decide this before doing any final analysis...\
 // feels like i should be but since the all callable file looked much older i should make sure if i didnt make a different decision
-params.callable_bed_1 = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.all_callable.bed"
+params.callable_bed_1 = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.intersect.all_overlap.bed"
 params.annot_1 = "$launchDir/data/results/braker3/allacma_fusca/braker.gtf"
 params.prot_fasta_1 = "$launchDir/data/results/braker3/allacma_fusca/braker.aa"
 
