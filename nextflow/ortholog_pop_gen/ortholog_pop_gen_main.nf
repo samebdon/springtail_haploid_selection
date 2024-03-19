@@ -35,7 +35,7 @@ include { orthodiver_flow } from './ortholog_pop_gen_flows.nf'
 
 workflow {
         gen_haps_flow_1(params.species_1, params.genome_fasta_1, params.vcf_1, params.callable_bed_1, params.annot_1, params.prot_fasta_1)
-        // gen_haps_flow_2(params.species_2, params.genome_file_2, params.vcf_file_2, params.callable_bed_2, params.annot_2, params.cds_fasta_2, params.prot_fasta_2)
+        gen_haps_flow_1(params.species_2, params.genome_fasta_2, params.vcf_2, params.callable_bed_2, params.annot_2, params.prot_fasta_2)
         // orthodiver_flow(generate_haplotypes_flow_1.out[0], generate_haplotypes_flow_1.out[1], generate_haplotypes_flow_2.out[0], generate_haplotypes_flow_2.out[1])
 }
 
