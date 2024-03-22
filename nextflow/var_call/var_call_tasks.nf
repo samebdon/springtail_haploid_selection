@@ -110,7 +110,7 @@ process intersectBeds{
         """
         N_FILES="\$(ls inputs/*.bed | wc -l)"
         bedtools multiinter -i $beds | cut -f1-5 > ${species}.callable.all.bed
-        cat ${species}.intersect.bed | awk -v var=\$N_FILES '\$4==var'  | cut -f1-3 > ${species}.callable.freebayes.bed
+        cat ${species}.callable.all.bed | awk -v var=\$N_FILES '\$4==var'  | cut -f1-3 > ${species}.callable.freebayes.bed
         """
 }
 
