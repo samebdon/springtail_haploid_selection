@@ -36,13 +36,14 @@ workflow orthodiver_flow {
           nuc_fastas_1.view()
           nuc_fastas_2.view()
 
-          orthofinder(prot_fasta_1, prot_fasta_2) // might have to do a stageas for these
-          mafft(orthofinder.out.flatten()) // need to figure out how to split orthofinder out dir to single files for mafft
+          orthofinder(prot_fasta_1, prot_fasta_2)
+          mafft(orthofinder.out.flatten())
           
           // get_orthogroup_haps(mafft.out, nuc_fastas_1, nuc_fastas_2)
           // for translatorX join mafft.out and each output of get_orthogroup haps
           // hopefully this can make a channel where each one has the protein alignment from mafft and the pair of nuc haplotypes fasta
-          // translatorx()
+          
+          // translatorx(mafft.out)
           // orthodiver()
 }
 
