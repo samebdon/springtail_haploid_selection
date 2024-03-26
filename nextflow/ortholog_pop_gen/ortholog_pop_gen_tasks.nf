@@ -179,7 +179,8 @@ process orthofinder {
 process mafft {
 
         input:
-        tuple val(meta_1), val(meta_2), path(fasta)
+        tuple val(meta_1), val(meta_2)
+        path(fasta)
 
         output:
         tuple val(meta_1), val(meta_2), path("${fasta.baseName}.mafft.fa")
