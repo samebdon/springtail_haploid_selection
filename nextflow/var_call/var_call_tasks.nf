@@ -235,7 +235,7 @@ process bedtools_subtract {
 
         script:
         """
-        bedtools subtract -a ${a_bed} -b ${b_bed} > ${species}.callable.nofail.bed
+        bedtools subtract -a ${a_bed} -b ${b_bed} > ${species}.callable.bed
         """
 }
 
