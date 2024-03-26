@@ -6,19 +6,16 @@ params.callable_bed_1 = "$launchDir/data/results/var_call/allacma_fusca/allacma_
 params.annot_1 = "$launchDir/data/results/braker3/allacma_fusca/braker.gtf"
 params.prot_fasta_1 = "$launchDir/data/results/braker3/allacma_fusca/braker.aa"
 
-// Will have to test this on something I have reads for variant calling for. Is this only Dicyrtomina minuta? Not sure if its annotated either
-// Run workflow 1 for testing and then when i have that output and I can work on workflow 2 i can sort out these extra data files
 // Species 2 data files
-params.species_2 = "sminthurides_aquaticus"
-// params.genome_file_2 = ".genomefile"
-// params.vcf_file_2 = ".vcf.gz"
-// params.callable_bed_2 = ".bed"
-// params.cds_bed_2 = ".bed"
-// params.cds_fasta_2 = ".fasta"
-// params.prot_fasta_2 = ".fasta"
+params.species_2 = "dicyrtomina_minuta"
+params.genome_fasta_1 = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.fa"
+params.vcf_1 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.hard_filtered.sorted.vcf.gz"
+params.callable_bed_1 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.callable.bed"
+params.annot_1 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.gtf"
+params.prot_fasta_1 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.aa"
 
 // Output Directory
-params.outdir = "$launchDir/ortholog_pop_gen/allacma_fusca.vs.sminthurides_aquaticus"
+params.outdir = "$launchDir/ortholog_pop_gen/allacma_fusca.vs.dicyrtomina_minuta"
 
 log.info """\
          O R T H O L O G  P O P  G E N   N F   P I P E L I N E    
@@ -35,7 +32,7 @@ include { orthodiver_flow } from './ortholog_pop_gen_flows.nf'
 
 workflow {
         gen_haps_flow_1(params.species_1, params.genome_fasta_1, params.vcf_1, params.callable_bed_1, params.annot_1, params.prot_fasta_1)
-        gen_haps_flow_1(params.species_2, params.genome_fasta_2, params.vcf_2, params.callable_bed_2, params.annot_2, params.prot_fasta_2)
+        gen_haps_flow_2(params.species_2, params.genome_fasta_2, params.vcf_2, params.callable_bed_2, params.annot_2, params.prot_fasta_2)
         // orthodiver_flow(generate_haplotypes_flow_1.out[0], generate_haplotypes_flow_1.out[1], generate_haplotypes_flow_2.out[0], generate_haplotypes_flow_2.out[1])
 }
 
