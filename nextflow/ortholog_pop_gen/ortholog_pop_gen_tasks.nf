@@ -162,7 +162,8 @@ process orthofinder {
         cpus 16
 
         input:
-        tuple val(meta), path(protein_fastas, stageAs: "fastas/*")
+        tuple val(meta_1), path(prot_fasta_1, stageAs: "fastas/*")
+        tuple val(meta_2), path(prot_fasta_2, stageAs: "fastas/*")
 
         output:
         path("fastas/OrthoFinder/Results_*/Single_Copy_orthologue_sequences/*")
