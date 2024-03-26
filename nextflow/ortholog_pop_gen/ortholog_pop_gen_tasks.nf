@@ -149,8 +149,10 @@ process generate_effective_fasta_AGAT {
 
         script:
         """
-        agat_sp_extract_sequences.pl --gff ${gff} --fasta ${consensus_fasta_1} -t exon --merge -o ${meta}.${fasta_meta}.snp.1.cds.fasta
-        agat_sp_extract_sequences.pl --gff ${gff} --fasta ${consensus_fasta_2} -t exon --merge -o ${meta}.${fasta_meta}.snp.2.cds.fasta
+        agat_sp_extract_sequences.pl --gff ${gff} --fasta ${consensus_fasta_1} -t exon --merge -o ${meta}.${fasta_meta}.snp.1.cds.fasta.tmp
+        awk '/^>/ {printf("\n%s\n",\$0);next; } { printf("%s",\$0);}  END {printf("\n");}' < ${meta}.${fasta_meta}.snp.1.cds.fasta.tmp > ${meta}.${fasta_meta}.snp.1.cds.fasta
+        agat_sp_extract_sequences.pl --gff ${gff} --fasta ${consensus_fasta_2} -t exon --merge -o ${meta}.${fasta_meta}.snp.2.cds.fasta.tmp
+        awk '/^>/ {printf("\n%s\n",\$0);next; } { printf("%s",\$0);}  END {printf("\n");}' < ${meta}.${fasta_meta}.snp.1.cds.fasta.tmp > ${meta}.${fasta_meta}.snp.1.cds.fasta
         """
 }
 
@@ -166,8 +168,7 @@ process orthofinder {
         tuple val(meta_2), path(prot_fasta_2, stageAs: "fastas/*")
 
         output:
-        tuple val(meta_1), val(meta_2), emit: meta
-        path("fastas/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences/*"), emit: files
+        path("fastas/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences/*")
 
         script:
         """
@@ -179,11 +180,10 @@ process orthofinder {
 process mafft {
 
         input:
-        tuple val(meta_1), val(meta_2)
         path(fasta)
 
         output:
-        tuple val(meta_1), val(meta_2), path("${fasta.baseName}.mafft.fa")
+        tuple val("${fasta.baseName}"), path("${fasta.baseName}.mafft.fa")
 
         script:
         """
@@ -195,21 +195,63 @@ process mafft {
 // rename the haplotyped fasta headers to match
 // then i need to take each protein alignment and grep all the sample haplotyped fastas
 // to get all the translatorx input fastas
-// then give these to translatorx
-// might be easier to make the files up to this stage and then look at them
+// Translatorx wants the protein fasta then a pair of nucleotide fastas to align
+
+// Ok need to figure out how to do this
+// For each protein file I have an alignment for 2 species
+// I then want to take all of the sample nuc files for each species in each orthogroup
+// Start with viewing the output nuc channel
+// Then I want to get the nucleotide sequences corresponding to the protein alignment from each sample file
+// Can put these in temporary files
+// I need to rename the fasta headers. I could either do this now or in one go
+// if i Do it in one go it will be an earlier process
+// then given files of the nucleotides I need to generate all combinations of alignments
+// send these to translatorx with the protein alignment file
+// meta can be the combo?
+// Hard bit will be getting it to figure out how to use one file many times and. vice versa
+// get a set of files in a play directory to test the code
+
+// cat protein alignment
+// get species name and protein name from fasta headers
+// for each species, loop over each sample and each snp set and get the amino acid
+// cat single line fasta snp 1, grep protein -A1, append to a file for that sample for that orthogroup
+// repeat with snp 2
+// Should have nuc haplotypes for each sample.
+// Now rename the headers, might need to rename the headers for all the nuc fastas and prot fastas
+// Once renamed, generate all pairwise combinations of haplotypes for alignment with translatorx
+// forward prot fasta and each nuc fasta to channels
+
+// Not sure how to sort out the nuc channel to give to this, need all samples at once
+
+// This should output all pairwise combinations of sample haplotypes per orthogroup
+process get_orthogroup_haps {
+
+        input:
+        tuple val(meta), path(prot_fasta)
+        tuple val(samples_1_meta), val(sp_1_meta), path(sp_1.snp_1.fasta), path(sp_1.snp_2.fasta)
+        tuple val(samples_2_meta), val(sp_2_meta), path(sp_2.snp_1.fasta), path(sp_2.snp_2.fasta)
+
+        output:
+        tuple val(meta), path("*.unaln.fa")
+
+        script:
+        """
+
+        """
+
+}
 
 process translatorx {
 
         input:
-        path(prot_fasta)
-        path(nuc_fasta)
+        tuple val(meta), path(prot_fasta), path(nuc_fasta)
 
         output:
         path("${nuc_fasta.baseName}.tlx.fa")
 
         script:
         """
-        translatorx -i ${nuc_fasta} -a ${prot_fasta} -o ${nuc_fasta.baseName}.tlx.fa
+        translatorx -i ${nuc_fasta} -a ${prot_fasta} -o ${meta}.tlx.fa
         """
 }
 
