@@ -159,10 +159,10 @@ process generate_effective_fasta_AGAT {
 // I might go with this for now and if in the future it hasnt applied the haplotypes right i can fix it then
 
 process orthofinder {
-        cpus 64
+        cpus 16
 
         input:
-        path(protein_fastas, stageAs: "fastas/*")
+        tuple val(meta), path(protein_fastas, stageAs: "fastas/*")
 
         output:
         path("fastas/OrthoFinder/Results_*/Single_Copy_orthologue_sequences/*")
