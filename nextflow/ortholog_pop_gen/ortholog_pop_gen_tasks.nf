@@ -166,7 +166,7 @@ process orthofinder {
         tuple val(meta_2), path(prot_fasta_2, stageAs: "fastas/*")
 
         output:
-        path("fastas/OrthoFinder/Results_*/Single_Copy_orthologue_sequences/*")
+        tuple val(meta_1), val(meta_2), path("fastas/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences/*")
 
         script:
         """
@@ -178,10 +178,10 @@ process orthofinder {
 process mafft {
 
         input:
-        path(fasta)
+        tuple val(meta_1), val(meta_2), path(fasta)
 
         output:
-        path("")
+        tuple val(meta_1), val(meta_2), path("${fasta.baseName}.mafft.fa")
 
         script:
         """
