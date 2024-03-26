@@ -8,11 +8,11 @@ params.prot_fasta_1 = "$launchDir/data/results/braker3/allacma_fusca/braker.aa"
 
 // Species 2 data files
 params.species_2 = "dicyrtomina_minuta"
-params.genome_fasta_1 = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.fa"
-params.vcf_1 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.hard_filtered.sorted.vcf.gz"
-params.callable_bed_1 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.callable.bed"
-params.annot_1 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.gtf"
-params.prot_fasta_1 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.aa"
+params.genome_fasta_2 = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.fa"
+params.vcf_2 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.hard_filtered.sorted.vcf.gz"
+params.callable_bed_2 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.callable.bed"
+params.annot_2 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.gtf"
+params.prot_fasta_2 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.aa"
 
 // Output Directory
 params.outdir = "$launchDir/ortholog_pop_gen/allacma_fusca.vs.dicyrtomina_minuta"
