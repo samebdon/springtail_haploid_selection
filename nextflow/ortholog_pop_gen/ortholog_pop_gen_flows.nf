@@ -35,7 +35,7 @@ workflow orthodiver_flow {
           prot_fasta_2
         main:
           orthofinder(prot_fasta_1, prot_fasta_2) // might have to do a stageas for these
-          // mafft(orthofinder.out) // need to figure out how to split orthofinder out dir to single files for mafft
+          mafft(orthofinder.out) // need to figure out how to split orthofinder out dir to single files for mafft
           // translatorx()
           // orthodiver()
 }
