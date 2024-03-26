@@ -166,7 +166,8 @@ process orthofinder {
         tuple val(meta_2), path(prot_fasta_2, stageAs: "fastas/*")
 
         output:
-        tuple val(meta_1), val(meta_2), path("fastas/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences/*")
+        tuple val(meta_1), val(meta_2), emit: meta
+        path("fastas/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences/*"), emit: files
 
         script:
         """
