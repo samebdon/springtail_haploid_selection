@@ -7,8 +7,8 @@ Usage: pair_fastas.py -i <DIR> -o <DIR> -a <STR> -b <STR> [-h]
   [Options]
     -i, --input_dir <DIR>                     Directory of fasta files
     -o, --output_dir <DIR>                    Output directory
-    -a, --species_a <STR>                     Species A name
-    -b, --species_b <STR>                     Species B name
+    -a, --species_A <STR>                     Species A name
+    -b, --species_B <STR>                     Species B name
     -h, --help                                Show this message
 
 """
