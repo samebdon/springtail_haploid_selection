@@ -59,11 +59,16 @@ if __name__ == "__main__":
         with open(
             f"{output_dir}/{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa"
         ) as a:
-            f.write(lines_A[0])
-            f.write(lines_A[1])
-            f.write(lines_B[0])
-            f.write(lines_B[1])
-            f.write(lines_A[2])
-            f.write(lines_A[3])
-            f.write(lines_B[2])
-            f.write(lines_B[3])
+            f.writelines(
+                [
+                    lines_A[0],
+                    lines_A[0],
+                    lines_A[1],
+                    lines_B[0],
+                    lines_B[1],
+                    lines_A[2],
+                    lines_A[3],
+                    lines_B[2],
+                    lines_B[3],
+                ]
+            )
