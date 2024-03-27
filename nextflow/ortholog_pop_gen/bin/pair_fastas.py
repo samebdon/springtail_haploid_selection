@@ -24,15 +24,15 @@ from itertools import product
 if __name__ == "__main__":
     args = docopt(__doc__)
 
-    input_dir = str(args['--input_dir'])
-    output_dir = str(args['--output_dir'])
-    species_A = str(args['--species_A'])
-    species_B = str(args['--species_B'])
+    input_dir = str(args["--input_dir"])
+    output_dir = str(args["--output_dir"])
+    species_A = str(args["--species_A"])
+    species_B = str(args["--species_B"])
 
     A_files = []
     B_files = []
 
-    for file_name in os.listdir(input_dir):   
+    for file_name in os.listdir(input_dir):
         if species_A in str(file_name):
             A_files.append(file_name)
         if species_B in str(file_name):
@@ -41,7 +41,6 @@ if __name__ == "__main__":
     file_pairs = list(product(A_files, B_files))
 
     for file_A, file_B in file_pairs:
-
         orthogroup = file_A.split(".")[0]
 
         sample_A = file_A.split(".")[1]
@@ -53,7 +52,9 @@ if __name__ == "__main__":
         with open(f"{input_dir}/{file_B}") as file:
             lines_B = [line.rstrip() for line in file]
 
-        with open(f"{output_dir}/{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa") as f:
+        with open(
+            f"{output_dir}/{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa"
+        ) as w:
             f.write(lines_A[0])
             f.write(lines_A[1])
             f.write(lines_B[0])
