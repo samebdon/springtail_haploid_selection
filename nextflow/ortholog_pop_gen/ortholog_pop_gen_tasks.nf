@@ -145,7 +145,7 @@ process generate_effective_fasta_AGAT {
         tuple val(gff_meta), path(gff)
 
         output:
-        path("${meta}.${fasta_meta}.snp.1.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.cds.fasta")
+        tuple path("${meta}.${fasta_meta}.snp.1.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.cds.fasta")
 
         script:
         """
