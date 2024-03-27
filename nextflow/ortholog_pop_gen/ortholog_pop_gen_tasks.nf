@@ -250,7 +250,7 @@ process get_orthogroup_haps {
 
         rename_hap_fastas.sh hap_fastas hap_fastas_rn
 
-        python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs
+        ## python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs
         """
 
 }
