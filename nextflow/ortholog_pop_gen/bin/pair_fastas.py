@@ -67,7 +67,6 @@ if __name__ == "__main__":
             f.writelines(line + '\n' for line in
                 [
                     lines_A[0],
-                    lines_A[0],
                     lines_A[1],
                     lines_B[0],
                     lines_B[1],
