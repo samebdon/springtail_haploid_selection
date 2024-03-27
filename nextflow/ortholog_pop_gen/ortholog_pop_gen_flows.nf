@@ -41,7 +41,9 @@ workflow orthodiver_flow {
           // for translatorX join mafft.out and each output of get_orthogroup haps
           // hopefully this can make a channel where each one has the protein alignment from mafft and the pair of nuc haplotypes fasta
           
-          // translatorx(dupe_prot_fasta.out, get_orthogroup_haps.out)
+          dupe_prot_fasta.out.join(get_orthogroup_haps.out).view()
+          
+          //translatorx(dupe_prot_fasta.out.join(get_orthogroup_haps.out))
           // orthodiver()
 }
 

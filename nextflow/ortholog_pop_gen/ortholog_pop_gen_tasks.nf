@@ -240,7 +240,6 @@ process get_orthogroup_haps {
         """
         SP1="\$(cat ${prot_fasta} | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
         SP2="\$(cat ${prot_fasta} | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
-
         SP1_PROT="\$(cat ${prot_fasta} | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
         SP2_PROT="\$(cat ${prot_fasta} | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
 
