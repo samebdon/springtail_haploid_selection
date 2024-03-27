@@ -38,9 +38,7 @@ if __name__ == "__main__":
         if species_B in str(file_name):
             B_files.append(file_name)
 
-    print(A_files)
-    print(B_files)
-
     files_pairs = list(product(A_files, B_files))
 
-    print(files_pairs)
+    for file_A, file_B in file_pairs:
+        print(file_A, file_B)
