@@ -150,9 +150,9 @@ process generate_effective_fasta_AGAT {
         script:
         """
         agat_sp_extract_sequences.pl --gff ${gff} --fasta ${consensus_fasta_1} -t exon --merge -o ${meta}.${fasta_meta}.snp.1.cds.fasta.tmp
-        awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < ${meta}.${fasta_meta}.snp.1.cds.fasta.tmp > ${meta}.${fasta_meta}.snp.1.cds.fasta
+        awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < ${meta}.${fasta_meta}.snp.1.cds.fasta.tmp | tail -n +2 > ${meta}.${fasta_meta}.snp.1.cds.fasta
         agat_sp_extract_sequences.pl --gff ${gff} --fasta ${consensus_fasta_2} -t exon --merge -o ${meta}.${fasta_meta}.snp.2.cds.fasta.tmp
-        awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < ${meta}.${fasta_meta}.snp.2.cds.fasta.tmp > ${meta}.${fasta_meta}.snp.2.cds.fasta
+        awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < ${meta}.${fasta_meta}.snp.2.cds.fasta.tmp | tail -n +2 > ${meta}.${fasta_meta}.snp.2.cds.fasta
         """
 }
 // I've got a mixture of soft and hard masking in here, Should double check what to do and go with one
@@ -203,7 +203,8 @@ process dupe_prot_fasta {
 
         script:
         """
-        duplicate_prot_aln.sh ${prot_fasta}
+        awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < ${prot_fasta} | tail -n +2 > ${meta}.mafft.single_line.fa
+        duplicate_prot_aln.sh ${meta}.mafft.single_line.fa
         """
 }
 
@@ -253,9 +254,13 @@ process translatorx {
 
         script:
         """
-        cat ${prot_fasta}
-        cat ${hap_fasta}
-        ## translatorx -i ${hap_fasta} -a ${prot_fasta} -o ${hap_fasta.baseName}.tlx.fa
+        OUT_PREFIX="\$(ls *.unaln.fa| cut -d'.' -f-5)"
+        SAMPLE_1="\$(ls *.unaln.fa | cut -d'.' -f2-2)"
+        SAMPLE_2="\$(ls *.unaln.fa | cut -d'.' -f4-4)"
+        sed -i -e 's/sample_1/\$SAMPLE_1/g' ${prot_fasta}
+        sed -i -e 's/sample_2/\$SAMPLE_2/g' ${prot_fasta}
+
+        translatorx -i ${hap_fasta} -a ${prot_fasta} -o \$OUT_PREFIX.tlx.fa
         """
 }
 
