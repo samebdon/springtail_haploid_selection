@@ -21,7 +21,6 @@ import os
 from docopt import docopt
 from itertools import product
 
-
 if __name__ == "__main__":
     args = docopt(__doc__)
 
@@ -62,6 +61,9 @@ if __name__ == "__main__":
 
         if lines_B[1].count("A")+lines_B[1].count("T")+lines_B[1].count("C")+lines_B[1].count("G") < 3:
             continue
+
+        ## This is a bit late to remove sequences with too few callable regions but not sure where to do it earlier
+        
 
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)

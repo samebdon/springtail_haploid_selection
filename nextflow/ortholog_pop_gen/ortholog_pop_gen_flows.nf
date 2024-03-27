@@ -56,6 +56,10 @@ workflow orthodiver_flow {
           orthodiver(translatorx.out.groupTuple())
 }
 
+// THOUGHTS AND TODOS
+
+// remove non informative fastas earlier
+// hard mask earlier
 
 // can just join up all protein fasta inputs into one in channel
 // should be able to make a workflow that doesnt need generate haplotypes and so just gets dxy not pi

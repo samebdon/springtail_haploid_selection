@@ -208,6 +208,8 @@ process dupe_prot_fasta {
         """
 }
 
+// can I remove non informative genes before running get hap, renaming, and pair fastas?
+
 process get_orthogroup_haps {
 
         input:
@@ -216,7 +218,7 @@ process get_orthogroup_haps {
         path(sp2_fastas, stageAs: "sp2_fastas/*")
 
         output:
-        tuple val(meta), path("hap_fasta_pairs/*.unaln.fa")
+        tuple val(meta), path("hap_fasta_pairs/*.unaln.fa"), optional: true
 
         script:
         """
@@ -257,7 +259,7 @@ process translatorx {
         OUT_PREFIX="\$(ls *.unaln.fa| cut -d'.' -f-5)"
         SAMPLE_1="\$(ls *.unaln.fa | cut -d'.' -f2-2)"
         SAMPLE_2="\$(ls *.unaln.fa | cut -d'.' -f4-4)"
-        
+
         sed -i -e 's/sample_1/\$SAMPLE_1/g' ${prot_fasta}
         sed -i -e 's/sample_2/\$SAMPLE_2/g' ${prot_fasta}
 
