@@ -18,6 +18,7 @@ HEAD_THREE=">${SP_ONE}.sample_1.2.${PROT_ONE}"
 HEAD_FOUR=">${SP_TWO}.sample_2.2.${PROT_TWO}"
 
 OUTFILE="${ORTHOGROUP}.mafft.happed.fa"
+rm OUTFILE
 
 echo "${HEAD_ONE}" >> $OUTFILE
 echo "${SEQ_ONE}" >> $OUTFILE
