@@ -52,6 +52,9 @@ if __name__ == "__main__":
         with open(f"{input_dir}/{file_B}") as file:
             lines_B = [line.rstrip() for line in file]
 
+        if not os.path.exists(output_dir):
+            os,mkdir(output_dir)
+
         with open(
             f"{output_dir}/{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa"
         ) as a:
