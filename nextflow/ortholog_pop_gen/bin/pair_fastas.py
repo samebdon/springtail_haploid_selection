@@ -16,8 +16,9 @@ Usage: pair_fastas.py -i <DIR> -o <DIR> -a <STR> -b <STR> [-h]
 # Example command:
 # python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs -a species_A -b species_B
 
-from docopt import docopt
+import re
 import os
+from docopt import docopt
 from itertools import product
 
 
@@ -51,6 +52,16 @@ if __name__ == "__main__":
 
         with open(os.path.join(input_dir, file_B)) as file:
             lines_B = [line.rstrip() for line in file]
+
+        for i in [1, 3]:
+            lines_A[i] = re.sub('[a-z]', 'N', lines_A[i])
+            lines_B[i] = re.sub('[a-z]', 'N', lines_A[i])
+
+        if lines_A[1].count("A")+lines_A[1].count("T")+lines_A[1].count("C")+lines_A[1].count("G") < 3:
+            continue
+
+        if lines_B[1].count("A")+lines_B[1].count("T")+lines_B[1].count("C")+lines_B[1].count("G") < 3:
+            continue
 
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
