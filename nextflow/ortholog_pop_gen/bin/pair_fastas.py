@@ -46,17 +46,17 @@ if __name__ == "__main__":
         sample_A = file_A.split(".")[1]
         sample_B = file_B.split(".")[1]
 
-        with open(f"{input_dir}/{file_A}") as file:
+        with open(os.path.join(input_dir, file_A)) as file:
             lines_A = [line.rstrip() for line in file]
 
-        with open(f"{input_dir}/{file_B}") as file:
+        with open(os.path.join(input_dir, file_B)) as file:
             lines_B = [line.rstrip() for line in file]
 
         if not os.path.exists(output_dir):
             os,mkdir(output_dir)
 
         with open(
-            f"{output_dir}/{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa"
+            os.path.join(output_dir, f"{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa")
         ) as a:
             f.writelines(
                 [
