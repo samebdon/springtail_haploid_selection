@@ -189,7 +189,7 @@ process mafft {
 
         script:
         """
-        mafft ${fasta} > ${fasta.baseName}.mafft.fa
+        mafft ${fasta} --thread ${task.cpus} > ${fasta.baseName}.mafft.fa
         """
 }
 
