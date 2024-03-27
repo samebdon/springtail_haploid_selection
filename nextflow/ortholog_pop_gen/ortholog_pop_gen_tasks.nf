@@ -5,7 +5,7 @@ process get_best_cds_bed {
 
         input:
         val(meta)
-        val(annotation)
+        path(annotation)
 
         output:
         tuple val(meta), path("${meta}.longest_isoform.gff3"), emit: gff

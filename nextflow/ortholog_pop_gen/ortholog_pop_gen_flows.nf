@@ -33,9 +33,6 @@ workflow orthodiver_flow {
           hap_fastas_2
           prot_fasta_2
         main:
-          nuc_fastas_1.view()
-          nuc_fastas_2.view()
-
           orthofinder(prot_fasta_1, prot_fasta_2)
           mafft(orthofinder.out.flatten())
           dupe_prot_fasta(mafft.out)
