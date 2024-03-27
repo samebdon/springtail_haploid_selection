@@ -207,25 +207,6 @@ process dupe_prot_fasta {
         """
 }
 
-// Irritatingly it looks like the protein file needs identical fasta headers to the
-// nucleotide file
-// Maybe the way to do this is in the translatorX process take the sample file I have
-// and impute the names into the protein file
-// Not sure how to do this
-// Could get sample 1 and 2 and sed it in before running
-
-// Once renamed, generate all pairwise combinations of haplotypes for alignment with translatorx
-// feels liike a python job to do this step
-// test the python script on one of the dirs that gets made with earlier
-
-// forward prot fasta and each nuc fasta to channels
-
-// Not sure how to sort out the nuc channel to give to this, need all samples at once
-
-// This should output all pairwise combinations of sample haplotypes per orthogroup
-
-
-// run this now and then add the bit that gets the pairwise combos
 process get_orthogroup_haps {
 
         input:
@@ -255,20 +236,25 @@ process get_orthogroup_haps {
         """
 }
 
-// can i maintain species order when shuffling with pair fastas
-// get species as strings and pass to python
+// Irritatingly it looks like the protein file needs identical fasta headers to the
+// nucleotide file
+// Maybe the way to do this is in the translatorX process take the sample file I have
+// and impute the names into the protein file
+// Not sure how to do this
+// Could get sample 1 and 2 and sed it in before running
 
 process translatorx {
 
         input:
-        tuple val(meta), path(prot_fasta), path(nuc_fasta)
+        tuple path(prot_fasta), path(nuc_fasta)
 
         output:
         path("${nuc_fasta.baseName}.tlx.fa")
 
         script:
         """
-
+        cat ${prot_fasta}
+        cat ${nuc_fasta}
         ## translatorx -i ${nuc_fasta} -a ${prot_fasta} -o ${meta}.tlx.fa
         """
 }
@@ -276,13 +262,13 @@ process translatorx {
 process orthodiver {
 
         input:
-        path(SCO_dir)
+        path(orthlg_dir)
 
         output:
         path("results_dir")
 
         script:
         """
-        orthodiver.py -d ${SCO_dir} -A -B -o results_dir
+        orthodiver.py -d ${orthlg_dir} -A -B -o results_dir
         """
 }
