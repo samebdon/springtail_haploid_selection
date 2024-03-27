@@ -250,7 +250,7 @@ process translatorx {
         tuple path(hap_fasta), path(prot_fasta)
 
         output:
-        path("${hap_fasta.baseName}.tlx.fa")
+        path("*.tlx.fa")
 
         script:
         """
