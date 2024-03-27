@@ -246,16 +246,16 @@ process get_orthogroup_haps {
 process translatorx {
 
         input:
-        tuple path(prot_fasta), path(nuc_fasta)
+        tuple path(hap_fasta), path(prot_fasta)
 
         output:
-        path("${nuc_fasta.baseName}.tlx.fa")
+        path("${hap_fasta.baseName}.tlx.fa")
 
         script:
         """
         cat ${prot_fasta}
-        cat ${nuc_fasta}
-        ## translatorx -i ${nuc_fasta} -a ${prot_fasta} -o ${meta}.tlx.fa
+        cat ${hap_fasta}
+        ## translatorx -i ${hap_fasta} -a ${prot_fasta} -o ${hap_fasta.baseName}.tlx.fa
         """
 }
 

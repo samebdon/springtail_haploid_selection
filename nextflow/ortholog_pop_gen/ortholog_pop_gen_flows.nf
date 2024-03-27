@@ -37,16 +37,8 @@ workflow orthodiver_flow {
           mafft(orthofinder.out.flatten())
           dupe_prot_fasta(mafft.out)
           get_orthogroup_haps(mafft.out, hap_fastas_1, hap_fastas_2)
-          
-          // for translatorX join mafft.out and each output of get_orthogroup haps
-          // hopefully this can make a channel where each one has the protein alignment from mafft and the pair of nuc haplotypes fasta
-          // even though the input meta should be the orthogroup the output meta is the orthogroup and the comparison so I dont think i need to maintain it
-
           tlx_in_ch = dupe_prot_fasta.out.join(get_orthogroup_haps.out).map { it -> [it[2], [it[1]]].combinations() }.flatten().collate(2)
-          tlx_in_ch.view()
-
-          // [OG0004965, OG0004965.mafft.happed.fa, [OG0004965.BH3-2.allacma_fusca.LR44_EDSW200011441-1a_HJ5JVDSXY_L2.dicyrtomina_minuta.unaln.fa,..]]
-          // translatorx(tlx_in_ch)
+          translatorx(tlx_in_ch)
           // orthodiver(translatorx.out.collect())
 }
 
