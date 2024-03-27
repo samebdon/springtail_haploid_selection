@@ -234,7 +234,7 @@ process get_orthogroup_haps {
         path(sp2_fastas, stageAs: "sp2_fastas/*")
 
         output:
-        tuple val(meta), path("*.unaln.fa")
+        tuple val(meta), path("hap_fasta_pairs/*.unaln.fa")
 
         script:
         """
@@ -246,7 +246,6 @@ process get_orthogroup_haps {
 
         mkdir hap_fastas
         mkdir hap_fastas_rn
-        mkdir hap_fasta_pairs
 
         get_hap.sh sp1_fastas \$SP1_PROT hap_fastas ${meta}
         get_hap.sh sp2_fastas \$SP2_PROT hap_fastas ${meta}
