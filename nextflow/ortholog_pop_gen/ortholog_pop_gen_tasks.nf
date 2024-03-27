@@ -216,6 +216,7 @@ process dupe_prot_fasta {
 
 // Once renamed, generate all pairwise combinations of haplotypes for alignment with translatorx
 // feels liike a python job to do this step
+// test the python script on one of the dirs that gets made with earlier
 
 // forward prot fasta and each nuc fasta to channels
 
@@ -242,11 +243,14 @@ process get_orthogroup_haps {
 
         mkdir hap_fastas
         mkdir hap_fastas_rn
+        mkdir hap_fasta_pairs
 
-        get_hap.sh sp1_fastas/* \$SP1_PROT hap_fastas ${meta}
-        get_hap.sh sp2_fastas/* \$SP2_PROT hap_fastas ${meta}
+        get_hap.sh sp1_fastas \$SP1_PROT hap_fastas ${meta}
+        get_hap.sh sp2_fastas \$SP2_PROT hap_fastas ${meta}
 
-        rename_hap_fastas.sh hap_fastas/* hap_fastas_rn
+        rename_hap_fastas.sh hap_fastas hap_fastas_rn
+
+        python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs
         """
 
 }
