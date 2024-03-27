@@ -238,6 +238,9 @@ process get_orthogroup_haps {
 
         script:
         """
+        SP1="\$(cat ${prot_fasta} | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
+        SP2="\$(cat ${prot_fasta} | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
+
         SP1_PROT="\$(cat ${prot_fasta} | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
         SP2_PROT="\$(cat ${prot_fasta} | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
 
@@ -250,10 +253,12 @@ process get_orthogroup_haps {
 
         rename_hap_fastas.sh hap_fastas hap_fastas_rn
 
-        ## python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs
+        python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs -a ${SP1} -b ${SP2}
         """
-
 }
+
+// can i maintain species order when shuffling with pair fastas
+// get species as strings and pass to python
 
 process translatorx {
 
