@@ -250,13 +250,14 @@ process translatorx {
         tuple path(hap_fasta), path(prot_fasta)
 
         output:
-        path("*.tlx.fa")
+        tuple val("\$SAMPLE_1_\$SAMPLE_2"), path("*.tlx.fa")
 
         script:
         """
         OUT_PREFIX="\$(ls *.unaln.fa| cut -d'.' -f-5)"
         SAMPLE_1="\$(ls *.unaln.fa | cut -d'.' -f2-2)"
         SAMPLE_2="\$(ls *.unaln.fa | cut -d'.' -f4-4)"
+        
         sed -i -e 's/sample_1/\$SAMPLE_1/g' ${prot_fasta}
         sed -i -e 's/sample_2/\$SAMPLE_2/g' ${prot_fasta}
 
@@ -267,13 +268,18 @@ process translatorx {
 process orthodiver {
 
         input:
-        path(orthlg_dir)
+        tuple val(meta), path(orthlg_fastas, stageAs: "fastas/*")
 
         output:
-        path("results_dir")
+        tuple val(meta), path("${meta}_results")
 
         script:
         """
-        orthodiver.py -d ${orthlg_dir} -A -B -o results_dir
+        SAMPLE_1="\$(ls fastas/* | head -n 1 | cut -d'.' -f2-2)"
+        SPECIES_1="\$(ls fastas/* | head -n 1 | cut -d'.' -f3-3)"
+        SAMPLE_2="\$(ls fastas/* | head -n 1 | cut -d'.' -f4-4)"
+        SPECIES_2="\$(ls fastas/* | head -n 1 | cut -d'.' -f5-5)"
+ 
+        orthodiver.py -d ${fastas} -A \$SPECIES_1.\$SAMPLE_1 -B \$SPECIES_2.\$SAMPLE_2 -o ${meta}_results
         """
 }
