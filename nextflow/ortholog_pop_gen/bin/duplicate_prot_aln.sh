@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FASTA="$1"
+FILE="$1"
 
 ORTHOGROUP="$(ls $FILE | cut -d'.' -f-1)"
 
