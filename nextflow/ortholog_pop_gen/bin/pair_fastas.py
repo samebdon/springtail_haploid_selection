@@ -62,7 +62,7 @@ if __name__ == "__main__":
             ),
             "a",
         ) as f:
-            f.writelines(
+            f.writelines(line + '\n' for line in
                 [
                     lines_A[0],
                     lines_A[0],
