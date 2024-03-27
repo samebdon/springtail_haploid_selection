@@ -16,7 +16,7 @@ Usage: pair_fastas.py -i <DIR> -o <DIR> -a <STR> -b <STR> [-h]
 # Example command:
 # python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs -a species_A -b species_B
 
-import docopt
+from docopt import docopt
 import os
 from itertools import combinations
 
