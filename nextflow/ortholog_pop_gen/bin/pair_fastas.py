@@ -25,7 +25,7 @@ if __name__ == "__main__":
     args = docopt(__doc__)
 
     input_dir = os.listdir(args['--input_dir'])
-    output_dir_name = args['--output_dir']
+    output_dir = str(args['--output_dir'])
     species_A = str(args['--species_A'])
     species_B = str(args['--species_B'])
 
@@ -41,4 +41,24 @@ if __name__ == "__main__":
     file_pairs = list(product(A_files, B_files))
 
     for file_A, file_B in file_pairs:
-        print(file_A, file_B)
+
+        orthogroup = file_A.split(".")[0]
+
+        sample_A = file_A.split(".")[1]
+        sample_B = file_B.split(".")[1]
+
+        with open(file_A) as file:
+            lines_A = [line.rstrip() for line in file]
+
+        with open(file_B) as file:
+            lines_B = [line.rstrip() for line in file]
+
+        with open(f"{output_dir}/{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa") as f:
+            f.write(lines_A[0])
+            f.write(lines_A[1])
+            f.write(lines_B[0])
+            f.write(lines_B[1])
+            f.write(lines_A[2])
+            f.write(lines_A[3])
+            f.write(lines_B[2])
+            f.write(lines_B[3])
