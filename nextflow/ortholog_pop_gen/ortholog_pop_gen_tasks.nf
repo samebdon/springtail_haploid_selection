@@ -251,7 +251,7 @@ process get_orthogroup_haps {
 
         rename_hap_fastas.sh hap_fastas hap_fastas_rn
 
-        python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs -a ${SP1} -b ${SP2}
+        python pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs -a \$SP1 -b \$SP2
         """
 }
 
@@ -268,7 +268,8 @@ process translatorx {
 
         script:
         """
-        translatorx -i ${nuc_fasta} -a ${prot_fasta} -o ${meta}.tlx.fa
+
+        ## translatorx -i ${nuc_fasta} -a ${prot_fasta} -o ${meta}.tlx.fa
         """
 }
 
