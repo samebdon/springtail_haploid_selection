@@ -3,7 +3,7 @@
 IN_DIR="$1"
 OUT_DIR="$2"
 
-for FILE in $IN_DIR
+for FILE in $IN_DIR/*
 do
 	ORTHOGROUP="$(ls $FILE | cut -d'/' -f2- | cut -d'.' -f-1)"
 	SAMPLE="$(ls $FILE | cut -d'/' -f2- | cut -d'.' -f2-2)"
@@ -17,8 +17,8 @@ do
 
 	OUTFILE="${OUT_DIR}/${ORTHOGROUP}.${SAMPLE}.${SPECIES}.fa"
 
-	echo "${HEAD_ONE}" >> $OUTFILE
-	echo "${SEQ_ONE}" >> $OUTFILE
-	echo "${HEAD_TWO}" >> $OUTFILE
-	echo "${SEQ_TWO}" >> $OUTFILE
+	echo "${HEAD_ONE}" >> ${OUTFILE}
+	echo "${SEQ_ONE}" >> ${OUTFILE}
+	echo "${HEAD_TWO}" >> ${OUTFILE}
+	echo "${SEQ_TWO}" >> ${OUTFILE}
 done
