@@ -1,4 +1,4 @@
-include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; mafft; get_orthogroup_haps; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; mafft; dupe_prot_fasta; get_orthogroup_haps; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow gen_haps_flow {
         take:
@@ -28,9 +28,9 @@ workflow gen_haps_flow {
 // assuming 2 protein files in prot_dir for now. should generalise for any number of samples
 workflow orthodiver_flow {
         take:
-          nuc_fastas_1
+          hap_fastas_1
           prot_fasta_1
-          nuc_fastas_2
+          hap_fastas_2
           prot_fasta_2
         main:
           nuc_fastas_1.view()
@@ -38,12 +38,13 @@ workflow orthodiver_flow {
 
           orthofinder(prot_fasta_1, prot_fasta_2)
           mafft(orthofinder.out.flatten())
+          dupe_prot_fasta(mafft.out)
+          get_orthogroup_haps(mafft.out, hap_fastas_1, hap_fastas_2)
           
-          // get_orthogroup_haps(mafft.out, nuc_fastas_1, nuc_fastas_2)
           // for translatorX join mafft.out and each output of get_orthogroup haps
           // hopefully this can make a channel where each one has the protein alignment from mafft and the pair of nuc haplotypes fasta
           
-          // translatorx(mafft.out)
+          // translatorx(dupe_prot_fasta.out, get_orthogroup_haps.out)
           // orthodiver()
 }
 

@@ -145,7 +145,7 @@ process generate_effective_fasta_AGAT {
         tuple val(gff_meta), path(gff)
 
         output:
-        tuple val(meta), val(fasta_meta), path("${meta}.${fasta_meta}.snp.1.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.cds.fasta")
+        path("${meta}.${fasta_meta}.snp.1.cds.fasta"), path("${meta}.${fasta_meta}.snp.2.cds.fasta")
 
         script:
         """
@@ -155,6 +155,8 @@ process generate_effective_fasta_AGAT {
         awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < ${meta}.${fasta_meta}.snp.2.cds.fasta.tmp > ${meta}.${fasta_meta}.snp.2.cds.fasta
         """
 }
+// I've got a mixture of soft and hard masking in here, Should double check what to do and go with one
+
 
 // I think it seems ok for now, its at least given me individuals with two haplotypes different from the reference
 // but i havent seen a heterozygous individual yet
@@ -191,52 +193,60 @@ process mafft {
         """
 }
 
-// here i might need a script to rename the aligned protein fasta headers and 
-// rename the haplotyped fasta headers to match
-// then i need to take each protein alignment and grep all the sample haplotyped fastas
-// to get all the translatorx input fastas
-// Translatorx wants the protein fasta then a pair of nucleotide fastas to align
+process dupe_prot_fasta {
 
-// Ok need to figure out how to do this
-// For each protein file I have an alignment for 2 species
-// I then want to take all of the sample nuc files for each species in each orthogroup
-// Start with viewing the output nuc channel
-// Then I want to get the nucleotide sequences corresponding to the protein alignment from each sample file
-// Can put these in temporary files
-// I need to rename the fasta headers. I could either do this now or in one go
-// if i Do it in one go it will be an earlier process
-// then given files of the nucleotides I need to generate all combinations of alignments
-// send these to translatorx with the protein alignment file
-// meta can be the combo?
-// Hard bit will be getting it to figure out how to use one file many times and. vice versa
-// get a set of files in a play directory to test the code
+        input:
+        tuple val(meta), path(prot_fasta)
 
-// cat protein alignment
-// get species name and protein name from fasta headers
-// for each species, loop over each sample and each snp set and get the amino acid
-// cat single line fasta snp 1, grep protein -A1, append to a file for that sample for that orthogroup
-// repeat with snp 2
-// Should have nuc haplotypes for each sample.
-// Now rename the headers, might need to rename the headers for all the nuc fastas and prot fastas
+        output:
+        tuple val(meta), path("${meta}.mafft.happed.fa")
+
+        script:
+        """
+        duplicate_prot_aln.sh ${prot_fasta}
+        """
+}
+
+// Irritatingly it looks like the protein file needs identical fasta headers to the
+// nucleotide file
+// Maybe the way to do this is in the translatorX process take the sample file I have
+// and impute the names into the protein file
+// Not sure how to do this
+// Could get sample 1 and 2 and sed it in before running
+
 // Once renamed, generate all pairwise combinations of haplotypes for alignment with translatorx
+// feels liike a python job to do this step
+
 // forward prot fasta and each nuc fasta to channels
 
 // Not sure how to sort out the nuc channel to give to this, need all samples at once
 
 // This should output all pairwise combinations of sample haplotypes per orthogroup
+
+
+// run this now and then add the bit that gets the pairwise combos
 process get_orthogroup_haps {
 
         input:
         tuple val(meta), path(prot_fasta)
-        tuple val(samples_1_meta), val(sp_1_meta), path(sp_1.snp_1.fasta), path(sp_1.snp_2.fasta)
-        tuple val(samples_2_meta), val(sp_2_meta), path(sp_2.snp_1.fasta), path(sp_2.snp_2.fasta)
+        path(sp1_fastas, stageAs: "sp1_fastas/*")
+        path(sp2_fastas, stageAs: "sp2_fastas/*")
 
         output:
         tuple val(meta), path("*.unaln.fa")
 
         script:
         """
+        SP1_PROT="\$(cat ${prot_fasta} | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
+        SP2_PROT="\$(cat ${prot_fasta} | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
 
+        mkdir hap_fastas
+        mkdir hap_fastas_rn
+
+        get_hap.sh sp1_fastas/* \$SP1_PROT hap_fastas ${meta}
+        get_hap.sh sp2_fastas/* \$SP2_PROT hap_fastas ${meta}
+
+        rename_hap_fastas.sh hap_fastas/* hap_fastas_rn
         """
 
 }
