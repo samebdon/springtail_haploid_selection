@@ -55,12 +55,14 @@ if __name__ == "__main__":
         if not os.path.exists(output_dir):
             os, mkdir(output_dir)
 
-        with open(
-            os.path.join(
-                output_dir,
-                f"{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa",
-            ),
-            "a",
+        outfile = os.path.join(output_dir, f"{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa")
+
+        try:
+            os.remove(outfile)
+        except OSError:
+            pass
+
+        with open(outfile,"a",
         ) as f:
             f.writelines(line + '\n' for line in
                 [
