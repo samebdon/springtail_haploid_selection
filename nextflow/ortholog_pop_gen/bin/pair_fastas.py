@@ -24,7 +24,7 @@ from itertools import product
 if __name__ == "__main__":
     args = docopt(__doc__)
 
-    input_dir = os.listdir(args['--input_dir'])
+    input_dir = str(args['--input_dir'])
     output_dir = str(args['--output_dir'])
     species_A = str(args['--species_A'])
     species_B = str(args['--species_B'])
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     A_files = []
     B_files = []
 
-    for file_name in input_dir:   
+    for file_name in os.listdir(input_dir):   
         if species_A in str(file_name):
             A_files.append(file_name)
         if species_B in str(file_name):
