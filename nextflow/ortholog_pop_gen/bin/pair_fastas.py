@@ -18,7 +18,7 @@ Usage: pair_fastas.py -i <DIR> -o <DIR> -a <STR> -b <STR> [-h]
 
 from docopt import docopt
 import os
-from itertools import combinations
+from itertools import product
 
 
 if __name__ == "__main__":
@@ -40,3 +40,7 @@ if __name__ == "__main__":
 
     print(A_files)
     print(B_files)
+
+    files_pairs = list(product(A_files, B_files))
+
+    print(files_pairs)
