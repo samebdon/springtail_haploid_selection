@@ -53,7 +53,7 @@ if __name__ == "__main__":
             lines_B = [line.rstrip() for line in file]
 
         if not os.path.exists(output_dir):
-            os, mkdir(output_dir)
+            os.mkdir(output_dir)
 
         outfile = os.path.join(output_dir, f"{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa")
 
