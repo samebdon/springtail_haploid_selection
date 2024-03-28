@@ -239,13 +239,6 @@ process get_orthogroup_haps {
         """
 }
 
-// Irritatingly it looks like the protein file needs identical fasta headers to the
-// nucleotide file
-// Maybe the way to do this is in the translatorX process take the sample file I have
-// and impute the names into the protein file
-// Not sure how to do this
-// Could get sample 1 and 2 and sed it in before running
-
 process translatorx {
 
         input:
@@ -260,10 +253,10 @@ process translatorx {
         SAMPLE_1="\$(ls *.unaln.fa | cut -d'.' -f2-2)"
         SAMPLE_2="\$(ls *.unaln.fa | cut -d'.' -f4-4)"
 
-        sed -i -e 's/sample_1/\$SAMPLE_1/g' ${prot_fasta}
-        sed -i -e 's/sample_2/\$SAMPLE_2/g' ${prot_fasta}
+        sed -e "s/sample_1/\$SAMPLE_1/g" ${prot_fasta} > ${prot_fasta.baseName}.rn.fa
+        sed -i -e "s/sample_2/\$SAMPLE_2/g" ${prot_fasta.baseName}.rn.fa
 
-        translatorx -i ${hap_fasta} -a ${prot_fasta} -o \$OUT_PREFIX.tlx.fa
+        translatorx -i ${hap_fasta} -a ${prot_fasta.baseName}.rn.fa -o \$OUT_PREFIX.tlx.fa
         """
 }
 
