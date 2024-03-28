@@ -200,9 +200,6 @@ process filter_orthogroups{
         """
 }
 
-//mafft removes * at end of protein sequence and makes sequence multi line
-//can I condense these steps instead of being per alignment but by doing them in one go
-//what other steps  can i reduce? maybe each of them idk
 process mafft {
 
         input:
@@ -232,7 +229,6 @@ process dupe_prot_fasta {
         """
 }
 
-// maybe make this use parallel instead of a loop
 process mafft_batch {
         cpus 4
         // scratch true
@@ -288,11 +284,7 @@ process get_orthogroup_haps {
         """
 }
 
-// this one is harder to batch
-// can I send out all orthogroups for the pair comparison as one channel
-// this stage is ignorant of pairs until pair fasta
-// here I could make a pair the unit of future analysis
-// how to
+// could even combine this with translatorx pair to really reduce symlinking
 process get_orthogroup_haps_batch {
         // scratch true
 
@@ -318,15 +310,15 @@ process get_orthogroup_haps_batch {
                 SP1_PROT="\$(cat \$prot_fasta | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
                 SP2_PROT="\$(cat \$prot_fasta | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
 
-                rm hap_fastas/*
-                rm hap_fastas_rn/*
-
                 get_hap.sh sp1_fastas \$SP1_PROT hap_fastas \$ORTHOGROUP
                 get_hap.sh sp2_fastas \$SP2_PROT hap_fastas \$ORTHOGROUP
 
                 rename_hap_fastas.sh hap_fastas hap_fastas_rn
 
                 pair_fastas.py -i hap_fastas_rn -o out -a \$SP1 -b \$SP2
+
+                rm hap_fastas/*
+                rm hap_fastas_rn/*
         done
         """
 }
