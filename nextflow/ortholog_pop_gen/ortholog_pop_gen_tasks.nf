@@ -166,7 +166,7 @@ process orthofinder {
         cpus 16
 
         input:
-        tuple val(meta_1), path(prot_fastas, stageAs: "fastas/*")
+        path(prot_fastas, stageAs: "fastas/*")
 
         output:
         path("fastas/OrthoFinder/Results_*"), emit: all
