@@ -2,6 +2,7 @@
 
 
 process get_best_cds_bed {
+        memory '4G'
 
         input:
         val(meta)
@@ -255,6 +256,7 @@ process get_orthogroup_haps {
 }
 
 process translatorx {
+        scratch true
 
         input:
         tuple path(hap_fasta), path(prot_fasta)
