@@ -1,4 +1,4 @@
-include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; mafft; dupe_prot_fasta; get_orthogroup_haps; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; filter_orthogroups; mafft; dupe_prot_fasta; get_orthogroup_haps; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow gen_haps_flow {
         take:
@@ -25,30 +25,27 @@ workflow gen_haps_flow {
           get_best_pep_fasta.out
 }
 
-//workflow infer_orthology {
-//        take:
-//          prot_fastas
-//
-//        main:
-//          orthofinder(prot_fastas)
-//          select_orthogroups()
-//
-//        emit:
-//          select_orthogroups.out
-//}
+workflow infer_orthology_flow {
+        take:
+          prot_fastas
+
+        main:
+          orthofinder(prot_fastas)
+
+        emit:
+          orthofinder.out.all
+          orthofinder.out.sco
+}
 
 // assuming 2 protein files in prot_dir for now. should generalise for any number of samples
 workflow orthodiver_flow {
         take:
           hap_fastas_1
-          prot_fasta_1
           hap_fastas_2
-          prot_fasta_2
+          ortholog_seqs
         main:
-
-          orthofinder(prot_fasta_1, prot_fasta_2) // edit to just take one pile of fastas, join?
-          // filter_orthogroups() into mafft (filter_orthogroups.out.flatten())
-          mafft(orthofinder.out.flatten())
+          // TO DO filter_orthogroups(species_1, species_2, ortholog_seqs)
+          mafft(ortholog_seqs.out.flatten())
           dupe_prot_fasta(mafft.out)
           get_orthogroup_haps(mafft.out, hap_fastas_1, hap_fastas_2)
           tlx_in_ch = dupe_prot_fasta.out.join(get_orthogroup_haps.out).map { it -> [it[2], [it[1]]].combinations() }.flatten().collate(2)
@@ -60,16 +57,4 @@ workflow orthodiver_flow {
 
 // remove non informative fastas earlier
 // hard mask earlier
-
-// can just join up all protein fasta inputs into one in channel
-// should be able to make a workflow that doesnt need generate haplotypes and so just gets dxy not pi
-// I could make alternative workflows that run orthofinder with an arbitrary number of protein fastas
-// Then could come up with criteria from sampling orthogroups from these and send the overall set to a set of comparisons
-// maybe the thing to do is split out the orthology inference from the alignment flow
-// then this last bit is only relevant to a pair and most of it can stay the same
-// can control orthology selection and comparisons in previous step
-// first step of alignment and pop gen can be selecting relevant orthologs from the orthogroups output
-// maybe dont want to edit this yet cos its a lot of unnecessary redoing
-// can do it when i next need to go through the pipeline as a whole
-// this should just make edits and future pipelines more straight forward since the beginning and end should already be stable
-// just separate out the unstable bit for easy editing
+// add orthogroup filtering step to generalise for inferring orthology with >2 species

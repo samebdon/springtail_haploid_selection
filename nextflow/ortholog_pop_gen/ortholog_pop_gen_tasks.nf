@@ -28,7 +28,7 @@ process get_best_pep_fasta {
         path(pep_fasta)
 
         output:
-        tuple val(meta), path("${meta}.best.pep.fasta")
+        path("${meta}.best.pep.fasta")
 
         // Should be fine, check best.pep.fasta looks ok
         script:
@@ -155,8 +155,6 @@ process generate_effective_fasta_AGAT {
         awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < ${meta}.${fasta_meta}.snp.2.cds.fasta.tmp | tail -n +2 > ${meta}.${fasta_meta}.snp.2.cds.fasta
         """
 }
-// I've got a mixture of soft and hard masking in here, Should double check what to do and go with one
-
 
 // I think it seems ok for now, its at least given me individuals with two haplotypes different from the reference
 // but i havent seen a heterozygous individual yet
@@ -166,11 +164,11 @@ process orthofinder {
         cpus 16
 
         input:
-        tuple val(meta_1), path(prot_fasta_1, stageAs: "fastas/*")
-        tuple val(meta_2), path(prot_fasta_2, stageAs: "fastas/*")
+        tuple val(meta_1), path(prot_fastas, stageAs: "fastas/*")
 
         output:
-        path("fastas/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences/*")
+        path("fastas/OrthoFinder/Results_*"), emit: all
+        path("fastas/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences/*"), emit: sco
 
         script:
         """
@@ -178,7 +176,23 @@ process orthofinder {
         """
 }
 
-// in the flows need to split out the orthofinder dir and get it to run mafft on each file
+// TO DO
+process filter_orthogroups{
+
+        input:
+        val(species_1)
+        val(species_2)
+        path(orthogroup_fastas)
+
+        output:
+
+        script:
+        """    
+        echo ${species_1}
+
+        """
+}
+
 process mafft {
 
         input:
