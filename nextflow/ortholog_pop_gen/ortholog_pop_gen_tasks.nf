@@ -41,6 +41,7 @@ process get_best_pep_fasta {
 }
 
 process get_callable_cds_bed {
+        memory '4G'
 
         input:
         tuple val(meta), path(cds_bed)
