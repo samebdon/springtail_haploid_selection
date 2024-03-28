@@ -307,8 +307,8 @@ process get_orthogroup_haps_batch {
                 ORTHOGROUP="\$(echo \$prot_fasta | cut -f2- -d'/' | cut -f-1 -d'.')"
                 SP1="\$(cat \$prot_fasta | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
                 SP2="\$(cat \$prot_fasta | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
-                SP1_PROT="\$(cat \$prot_fasta | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
-                SP2_PROT="\$(cat \$prot_fasta | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
+                SP1_PROT="\$(cat \$prot_fasta | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f4-)"
+                SP2_PROT="\$(cat \$prot_fasta | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f4-)"
 
                 get_hap.sh sp1_fastas \$SP1_PROT hap_fastas \$ORTHOGROUP
                 get_hap.sh sp2_fastas \$SP2_PROT hap_fastas \$ORTHOGROUP
