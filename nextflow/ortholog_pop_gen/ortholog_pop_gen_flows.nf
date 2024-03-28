@@ -46,6 +46,8 @@ workflow orthodiver_flow {
         main:
           // TO DO filter_orthogroups(species_1, species_2, ortholog_seqs)
           // could even add protein duping to end of mafft tbh but would nice to have the process as its own thing
+          
+          // is it better to try and do all of these at once rather than with a process each?
           mafft(ortholog_seqs.flatten())
           dupe_prot_fasta(mafft.out)
           get_orthogroup_haps(mafft.out, hap_fastas_1, hap_fastas_2)

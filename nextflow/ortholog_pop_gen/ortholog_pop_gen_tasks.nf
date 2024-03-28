@@ -141,6 +141,8 @@ process generate_loci {
 }
 
 process generate_effective_fasta_AGAT {
+        memory '4G'
+        scratch true
 
         input:
         tuple val(meta), val(fasta_meta), path(consensus_fasta_1), path(consensus_fasta_2)
