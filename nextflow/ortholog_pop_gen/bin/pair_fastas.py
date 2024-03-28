@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
         for i in [1, 3]:
             lines_A[i] = re.sub('[a-z]', 'N', lines_A[i])
-            lines_B[i] = re.sub('[a-z]', 'N', lines_A[i])
+            lines_B[i] = re.sub('[a-z]', 'N', lines_B[i])
 
             if lines_A[i][-3: ] in stop_codons:
                 lines_A[i] = lines_A[i][:-3]
