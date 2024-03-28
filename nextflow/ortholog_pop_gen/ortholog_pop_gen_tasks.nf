@@ -245,7 +245,7 @@ process mafft_batch {
         for fasta in fastas/*
         do
                 ORTHOGROUP="\$(echo \$fasta | cut -f2- -d'/' | cut -f-1 -d'.')"
-                mafft --thread ${task.cpus} \$fasta > \$ORTHOGROUP.mafft
+                mafft --thread ${task.cpus} \$fasta > \$ORTHOGROUP.mafft.fa
                 cat \$ORTHOGROUP.mafft.fa | seqtk seq > \$ORTHOGROUP.mafft.single_line.fa
                 duplicate_prot_aln.sh \$ORTHOGROUP.mafft.single_line.fa
         done
