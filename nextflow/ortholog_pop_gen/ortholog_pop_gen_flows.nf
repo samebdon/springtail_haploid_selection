@@ -1,4 +1,4 @@
-include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; filter_orthogroups; mafft; mafft_batch; dupe_prot_fasta; get_orthogroup_haps; translatorx; orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; filter_orthogroups; mafft; mafft_batch; dupe_prot_fasta; get_orthogroup_haps; get_orthogroup_haps_batch; translatorx; translatorx_pair;orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow gen_haps_flow {
         take:
@@ -46,13 +46,17 @@ workflow orthodiver_flow {
         main:
           // TO DO filter_orthogroups(species_1, species_2, ortholog_seqs)
           // could even add protein duping to end of mafft tbh but would nice to have the process as its own thing
-          mafft(ortholog_seqs.flatten())
-          // mafft_batch(ortholog_seqs.flatten().collect())
-          dupe_prot_fasta(mafft.out)
-          get_orthogroup_haps(mafft.out, hap_fastas_1, hap_fastas_2)
-          tlx_in_ch = dupe_prot_fasta.out.join(get_orthogroup_haps.out).map { it -> [it[2], [it[1]]].combinations() }.flatten().collate(2)
-          translatorx(tlx_in_ch)
-          orthodiver(translatorx.out.groupTuple())
+          //mafft(ortholog_seqs.flatten())
+          //dupe_prot_fasta(mafft.out)
+          //get_orthogroup_haps(mafft.out, hap_fastas_1, hap_fastas_2)
+          //tlx_in_ch = dupe_prot_fasta.out.join(get_orthogroup_haps.out).map { it -> [it[2], [it[1]]].combinations() }.flatten().collate(2)
+          //translatorx(tlx_in_ch)
+          //orthodiver(translatorx.out.groupTuple())
+          mafft_batch(ortholog_seqs.flatten().collect())
+          get_orthogroup_haps_batch(mafft_batch.out, hap_fastas_1, hap_fastas_2)
+          get_orthogroup_haps_batch.out.view()
+          translatorx_pair(mafft_batch.out, get_orthogroup_haps_batch.out)
+          orthodiver(translatorx_pair.out)
 }
 
 // THOUGHTS AND TODOS

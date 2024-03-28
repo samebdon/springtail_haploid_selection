@@ -217,29 +217,6 @@ process mafft {
         """
 }
 
-
-// maybe make this use parallel instead of a loop
-process mafft_batch {
-        cpus 32
-        scratch true
-
-        input:
-        path(fastas, stageAs: "fastas/*")
-
-        output:
-        path("*.mafft.single_line.fa")
-
-        script:
-        """
-        for file in fastas/*
-        do
-                mafft --thread ${task.cpus} \$file > \$file.mafft
-                awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < \$file.mafft | tail -n +2 > \$file.mafft.single_line.fa
-                duplicate_prot_aln.sh \$file.mafft.single_line.fa
-        done
-        """
-}
-
 process dupe_prot_fasta {
 
         input:
@@ -252,6 +229,28 @@ process dupe_prot_fasta {
         """
         awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < ${prot_fasta} | tail -n +2 > ${meta}.mafft.single_line.fa
         duplicate_prot_aln.sh ${meta}.mafft.single_line.fa
+        """
+}
+
+// maybe make this use parallel instead of a loop
+process mafft_batch {
+        cpus 4
+        scratch true
+
+        input:
+        path(fastas, stageAs: "fastas/*")
+
+        output:
+        path("*.mafft.happed.fa")
+
+        script:
+        """
+        for fasta in fastas/*
+        do
+                mafft --thread 1 \$fasta > {}.mafft
+                cat {}.mafft | seqtk seq > {}.mafft.single_line.fa
+                duplicate_prot_aln.sh {}.mafft.single_line.fa
+        done
         """
 }
 
@@ -287,6 +286,49 @@ process get_orthogroup_haps {
         """
 }
 
+// this one is harder to batch
+// can I send out all orthogroups for the pair comparison as one channel
+// this stage is ignorant of pairs until pair fasta
+// here I could make a pair the unit of future analysis
+// how to
+process get_orthogroup_haps_batch {
+        scratch true
+
+        input:
+        path(prot_fastas, stageAs: "prot_fastas/*")
+        path(sp1_fastas, stageAs: "sp1_fastas/*")
+        path(sp2_fastas, stageAs: "sp2_fastas/*")
+
+        output:
+        path("out.*")
+
+        script:
+        """
+
+        mkdir hap_fastas
+        mkdir hap_fastas_rn
+
+        for prot_fasta in prot_fastas/*
+        do
+                ORTHOGROUP="\$(ls \$prot_fasta | cut -f-1 -d'.')
+                SP1="\$(cat \$prot_fasta | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
+                SP2="\$(cat \$prot_fasta | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
+                SP1_PROT="\$(cat \$prot_fasta | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
+                SP2_PROT="\$(cat \$prot_fasta | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
+
+                rm hap_fastas/*
+                rm hap_fastas_rn/*
+
+                get_hap.sh sp1_fastas \$SP1_PROT hap_fastas \$ORTHOGROUP
+                get_hap.sh sp2_fastas \$SP2_PROT hap_fastas \$ORTHOGROUP
+
+                rename_hap_fastas.sh hap_fastas hap_fastas_rn
+
+                pair_fastas.py -i hap_fastas_rn -o out -a \$SP1 -b \$SP2
+        done
+        """
+}
+
 // currently with pair fastas im just comparing different species
 // 0d diversity matrix is not that interesting, it shouldnt vary that much
 // what would be better is to get the SFS. how do I do that?
@@ -316,6 +358,36 @@ process translatorx {
         sed -i -e "s/sample_2/\$SAMPLE_2/g" ${prot_fasta.baseName}.rn.fa
 
         translatorx -i ${hap_fasta} -a ${prot_fasta.baseName}.rn.fa -o \$OUT_PREFIX.tlx.fa
+        """
+}
+
+process translatorx_pair {
+        scratch true
+
+        input:
+        path(prot_fastas, stageAs: "prot_fastas/*")
+        path(pair_fastas, stageAs: "pair_fastas/*")
+
+        output:
+        tuple val("\$SAMPLE_1.\$SAMPLE_2"), path("tlx_fastas/*")
+
+        script:
+        """
+        mkdir tlx_fastas
+
+        for prot_fasta in prot_fastas/*
+        do
+                ORTHOGROUP="\$(ls \$prot_fasta | cut -f-1 -d'.')"
+                PAIR_FASTA="pair_fastas/\$ORTHOGROUP*"
+                OUT_PREFIX="\$(ls \$PAIR_FASTA | cut -d'.' -f-5)"
+                SAMPLE_1="\$(ls \$PAIR_FASTA | cut -d'.' -f2-2)"
+                SAMPLE_2="\$(ls \$PAIR_FASTA | cut -d'.' -f4-4)"
+
+                sed -e "s/sample_1/\$SAMPLE_1/g" \$prot_fasta > \$prot_fasta.rn.fa
+                sed -i -e "s/sample_2/\$SAMPLE_2/g" \$prot_fasta.rn.fa
+
+                translatorx -i \$PAIR_FASTA -a \$prot_fasta.rn.fa -o tlx_fastas/\$OUT_PREFIX.tlx.fa
+        done
         """
 }
 
