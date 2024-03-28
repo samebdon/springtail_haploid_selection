@@ -171,12 +171,12 @@ process orthofinder {
         path(prot_fastas, stageAs: "fastas/*")
 
         output:
-        path("fastas/OrthoFinder/Results_*"), emit: all
-        path("fastas/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences/*"), emit: sco
+        path("results/"), emit: all
+        path("results/Single_Copy_Orthologue_Sequences/*"), emit: sco
 
         script:
         """
-        orthofinder -f fastas -t ${task.cpus} -a ${task.cpus}
+        orthofinder -f fastas -t ${task.cpus} -a ${task.cpus} -o results
         """
 }
 
@@ -197,6 +197,7 @@ process filter_orthogroups{
         """
 }
 
+//mafft removes * at end of protein sequence and makes sequence multi line
 process mafft {
 
         input:
