@@ -52,52 +52,44 @@ if __name__ == "__main__":
         with open(os.path.join(input_dir, file_B)) as file:
             lines_B = [line.rstrip() for line in file]
 
-        if (
-            lines_A[1].count("A")
-            + lines_A[1].count("T")
-            + lines_A[1].count("C")
-            + lines_A[1].count("G")
-            < 3
-        ):
+        if lines_A[1].count("A")+lines_A[1].count("T")+lines_A[1].count("C")+lines_A[1].count("G") < 3:
             print(f"Orthogroup {orthogroup} is uninformative...skipping...")
-            break  ## I think these can be break rather than continue cos we assume same callable sites for all samples
+            break ## I think these can be break rather than continue cos we assume same callable sites for all samples
 
-        if (
-            lines_B[1].count("A")
-            + lines_B[1].count("T")
-            + lines_B[1].count("C")
-            + lines_B[1].count("G")
-            < 3
-        ):
+        if lines_B[1].count("A")+lines_B[1].count("T")+lines_B[1].count("C")+lines_B[1].count("G") < 3:
             print(f"Orthogroup {orthogroup} is uninformative...skipping...")
             break
 
+        stop_codons = ['TAA','TGA','TAG']
+
         for i in [1, 3]:
-            lines_A[i] = re.sub("[a-z]", "N", lines_A[i])
-            lines_B[i] = re.sub("[a-z]", "N", lines_A[i])
+            lines_A[i] = re.sub('[a-z]', 'N', lines_A[i])
+            lines_B[i] = re.sub('[a-z]', 'N', lines_A[i])
+
+            if lines_A[i][-3: ] in stop_codons:
+                lines_A[i] = lines_A[i][:-3]
+
+            if lines_B[i][-3: ] in stop_codons:
+                lines_B[i] = lines_B[i][:-3]
+
+    
 
         ## This is a bit late to remove sequences with too few callable regions but not sure where to do it earlier
 
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        outfile = os.path.join(
-            output_dir,
-            f"{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa",
-        )
+        outfile = os.path.join(output_dir, f"{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa")
 
         try:
             os.remove(outfile)
         except OSError:
             pass
 
-        with open(
-            outfile,
-            "a",
+        with open(outfile,"a",
         ) as f:
-            f.writelines(
-                line + "\n"
-                for line in [
+            f.writelines(line + '\n' for line in
+                [
                     lines_A[0],
                     lines_A[1],
                     lines_B[0],
