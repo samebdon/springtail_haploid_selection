@@ -1,4 +1,6 @@
-// Output of the pairwise comparisons could be a matrix of sample comparisons at each gene at 0d and 4d sites, where the diagonal would be diversity
+// Output of the pairwise comparisons could be a 
+// matrix of sample comparisons at each gene at 0d and 4d sites, 
+// where the diagonal would be diversity?
 
 
 process get_best_cds_bed {
@@ -199,6 +201,8 @@ process filter_orthogroups{
 }
 
 //mafft removes * at end of protein sequence and makes sequence multi line
+//can I condense these steps instead of being per alignment but by doing them in one go
+//what other steps  can i reduce? maybe each of them idk
 process mafft {
 
         input:
@@ -210,6 +214,29 @@ process mafft {
         script:
         """
         mafft --thread ${task.cpus} ${fasta} > ${fasta.baseName}.mafft.fa
+        """
+}
+
+
+// maybe make this use parallel instead of a loop
+process mafft_batch {
+        cpus 32
+        scratch true
+
+        input:
+        path(fastas, stageAs: "fastas/*")
+
+        output:
+        path("*.mafft.single_line.fa")
+
+        script:
+        """
+        for file in fastas/*
+        do
+                mafft --thread ${task.cpus} \$file > \$file.mafft
+                awk '/^>/ {printf("\\n%s\\n",\$0);next; } { printf("%s",\$0);}  END {printf("\\n");}' < \$file.mafft | tail -n +2 > \$file.mafft.single_line.fa
+                duplicate_prot_aln.sh \$file.mafft.single_line.fa
+        done
         """
 }
 
@@ -259,6 +286,16 @@ process get_orthogroup_haps {
         pair_fastas.py -i hap_fastas_rn -o hap_fasta_pairs -a \$SP1 -b \$SP2
         """
 }
+
+// currently with pair fastas im just comparing different species
+// 0d diversity matrix is not that interesting, it shouldnt vary that much
+// what would be better is to get the SFS. how do I do that?
+// be good to get the sfs for genes and 0d and 4d sites but also whole genome intergenically
+// dont need any alignments for this, should just be able to for genes continue off the initial workflow
+// then just use the vcf and beds to subset gene third codon positions like in LG het
+// this could be same but with intergenic regions to get a genome wide sfs rather than per gene?
+
+// can i run all of this in get orthogroup haps?
 
 process translatorx {
         scratch true
