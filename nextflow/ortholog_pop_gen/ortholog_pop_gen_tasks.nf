@@ -172,7 +172,7 @@ process orthofinder {
         path(prot_fastas, stageAs: "fastas/*")
 
         output:
-        path("results/*/"), emit: all
+        path("results/*"), emit: all
         path("results/*/Single_Copy_Orthologue_Sequences/*"), emit: sco
 
         script:
