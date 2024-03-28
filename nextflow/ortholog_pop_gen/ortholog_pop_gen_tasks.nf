@@ -248,7 +248,7 @@ process mafft_batch {
         mkdir out
         for fasta in fastas/*
         do
-                ORTHOGROUP="\$(ls \$fasta | cut -f1- -d'/' | cut -f-1 -d'.')"
+                ORTHOGROUP="\$(echo \$fasta | cut -f2- -d'/' | cut -f-1 -d'.')"
                 mafft --thread ${task.cpus} \$fasta > \$ORTHOGROUP.mafft
                 cat \$ORTHOGROUP.mafft.fa | seqtk seq > \$ORTHOGROUP.mafft.single_line.fa
                 duplicate_prot_aln.sh \$ORTHOGROUP.mafft.single_line.fa
@@ -312,7 +312,7 @@ process get_orthogroup_haps_batch {
 
         for prot_fasta in prot_fastas/*
         do
-                ORTHOGROUP="\$(ls \$prot_fasta | cut -f1- -d'/' | cut -f-1 -d'.')"
+                ORTHOGROUP="\$(echo \$prot_fasta | cut -f2- -d'/' | cut -f-1 -d'.')"
                 SP1="\$(cat \$prot_fasta | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
                 SP2="\$(cat \$prot_fasta | grep '>' | tail -n 1 | cut -d '>' -f2- | cut -d'.' -f-1)"
                 SP1_PROT="\$(cat \$prot_fasta | grep '>' | head -n 1 | cut -d '>' -f2- | cut -d'.' -f2-)"
@@ -379,11 +379,11 @@ process translatorx_pair {
 
         for prot_fasta in prot_fastas/*
         do
-                ORTHOGROUP="\$(ls \$prot_fasta | cut -f1- -d'/' | cut -f-1 -d'.')"
+                ORTHOGROUP="\$(echo \$prot_fasta | cut -f2- -d'/' | cut -f-1 -d'.')"
                 PAIR_FASTA="pair_fastas/\$ORTHOGROUP*"
-                OUT_PREFIX="\$(ls \$PAIR_FASTA | cut -d'.' -f-5)"
-                SAMPLE_1="\$(ls \$PAIR_FASTA | cut -d'.' -f2-2)"
-                SAMPLE_2="\$(ls \$PAIR_FASTA | cut -d'.' -f4-4)"
+                OUT_PREFIX="\$(echo \$PAIR_FASTA | cut -f2- -d'/' | cut -d'.' -f-5)"
+                SAMPLE_1="\$(echo \$PAIR_FASTA | cut -f2- -d'/' | cut -d'.' -f2-2)"
+                SAMPLE_2="\$(echo \$PAIR_FASTA | cut -f2- -d'/' | cut -d'.' -f4-4)"
 
                 sed -e "s/sample_1/\$SAMPLE_1/g" \$prot_fasta > \$prot_fasta.rn.fa
                 sed -i -e "s/sample_2/\$SAMPLE_2/g" \$prot_fasta.rn.fa
