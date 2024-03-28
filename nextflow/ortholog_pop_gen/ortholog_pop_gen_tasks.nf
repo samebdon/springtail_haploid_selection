@@ -235,7 +235,7 @@ process dupe_prot_fasta {
 // maybe make this use parallel instead of a loop
 process mafft_batch {
         cpus 4
-        scratch true
+        // scratch true
 
         input:
         path(fastas, stageAs: "fastas/*")
@@ -292,7 +292,7 @@ process get_orthogroup_haps {
 // here I could make a pair the unit of future analysis
 // how to
 process get_orthogroup_haps_batch {
-        scratch true
+        // scratch true
 
         input:
         path(prot_fastas, stageAs: "prot_fastas/*")
@@ -362,7 +362,7 @@ process translatorx {
 }
 
 process translatorx_pair {
-        scratch true
+        // scratch true
 
         input:
         path(prot_fastas, stageAs: "prot_fastas/*")

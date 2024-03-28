@@ -52,6 +52,7 @@ workflow orthodiver_flow {
           //tlx_in_ch = dupe_prot_fasta.out.join(get_orthogroup_haps.out).map { it -> [it[2], [it[1]]].combinations() }.flatten().collate(2)
           //translatorx(tlx_in_ch)
           //orthodiver(translatorx.out.groupTuple())
+          
           mafft_batch(ortholog_seqs.flatten().collect())
           get_orthogroup_haps_batch(mafft_batch.out, hap_fastas_1, hap_fastas_2)
           get_orthogroup_haps_batch.out.view()
