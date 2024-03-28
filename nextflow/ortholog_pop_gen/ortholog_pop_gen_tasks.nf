@@ -225,6 +225,7 @@ process dupe_prot_fasta {
 // can I remove non informative genes before running get hap, renaming, and pair fastas?
 
 process get_orthogroup_haps {
+        scratch true
 
         input:
         tuple val(meta), path(prot_fasta)
