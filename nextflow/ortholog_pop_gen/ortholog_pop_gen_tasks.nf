@@ -166,13 +166,14 @@ process generate_effective_fasta_AGAT {
 
 process orthofinder {
         cpus 16
+        scratch true
 
         input:
         path(prot_fastas, stageAs: "fastas/*")
 
         output:
-        path("results/"), emit: all
-        path("results/Single_Copy_Orthologue_Sequences/*"), emit: sco
+        path("results/*/"), emit: all
+        path("results/*/Single_Copy_Orthologue_Sequences/*"), emit: sco
 
         script:
         """
