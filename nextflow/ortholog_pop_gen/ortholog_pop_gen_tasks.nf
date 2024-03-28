@@ -294,7 +294,7 @@ process get_orthogroup_haps_batch {
         path(sp2_fastas, stageAs: "sp2_fastas/*")
 
         output:
-        path("out.*")
+        path("out.*"), optional: true
 
         script:
         """
@@ -315,7 +315,9 @@ process get_orthogroup_haps_batch {
 
                 rename_hap_fastas.sh hap_fastas hap_fastas_rn
 
-                pair_fastas.py -i hap_fastas_rn -o out -a \$SP1 -b \$SP2
+                mkdir out.\$SP1.\$SP2
+
+                pair_fastas.py -i hap_fastas_rn -o out.\$SP1.\$SP2 -a \$SP1 -b \$SP2
 
                 rm hap_fastas/*
                 rm hap_fastas_rn/*
