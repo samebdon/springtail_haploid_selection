@@ -76,10 +76,10 @@ if __name__ == "__main__":
 
         ## This is a bit late to remove sequences with too few callable regions but not sure where to do it earlier
 
-        if not os.path.exists(output_dir):
-            os.mkdir(output_dir)
+        if not os.path.exists(f"{output_dir}.{sample_A}.{sample_B}"):
+            os.mkdir(f"{output_dir}.{sample_A}.{sample_B}")
 
-        outfile = os.path.join(output_dir, f"{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa")
+        outfile = os.path.join(f"{output_dir}.{sample_A}.{sample_B}", f"{orthogroup}.{sample_A}.{species_A}.{sample_B}.{species_B}.unaln.fa")
 
         try:
             os.remove(outfile)
