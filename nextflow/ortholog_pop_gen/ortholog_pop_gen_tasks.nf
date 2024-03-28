@@ -247,9 +247,9 @@ process mafft_batch {
         """
         for fasta in fastas/*
         do
-                mafft --thread 1 \$fasta > {}.mafft
-                cat {}.mafft | seqtk seq > {}.mafft.single_line.fa
-                duplicate_prot_aln.sh {}.mafft.single_line.fa
+                mafft --thread ${cpus} \$fasta > \$fasta.mafft
+                cat \$fasta.mafft | seqtk seq > \$fasta.mafft.single_line.fa
+                duplicate_prot_aln.sh \$fasta.mafft.single_line.fa
         done
         """
 }
