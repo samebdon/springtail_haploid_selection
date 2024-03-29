@@ -358,7 +358,7 @@ process translatorx {
 
 process translatorx_pair {
         memory '4G'
-        // scratch true
+        scratch true
 
         input:
         path(prot_fastas, stageAs: "prot_fastas/*")
@@ -383,6 +383,7 @@ process translatorx_pair {
                 sed -i -e "s/sample_2/\$SAMPLE_2/g" \$prot_fasta.rn.fa
 
                 translatorx -i \$PAIR_FASTA -a \$prot_fasta.rn.fa -o tlx_fastas/\$OUT_PREFIX
+                find . -type f ! -name 'tlx_fastas/*.nt_ali.fasta' -delete
         done
         """
 }
