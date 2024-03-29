@@ -356,6 +356,7 @@ process translatorx {
 }
 
 process translatorx_pair {
+        memory '4G'
         // scratch true
 
         input:
