@@ -66,11 +66,11 @@ if __name__ == "__main__":
             lines_A[i] = re.sub('[a-z]', 'N', lines_A[i])
             lines_B[i] = re.sub('[a-z]', 'N', lines_B[i])
 
-            if lines_A[i][-3: ] in stop_codons:
-                lines_A[i] = lines_A[i][:-3]
+            #if lines_A[i][-3: ] in stop_codons:
+            lines_A[i] = lines_A[i][:-3]
 
-            if lines_B[i][-3: ] in stop_codons:
-                lines_B[i] = lines_B[i][:-3]
+            #if lines_B[i][-3: ] in stop_codons:
+            lines_B[i] = lines_B[i][:-3]
 
     
 

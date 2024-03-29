@@ -364,7 +364,7 @@ process translatorx_pair {
         path(pair_fastas)
 
         output:
-        tuple val("\$SAMPLE_1.\$SAMPLE_2"), path("tlx_fastas/*")
+        tuple val("\$SAMPLE_1.\$SAMPLE_2"), path("tlx_fastas/*.nt_ali.fasta")
 
         script:
         """
@@ -381,10 +381,14 @@ process translatorx_pair {
                 sed -e "s/sample_1/\$SAMPLE_1/g" \$prot_fasta > \$prot_fasta.rn.fa
                 sed -i -e "s/sample_2/\$SAMPLE_2/g" \$prot_fasta.rn.fa
 
-                translatorx -i \$PAIR_FASTA -a \$prot_fasta.rn.fa -o tlx_fastas/\$OUT_PREFIX.tlx.fa
+                translatorx -i \$PAIR_FASTA -a \$prot_fasta.rn.fa -o tlx_fastas/\$OUT_PREFIX
         done
         """
 }
+// still an off by one aa error for some translatorx inputs, some work
+// need to figure out which ones dont work and see whats causing the error
+// i'm only filtering the last 3 parts of the sequence so if theres not an amino acid at the end this might correspodn to it?
+// what happens if i just remove the last 3 positions irrelevant of checking for stop codon?
 
 process orthodiver {
 

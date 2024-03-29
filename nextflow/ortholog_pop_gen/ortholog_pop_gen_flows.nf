@@ -55,7 +55,6 @@ workflow orthodiver_flow {
 
           mafft_batch(ortholog_seqs.flatten().collect())
           get_orthogroup_haps_batch(mafft_batch.out, hap_fastas_1, hap_fastas_2)
-          get_orthogroup_haps_batch.out.flatten().view()
           translatorx_pair(mafft_batch.out, get_orthogroup_haps_batch.out.flatten())
           orthodiver(translatorx_pair.out)
 }
