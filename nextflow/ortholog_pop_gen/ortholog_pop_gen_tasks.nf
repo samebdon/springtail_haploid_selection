@@ -231,7 +231,7 @@ process dupe_prot_fasta {
 
 process mafft_batch {
         cpus 4
-        // scratch true
+        scratch true
 
         input:
         path(fastas, stageAs: "fastas/*")
@@ -285,8 +285,9 @@ process get_orthogroup_haps {
 }
 
 // could even combine this with translatorx pair to really reduce symlinking
+// this bit is slow be nice to parallelise the loop
 process get_orthogroup_haps_batch {
-        // scratch true
+        scratch true
 
         input:
         path(prot_fastas, stageAs: "prot_fastas/*")
