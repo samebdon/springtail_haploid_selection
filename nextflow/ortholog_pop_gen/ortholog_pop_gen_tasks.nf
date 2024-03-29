@@ -372,10 +372,10 @@ process translatorx_pair {
         for prot_fasta in prot_fastas/*
         do
                 ORTHOGROUP="\$(echo \$prot_fasta | cut -f2- -d'/' | cut -f-1 -d'.')"
-                PAIR_FASTA="pair_fastas/\$ORTHOGROUP*"
-                OUT_PREFIX="\$(echo \$PAIR_FASTA | cut -f2- -d'/' | cut -d'.' -f-5)"
-                SAMPLE_1="\$(echo \$PAIR_FASTA | cut -f2- -d'/' | cut -d'.' -f2-2)"
-                SAMPLE_2="\$(echo \$PAIR_FASTA | cut -f2- -d'/' | cut -d'.' -f4-4)"
+                PAIR_FASTA="pair_fastas/*/\$ORTHOGROUP*"
+                OUT_PREFIX="\$(echo \$PAIR_FASTA | cut -f3- -d'/' | cut -d'.' -f-5)"
+                SAMPLE_1="\$(echo \$PAIR_FASTA | cut -f3- -d'/' | cut -d'.' -f2-2)"
+                SAMPLE_2="\$(echo \$PAIR_FASTA | cut -f3- -d'/' | cut -d'.' -f4-4)"
 
                 sed -e "s/sample_1/\$SAMPLE_1/g" \$prot_fasta > \$prot_fasta.rn.fa
                 sed -i -e "s/sample_2/\$SAMPLE_2/g" \$prot_fasta.rn.fa
