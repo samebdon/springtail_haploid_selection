@@ -356,6 +356,7 @@ process translatorx {
         """
 }
 
+
 process translatorx_pair {
         memory '4G'
         scratch true
@@ -386,10 +387,8 @@ process translatorx_pair {
         done
         """
 }
-// still an off by one aa error for some translatorx inputs, some work
-// need to figure out which ones dont work and see whats causing the error
-// i'm only filtering the last 3 parts of the sequence so if theres not an amino acid at the end this might correspodn to it?
-// what happens if i just remove the last 3 positions irrelevant of checking for stop codon?
+
+// sample variables in output isnt working
 
 process orthodiver {
         memory '4G'
@@ -398,15 +397,15 @@ process orthodiver {
         tuple val(meta), path(orthlg_fastas, stageAs: "fastas/*")
 
         output:
-        tuple val(meta), path("${meta}_results")
+        tuple val(meta), path("*_results")
 
         script:
         """
-        SAMPLE_1="\$(ls fastas/* | head -n 1 | cut -d'.' -f2-2)"
+        SAMPLE_1="\$(ls fastas | head -n 1 | cut -d'.' -f2-2)"
         SPECIES_1="\$(ls fastas/* | head -n 1 | cut -d'.' -f3-3)"
         SAMPLE_2="\$(ls fastas/* | head -n 1 | cut -d'.' -f4-4)"
-        SPECIES_2="\$(ls fastas}/* | head -n 1 | cut -d'.' -f5-5)"
+        SPECIES_2="\$(ls fastas/* | head -n 1 | cut -d'.' -f5-5)"
  
-        orthodiver.py -d fastas -A \$SPECIES_1.\$SAMPLE_1 -B \$SPECIES_2.\$SAMPLE_2 -o ${meta}_results
+        orthodiver.py -d fastas -A \$SPECIES_1.\$SAMPLE_1 -B \$SPECIES_2.\$SAMPLE_2 -o \$SAMPLE_1_\$SAMPLE_2_results
         """
 }
