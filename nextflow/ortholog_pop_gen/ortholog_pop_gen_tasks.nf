@@ -392,7 +392,7 @@ process translatorx_pair {
 // what happens if i just remove the last 3 positions irrelevant of checking for stop codon?
 
 process orthodiver {
-        memory '4G'
+        memory '8G'
 
         input:
         tuple val(meta), path(orthlg_fastas, stageAs: "fastas/*")
