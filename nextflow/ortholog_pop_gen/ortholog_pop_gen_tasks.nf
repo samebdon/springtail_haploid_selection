@@ -401,11 +401,11 @@ process orthodiver {
 
         script:
         """
-        SAMPLE_1="\$(ls ${fastas}/* | head -n 1 | cut -d'.' -f2-2)"
-        SPECIES_1="\$(ls ${fastas}/* | head -n 1 | cut -d'.' -f3-3)"
-        SAMPLE_2="\$(ls ${fastas}/* | head -n 1 | cut -d'.' -f4-4)"
-        SPECIES_2="\$(ls ${fastas}/* | head -n 1 | cut -d'.' -f5-5)"
+        SAMPLE_1="\$(ls fastas/* | head -n 1 | cut -d'.' -f2-2)"
+        SPECIES_1="\$(ls fastas/* | head -n 1 | cut -d'.' -f3-3)"
+        SAMPLE_2="\$(ls fastas/* | head -n 1 | cut -d'.' -f4-4)"
+        SPECIES_2="\$(ls fastas}/* | head -n 1 | cut -d'.' -f5-5)"
  
-        orthodiver.py -d ${fastas} -A \$SPECIES_1.\$SAMPLE_1 -B \$SPECIES_2.\$SAMPLE_2 -o ${meta}_results
+        orthodiver.py -d fastas -A \$SPECIES_1.\$SAMPLE_1 -B \$SPECIES_2.\$SAMPLE_2 -o ${meta}_results
         """
 }
