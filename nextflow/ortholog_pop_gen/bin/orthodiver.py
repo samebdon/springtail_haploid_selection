@@ -252,14 +252,14 @@ def get_pi_header(degeneracy, taxon_by_label, locus=False):
         ])
 
 class SeqObj(object):
-    def __init__(self, label, taxon, hap_id, transcript_id, sequence):
+    def __init__(self, label, taxon, hap_id, gene_id, sequence):
         self.label = label
         self.taxon = taxon
         self.hap_id = hap_id
-        self.transcript_id = transcript_id
+        self.gene_id = gene_id
         self.codons = [sequence[i:i+3].lower() for i in range(0, len(sequence), 3)]
         self.length = len(sequence)
-        self.header = "%s.%s.%s" % (self.taxon, self.hap_id, self.transcript_id)
+        self.header = "%s.%s.%s" % (self.taxon, self.hap_id, self.gene_id)
 
 class AlnObj(object):
     '''
@@ -421,13 +421,13 @@ class DataObj(object):
             with open(fasta_f) as fasta_fh:
                 data = fasta_fh.read().rstrip("\n").split("\n")
                 for idx in range(0, len(data), 2):
-                    species_id, sample_id, hap_id, transcript_id = data[idx][1:].split(".")
+                    species_id, sample_id, hap_id, gene_id, transcript_id = data[idx][1:].split(".")
                     taxon = "%s.%s" % (species_id, sample_id)
                     if not taxon in self.label_by_taxon:
                         sys.exit("[X] Unknown species %s in file %s" % (taxon, fasta_f))
                     label = self.label_by_taxon[taxon]
                     sequence = data[idx + 1]
-                    seqObj = SeqObj(label, taxon, hap_id, transcript_id, sequence)
+                    seqObj = SeqObj(label, taxon, hap_id, gene_id, sequence)
                     alnObj.add_seqObj(seqObj)
             self.alnObjs.append(alnObj)
             for label, codon_counter in alnObj.yield_label_codon_counter():
