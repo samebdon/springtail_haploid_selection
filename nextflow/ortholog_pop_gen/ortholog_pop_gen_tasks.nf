@@ -397,7 +397,7 @@ process orthodiver {
         tuple val(meta), path(orthlg_fastas, stageAs: "fastas/*")
 
         output:
-        tuple val(meta), path("*_results")
+        tuple val(meta), path("*.results.*")
 
         script:
         """
