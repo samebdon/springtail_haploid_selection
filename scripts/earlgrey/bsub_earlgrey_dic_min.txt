@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#BSUB -o logs/earlGrey.out.%J
+#BSUB -e logs/earlGrey.err.%J
+#BSUB -q basement
+#BSUB -n 64
+#BSUB -M 204800
+#BSUB -R "select[mem>204800] rusage[mem=204800]"
+
+earlGrey -g data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.curated_primary.no_mt.unscrubbed.fa -s dicyrtominaMinuta -o data/results/earlGrey/dicyrtomina_minuta/results -t 64
