@@ -94,20 +94,22 @@ if __name__ == "__main__":
     idx = allel.SortedIndex(snp_pos)
     bed = pybedtools.BedTool(bed_f)
 
-    for interval in bed:
-        (chrom, start, stop, feature) = interval
-        try:
-            pi = allel.sequence_diversity(idx, ac, start=int(start)+1, stop=int(stop), is_accessible=accessible_array)
-            results.append((chrom, feature, pi, sfs))
-        except KeyError:
-            results.append((chrom, feature, 'NaN'))
-
     # name = chromosome name
     # result_label = degeneracy
     # accessible array is true/false arr made of 0d or 4d site positions on one chrom
     # so this should get the 0d or 4d folded SFS for the analysed chrom
     sfs = allel.sfs_folded(ac[accessible_array])
     np.savetxt(f"{result_label}.{name}.sfs.txt", sfs)
+
+    for interval in bed:
+        (chrom, start, stop, feature) = interval
+        try:
+            pi = allel.sequence_diversity(idx, ac, start=int(start)+1, stop=int(stop), is_accessible=accessible_array)
+            results.append((chrom, feature, pi))
+        except KeyError:
+            results.append((chrom, feature, 'NaN'))
+
+
 
     pd.DataFrame(results, columns=["chrom","feature", result_label]).to_csv(
         out_f, sep="\t", index=False
