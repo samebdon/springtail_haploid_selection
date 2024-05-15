@@ -98,6 +98,7 @@ process degenotate {
 }
 
 process filterBed{
+        memory '8G'
         publishDir params.outdir, mode:'copy'
 
         input:
