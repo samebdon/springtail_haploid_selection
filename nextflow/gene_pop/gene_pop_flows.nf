@@ -6,7 +6,7 @@ workflow gene_pop_flow_SFS {
                 genome_dict
                 vcf 
                 vcf_index
-                isoform_annotation
+                annotation
                 species
         main:
                 makeGenomeFile(genome_dict, species)
@@ -16,7 +16,7 @@ workflow gene_pop_flow_SFS {
                 degenotate(genome, annotation, species)
                 filterBed(degenotate.out.degen, degenotate.out.longest_isoforms)
                 calculatePiBed(vcf, vcf_index, filterBed.out, bed_ch, makeGenomeFile.out)
-                
+
 }
 
 workflow gene_pop_flow_GFF {
