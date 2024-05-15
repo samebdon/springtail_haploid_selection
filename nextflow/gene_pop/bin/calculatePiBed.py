@@ -98,7 +98,10 @@ if __name__ == "__main__":
     # result_label = degeneracy
     # accessible array is true/false arr made of 0d or 4d site positions on one chrom
     # so this should get the 0d or 4d folded SFS for the analysed chrom
-    sfs = allel.sfs_folded(ac[accessible_array])
+    
+    is_acc = asarray_ndim(accessible_array, 1, allow_none=True)
+    pos, ac_is_acc = = mask_inaccessible(is_acc, idx, ac)
+    sfs = allel.sfs_folded(ac_is_acc)
     np.savetxt(f"{result_label}.{name}.sfs.txt", sfs)
 
     for interval in bed:
