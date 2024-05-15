@@ -104,6 +104,13 @@ if __name__ == "__main__":
     pos, ac_is_acc = mask_inaccessible(is_acc, idx, ac)
     biallelic_ac = ac_is_acc.compress(ac_is_acc.is_biallelic()[:], axis=0)[:, :2]
     sfs = allel.sfs_folded(biallelic_ac)
+    total = is_acc.shape[0]
+    extra_invar = total - np.sum(sfs)
+    sfs[0] = sfs[0] + extra_invar
+    # how to add total number of invariant sites to the first position of sfs?
+    # minus the sum of the SFS from the length of the accessible array
+    # whats left is the number of accessible invariant sites
+    # add this on to zero?
     np.savetxt(f"{result_label}.{name}.sfs.txt", sfs)
 
     for interval in bed:
