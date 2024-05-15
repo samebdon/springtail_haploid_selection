@@ -4,7 +4,9 @@
 
 
 process get_best_cds_bed {
+        publishDir params.outdir, mode:'copy'
         memory '4G'
+        scratch true
 
         input:
         val(meta)
@@ -94,6 +96,7 @@ process get_mask_bed {
 }
 
 process get_samples{
+        // see if you can run tiny jobs like this on the execution node
 
         input:
         path(vcf)
@@ -170,6 +173,8 @@ process orthofinder {
         cpus 16
         scratch true
 
+        // include all springtails to improve inference
+
         input:
         path(prot_fastas, stageAs: "fastas/*")
 
@@ -239,6 +244,7 @@ process mafft_batch {
         output:
         path("out/*.mafft.happed.fa")
 
+        // could change parallelising to be per process 
         script:
         """
         mkdir out
@@ -388,7 +394,7 @@ process translatorx_pair {
         """
 }
 
-// sample variables in output isnt working
+// is it worth including a multiple sequence alignment QC step here? trimAl?
 
 process orthodiver {
         memory '4G'

@@ -48,6 +48,23 @@ process getGeneBedGFF {
         """
 }
 
+process getExonBedGFF {
+        cpus 1
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        path(gff_f)
+        val(species)
+
+        output:
+        tuple val(species), path("${species}.exon.bed")
+
+        script:
+        """
+        cat ${gff_f}| awk 'OFS="\t" {if (\$3=="exon") {print \$1,\$4-1,\$5,\$9}}' | tr -d '";' | sed 's/ID=//'> ${species}.exon.bed
+        """
+}
+
 process splitBed {
         cpus 1
 
@@ -59,7 +76,7 @@ process splitBed {
 
         script:
         """
-        bash ${launchDir}/scripts/splitBed.sh ${bed_f}
+        bash splitBed.sh ${bed_f}
         """
 }
 
@@ -97,7 +114,7 @@ process filterBed{
 
         script:
         """
-        python ${launchDir}/scripts/filterDegenotate.py -b <(cat degenotate/degeneracy-all-sites.bed | tr : \$'\\t' | awk -v FS='\\t' -v OFS='\\t' '{print \$1, \$2, \$3, \$4, \$6}') -t <(grep '>' ${longest_isoform_fasta}| cut -f2- -d'>') -o ${species}.longest_isoforms
+        python filterDegenotate.py -b <(cat degenotate/degeneracy-all-sites.bed | tr : \$'\\t' | awk -v FS='\\t' -v OFS='\\t' '{print \$1, \$2, \$3, \$4, \$6}') -t <(grep '>' ${longest_isoform_fasta}| cut -f2- -d'>') -o ${species}.longest_isoforms
         """
 }
 
@@ -135,8 +152,8 @@ process calculatePiBed{
 
         script:
         """
-        python ${launchDir}/scripts/calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${zero_bed_f} ) -n ${gene_bed_f.simpleName}.1 -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi -g ${genome_file}
-        python ${launchDir}/scripts/calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${four_bed_f} ) -n ${gene_bed_f.simpleName}.1 -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi -g ${genome_file}
+        python calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${zero_bed_f} ) -n ${gene_bed_f.simpleName}.1 -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi -g ${genome_file}
+        python calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${four_bed_f} ) -n ${gene_bed_f.simpleName}.1 -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi -g ${genome_file}
         """
 }
 
@@ -151,7 +168,7 @@ process mergePi{
 
         script:
         """
-        python ${launchDir}/scripts/mergePi.py -z ${zero_f} -f ${four_f} -o ${species}.${chrom}.longest_isoforms.pi.tsv
+        python mergePi.py -z ${zero_f} -f ${four_f} -o ${species}.${chrom}.longest_isoforms.pi.tsv
         """
 }
 
