@@ -102,7 +102,7 @@ if __name__ == "__main__":
     
     is_acc = asarray_ndim(accessible_array, 1, allow_none=True)
     pos, ac_is_acc = mask_inaccessible(is_acc, idx, ac)
-    sfs = allel.sfs_folded(ac_is_acc)
+    sfs = allel.sfs_folded(ac_is_acc.is_biallelic())
     np.savetxt(f"{result_label}.{name}.sfs.txt", sfs)
 
     for interval in bed:
