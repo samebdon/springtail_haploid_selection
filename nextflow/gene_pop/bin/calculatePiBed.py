@@ -24,6 +24,7 @@ import pybedtools
 import pandas as pd
 import numpy as np
 from docopt import docopt
+from allel.util import asarray_ndim
 
 def parse_vcf(vcf, chromosome):
     query_fields = [
