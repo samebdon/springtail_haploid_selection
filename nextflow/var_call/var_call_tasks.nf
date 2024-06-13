@@ -182,7 +182,7 @@ process bcftools_filter {
         """
         bcftools norm --threads ${task.cpus} -Ov -f ${genome} ${vcf_f} | \
         vcfallelicprimitives --keep-info --keep-geno -t decomposed | \
-        bcftools plugin fill-AN-AC --threads ${task.cpus} -Oz | \
+        bcftools plugin fill-AN-AC-F_MISSING --threads ${task.cpus} -Oz | \
         bcftools filter --threads ${task.cpus} -Oz -s Qual -m+ -e 'QUAL<10' | \
         bcftools filter --threads ${task.cpus} -Oz -s Balance -m+ -e 'RPL<1 | RPR<1 | SAF<1 | SAR<1' | \
         bcftools filter --threads ${task.cpus} -Oz -m+ -s+ --SnpGap 2 | \

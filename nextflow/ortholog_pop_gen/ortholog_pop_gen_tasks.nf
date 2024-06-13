@@ -122,7 +122,8 @@ process remove_missing_vcf {
         script:
         """
         bcftools index -c ${vcf}
-        bcftools filter -O z --include "F_MISSING=0" ${vcf} > ${meta}.no_missing.vcf.gz
+        bcftools plugin fill-tags -Oz ${vcf} -t F_MISSING > tagged.vcf.gz
+        bcftools filter -O z --include "F_MISSING=0" tagged.vcf.gz > ${meta}.no_missing.vcf.gz
         bcftools index -c ${meta}.no_missing.vcf.gz
         """
 }
