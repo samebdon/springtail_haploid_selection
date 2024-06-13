@@ -1,4 +1,4 @@
-include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; filter_orthogroups; mafft; mafft_batch; dupe_prot_fasta; get_orthogroup_haps; get_orthogroup_haps_batch; translatorx; translatorx_pair;orthodiver} from './ortholog_pop_gen_tasks.nf'
+include { get_best_cds_bed; get_best_pep_fasta; get_callable_cds_bed; make_genome_file; get_mask_bed; get_samples; remove_missing_vcf; generate_loci; generate_effective_fasta_AGAT; orthofinder; filter_orthogroups; mafft; mafft_batch; dupe_prot_fasta; get_orthogroup_haps; get_orthogroup_haps_batch; translatorx; translatorx_pair;orthodiver;agg_orthodiver} from './ortholog_pop_gen_tasks.nf'
 
 workflow gen_haps_flow {
         take:
@@ -49,6 +49,7 @@ workflow orthodiver_flow {
           get_orthogroup_haps_batch(mafft_batch.out, hap_fastas_1, hap_fastas_2)
           translatorx_pair(mafft_batch.out, get_orthogroup_haps_batch.out.flatten())
           orthodiver(translatorx_pair.out)
+          agg_orthodiver(orthodiver.out.flatten().collect())
 }
 
 // THOUGHTS AND TODOS

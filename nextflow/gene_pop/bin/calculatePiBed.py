@@ -103,6 +103,7 @@ if __name__ == "__main__":
     is_acc = asarray_ndim(accessible_array, 1, allow_none=True)
     pos, ac_is_acc = mask_inaccessible(is_acc, idx, ac)
     biallelic_ac = ac_is_acc.compress(ac_is_acc.is_biallelic()[:], axis=0)[:, :2]
+    # write biallelic_ac + pos
     sfs = allel.sfs_folded(biallelic_ac)
 
     total = np.sum(accessible_array)

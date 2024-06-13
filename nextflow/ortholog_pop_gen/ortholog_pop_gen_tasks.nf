@@ -403,7 +403,7 @@ process orthodiver {
         tuple val(meta), path(orthlg_fastas, stageAs: "fastas/*")
 
         output:
-        tuple val(meta), path("*.results.*")
+        path("*.0d_pi_by_locus.txt"), path("*.4d_pi_by_locus.txt")
 
         script:
         """
@@ -413,5 +413,20 @@ process orthodiver {
         SPECIES_2="\$(ls fastas/* | head -n 1 | cut -d'.' -f5-5)"
  
         orthodiver.py -d fastas -A \$SPECIES_1.\$SAMPLE_1 -B \$SPECIES_2.\$SAMPLE_2 -o \$SAMPLE_1.\$SAMPLE_2.results
+        """
+}
+
+process agg_orthodiver {
+        memory '4G'
+
+        input:
+        path(pi_by_locus, stageAs: "orthodiver_results/*")
+
+        output:
+        path(*)
+
+        script:
+        """
+        ls *
         """
 }
