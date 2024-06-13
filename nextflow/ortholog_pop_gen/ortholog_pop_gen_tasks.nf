@@ -423,7 +423,7 @@ process agg_orthodiver {
         path(pi_by_locus, stageAs: "orthodiver_results/*")
 
         output:
-        path(*)
+        path("*")
 
         script:
         """
