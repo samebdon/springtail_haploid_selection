@@ -403,7 +403,7 @@ process orthodiver {
         tuple val(meta), path(orthlg_fastas, stageAs: "fastas/*")
 
         output:
-        path("*.0d_pi_by_locus.txt"), path("*.4d_pi_by_locus.txt")
+        tuple path("*.0d_pi_by_locus.txt"), path("*.4d_pi_by_locus.txt")
 
         script:
         """
