@@ -38,4 +38,4 @@ workflow {
 }
 
 // mamba activate ortholog_pop_gen
-// mamba install -c conda-forge -c bioconda seqtk samtools bedtools bcftools docopt orthofinder mafft translatorx tqdm agat parallel
+// mamba install -c conda-forge -c bioconda seqtk samtools bedtools bcftools docopt orthofinder mafft translatorx tqdm agat parallel openssl
