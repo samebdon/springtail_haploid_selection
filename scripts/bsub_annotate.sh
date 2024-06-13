@@ -10,4 +10,5 @@
 module load nextflow/23.04.1-5866
 module load braker3/3.0.8--hdfd78af_0
 module load earlgrey/3.0-c1
-nextflow run nextflow/annotate/annotate_main.nf -c nextflow/conf/nextflow.config -with-conda -w data/workdir/annotate -resume # -with-report -with-trace -with-timeline -with-dag
+module load bedtools/2.31.1--hf5e1c6e_1 
+nextflow run nextflow/annotate/annotate_main.nf -c nextflow/conf/nextflow.config -w data/workdir/annotate -resume # -with-report -with-trace -with-timeline -with-dag

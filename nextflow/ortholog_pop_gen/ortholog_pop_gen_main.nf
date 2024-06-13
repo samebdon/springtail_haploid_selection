@@ -15,7 +15,7 @@ params.annot_2 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.gtf"
 params.prot_fasta_2 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.aa"
 
 // Output Directory
-params.outdir = "$launchDir/ortholog_pop_gen/allacma_fusca.vs.dicyrtomina_minuta"
+params.outdir = "$launchDir/data/results/ortholog_pop_gen/allacma_fusca.vs.dicyrtomina_minuta"
 
 log.info """\
          O R T H O L O G  P O P  G E N   N F   P I P E L I N E    
