@@ -122,7 +122,7 @@ process remove_missing_vcf {
         script:
         """
         bcftools index -c ${vcf}
-        bcftools plugin fill-tags -Oz ${vcf} -t F_MISSING > tagged.vcf.gz
+        bcftools plugin fill-tags -Oz ${vcf} -t 'F_MISSING' > tagged.vcf.gz
         bcftools filter -O z --include "F_MISSING=0" tagged.vcf.gz > ${meta}.no_missing.vcf.gz
         bcftools index -c ${meta}.no_missing.vcf.gz
         """
@@ -134,13 +134,14 @@ process generate_loci {
         val(meta)
         tuple val(bed_meta), path(mask_bed)
         path(fasta)
-        tuple path(vcf), path(vcf_index)
+        path(vcf)
 
         output:
         tuple val(meta), val(bed_meta), path("${meta}.${bed_meta}.snp.1.fasta"), path("${meta}.${bed_meta}.snp.2.fasta")
 
         script:
         """
+        bcftools index -c ${vcf}
         bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.1.fasta -H 1 -s ${meta} ${vcf}
         bcftools consensus -f ${fasta} -m ${mask_bed} -o ${meta}.${bed_meta}.snp.2.fasta -H 2 -s ${meta} ${vcf}
         """

@@ -16,8 +16,8 @@ workflow gen_haps_flow {
           make_genome_file(genome_fasta)
           get_mask_bed(get_callable_cds_bed.out, make_genome_file.out)
           get_samples(vcf)
-          remove_missing_vcf(species, vcf)
-          generate_loci(get_samples.out.splitText( by: 1 ).map{it -> it.trim()}, get_mask_bed.out, genome_fasta, remove_missing_vcf.out)
+          // remove_missing_vcf(species, vcf)
+          generate_loci(get_samples.out.splitText( by: 1 ).map{it -> it.trim()}, get_mask_bed.out, genome_fasta, vcf)//remove_missing_vcf.out)
           generate_effective_fasta_AGAT(generate_loci.out, get_best_cds_bed.out.gff)
 
         emit:
