@@ -418,16 +418,17 @@ process orthodiver {
 }
 
 process agg_orthodiver {
+        publishDir params.outdir, mode:'copy'
         memory '4G'
 
         input:
         path(pi_by_locus, stageAs: "orthodiver_results/*")
 
         output:
-        path("*")
+        path("*.orthodiver_agg.tsv")
 
         script:
         """
-        ls *
+        agg_orthodiver.py -i orthodiver_results
         """
 }

@@ -22,7 +22,7 @@ process earlGrey {
         tuple val(meta), path(genome)
 
         output:
-        path("results/*/*_summaryFiles/*.filteredRepeats.bed")
+        path("./results/*/*_summaryFiles/*.filteredRepeats.bed")
 
         script:
         """

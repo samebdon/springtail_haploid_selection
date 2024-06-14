@@ -4,7 +4,7 @@
 params.meta = "dicyrtomina_minuta"
 params.genome = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.fa"
 params.prot_seq = "$launchDir/data/results/braker2/dbs/Arthropoda.allacmaFusca.fa"
-params.outdir = "$launchDir/data/results/braker2/${params.meta}_nf"
+params.outdir = "$launchDir/data/results/annotations/${params.meta}_nf"
 
 log.info """\
          O R T H O L O G  P O P  G E N   N F   P I P E L I N E    
