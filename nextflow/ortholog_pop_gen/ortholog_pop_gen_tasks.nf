@@ -190,6 +190,48 @@ process orthofinder {
         """
 }
 
+// works with 2 sp for now
+process get_SCO_genes{
+        publishDir params.outdir, mode:'copy'
+
+        input:
+        path(orthofinder_results, stageAs: "orthofinder_results/*")
+
+        output:
+        path('SC_orthogroups.txt'), emit: sc_orthogroups
+        tuple path('\${SP1}.SCO_genes.txt'), path('\${SP2}.SCO_genes.txt'), emit: genes
+
+        script:
+        """
+        parallel -j1 'grep "{}" */Orthogroups/Orthogroups.txt >> SC_orthogroups.txt' :::: */Orthogroups/Orthogroups_SingleCopyOrthologues.txt
+        
+        SP1="\$(cat SC_orthogroups.txt | cut -f2-2 -d' ' | cut -f-1 -d'.' | head -n1)"
+        cat SC_orthogroups.txt | cut -f2-2 -d' ' | cut -f2- -d'.' > \$SP1.SCO_genes.txt
+
+        SP2="\$(cat SC_orthogroups.txt | cut -f3-3 -d' ' | cut -f-1 -d'.' | head -n1)"
+        cat SC_orthogroups.txt | cut -f3-3 -d' ' | cut -f2- -d'.' > \$SP2.SCO_genes.txt
+     
+        """
+}
+
+process filter_annotation{
+
+        input:
+        tuple path(sp1_genes), path(sp2_genes)
+        path(annotation_1)
+        path(annotation_2)
+
+        output:
+        path("${sp1_genes.baseName}.SCOs.gtf"), emit: sp1
+        path("${sp2_genes.baseName}.SCOs.gtf"), emit: sp2
+
+        script:
+        """
+        parallel -j1 'grep "{}" ${annotation_1} >> ${sp1_genes.baseName}.SCOs.gff' :::: ${sp1_genes}
+        parallel -j1 'grep "{}" ${annotation_2} >> ${sp2_genes.baseName}.SCOs.gff' :::: ${sp2_genes}
+        """
+}
+
 // TO DO
 process filter_orthogroups{
 

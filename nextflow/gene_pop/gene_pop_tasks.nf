@@ -1,5 +1,6 @@
 process makeGenomeFile{
         publishDir params.outdir, mode:'copy'
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         path(genome_dict)
@@ -32,6 +33,7 @@ process getGeneBedGTF {
 
 process getGeneBedGFF {
         publishDir params.outdir, mode:'copy'
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         path(gff_f)
@@ -63,6 +65,7 @@ process getExonBedGFF {
 }
 
 process splitBed {
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         tuple val(species), path(bed_f)
@@ -79,6 +82,7 @@ process splitBed {
 process degenotate {
         memory '8G'
         publishDir params.outdir, mode:'copy'
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         path(genome_f)
@@ -100,6 +104,7 @@ process degenotate {
 process filterBed{
         memory '8G'
         publishDir params.outdir, mode:'copy'
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         tuple val(species), path("degenotate/*")
@@ -134,6 +139,7 @@ process subsetVCF{
 }
 
 process calculatePiBed{
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         path(vcf_f)
@@ -153,6 +159,7 @@ process calculatePiBed{
 }
 
 process mergePi{
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         tuple val(species), val(chrom), path(zero_f), path(four_f)
@@ -168,6 +175,7 @@ process mergePi{
 
 process concat_all{
         publishDir params.outdir, mode:'copy'
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         path(files, stageAs: "inputs/*")
