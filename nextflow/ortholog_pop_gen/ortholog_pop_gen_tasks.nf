@@ -199,17 +199,17 @@ process get_SCO_genes{
 
         output:
         path('SC_orthogroups.txt'), emit: sc_orthogroups
-        tuple path('\$SP1.SCO_genes.txt'), path('\$SP2.SCO_genes.txt'), emit: genes
+        tuple path('*.sp1.SCO_genes.txt'), path('*.sp2.SCO_genes.txt'), emit: genes
 
         script:
         """
         parallel -j1 'grep "{}" orthofinder_results/*/Orthogroups/Orthogroups.txt >> SC_orthogroups.txt' :::: orthofinder_results/*/Orthogroups/Orthogroups_SingleCopyOrthologues.txt
         
         SP1="\$(cat SC_orthogroups.txt | cut -f2-2 -d' ' | cut -f-1 -d'.' | head -n1)"
-        cat SC_orthogroups.txt | cut -f2-2 -d' ' | cut -f2- -d'.' > \$SP1.SCO_genes.txt
+        cat SC_orthogroups.txt | cut -f2-2 -d' ' | cut -f2- -d'.' > \$SP1.sp1.SCO_genes.txt
 
         SP2="\$(cat SC_orthogroups.txt | cut -f3-3 -d' ' | cut -f-1 -d'.' | head -n1)"
-        cat SC_orthogroups.txt | cut -f3-3 -d' ' | cut -f2- -d'.' > \$SP2.SCO_genes.txt
+        cat SC_orthogroups.txt | cut -f3-3 -d' ' | cut -f2- -d'.' > \$SP2.sp2.SCO_genes.txt
      
         """
 }
