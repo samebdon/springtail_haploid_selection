@@ -203,7 +203,7 @@ process get_SCO_genes{
 
         script:
         """
-        parallel -j1 'grep "{}" */Orthogroups/Orthogroups.txt >> SC_orthogroups.txt' :::: */Orthogroups/Orthogroups_SingleCopyOrthologues.txt
+        parallel -j1 'grep "{}" orthofinder_results/*/Orthogroups/Orthogroups.txt >> SC_orthogroups.txt' :::: orthofinder_results/*/Orthogroups/Orthogroups_SingleCopyOrthologues.txt
         
         SP1="\$(cat SC_orthogroups.txt | cut -f2-2 -d' ' | cut -f-1 -d'.' | head -n1)"
         cat SC_orthogroups.txt | cut -f2-2 -d' ' | cut -f2- -d'.' > \$SP1.SCO_genes.txt
