@@ -39,8 +39,8 @@ workflow infer_orthology_flow {
         emit:
           orthofinder.out.all
           orthofinder.out.sco
-          filter_annotation.out.sp_1
-          filter_annotation.out.sp_2
+          filter_annotation.out.sp1
+          filter_annotation.out.sp2
 }
 
 // assuming 2 protein files in prot_dir for now. should generalise for any number of samples
