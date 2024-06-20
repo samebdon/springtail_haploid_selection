@@ -218,8 +218,8 @@ process filter_annotation{
 
         input:
         tuple path(sp1_genes), path(sp2_genes)
-        path(annotation_1)
-        path(annotation_2)
+        path(annotation_1, stageAs: "sp1_annotation/annotation.gtf")
+        path(annotation_2, stageAs: "sp2_annotation/annotation.gtf")
 
         output:
         path("${sp1_genes.baseName}.SCOs.gtf"), emit: sp1
@@ -227,8 +227,8 @@ process filter_annotation{
 
         script:
         """
-        parallel -j1 'grep "{}" ${annotation_1} >> ${sp1_genes.baseName}.SCOs.gff' :::: ${sp1_genes}
-        parallel -j1 'grep "{}" ${annotation_2} >> ${sp2_genes.baseName}.SCOs.gff' :::: ${sp2_genes}
+        parallel -j1 'grep "{}" sp1_annotation/annotation.gtf >> ${sp1_genes.baseName}.SCOs.gff' :::: ${sp1_genes}
+        parallel -j1 'grep "{}" sp2_annotation/annotation.gtf >> ${sp2_genes.baseName}.SCOs.gff' :::: ${sp2_genes}
         """
 }
 
