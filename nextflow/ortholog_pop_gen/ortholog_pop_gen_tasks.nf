@@ -199,7 +199,7 @@ process get_SCO_genes{
 
         output:
         path('SC_orthogroups.txt'), emit: sc_orthogroups
-        tuple path('\${SP1}.SCO_genes.txt'), path('\${SP2}.SCO_genes.txt'), emit: genes
+        tuple path('\$SP1.SCO_genes.txt'), path('\$SP2.SCO_genes.txt'), emit: genes
 
         script:
         """
