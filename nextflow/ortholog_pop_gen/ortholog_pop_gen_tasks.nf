@@ -222,13 +222,13 @@ process filter_annotation{
         path(annotation_2, stageAs: "sp2_annotation/*")
 
         output:
-        path("${sp1_genes.baseName}.SCOs.gtf"), emit: sp1
-        path("${sp2_genes.baseName}.SCOs.gtf"), emit: sp2
+        path("${sp1_genes.simpleName}.SCOs.gtf"), emit: sp1
+        path("${sp2_genes.simpleName}.SCOs.gtf"), emit: sp2
 
         script:
         """
-        parallel -j1 'grep "{}" sp1_annotation/*.gtf >> ${sp1_genes.baseName}.SCOs.gff' :::: ${sp1_genes}
-        parallel -j1 'grep "{}" sp2_annotation/*.gtf >> ${sp2_genes.baseName}.SCOs.gff' :::: ${sp2_genes}
+        parallel -j1 'grep "{}" sp1_annotation/*.gtf >> ${sp1_genes.simpleName}.SCOs.gtf' :::: ${sp1_genes}
+        parallel -j1 'grep "{}" sp2_annotation/*.gtf >> ${sp2_genes.simpleName}.SCOs.gtf' :::: ${sp2_genes}
         """
 }
 
