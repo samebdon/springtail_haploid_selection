@@ -163,7 +163,7 @@ process calculatePiBed{
         tuple val(species), path(genome_file)
 
         output:
-        tuple val(species), val(gene_bed_f.simpleName), path("${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv"), path("${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv")
+        tuple val(species), val(gene_bed_f.simpleName), path("${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv"), path("${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv"), emit: pi
         path('*sfs.txt'), optional: true
 
         script:
@@ -178,6 +178,7 @@ process mergePi{
 
         input:
         tuple val(species), val(chrom), path(zero_f), path(four_f)
+
 
         output:
         path("${species}.${chrom}.longest_isoforms.pi.tsv")
