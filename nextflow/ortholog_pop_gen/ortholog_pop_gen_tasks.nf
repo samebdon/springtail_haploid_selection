@@ -227,8 +227,8 @@ process filter_annotation{
 
         script:
         """
-        parallel -j1 'grep "{}" sp1_annotation/annotation.gtf >> ${sp1_genes.baseName}.SCOs.gff' :::: ${sp1_genes}
-        parallel -j1 'grep "{}" sp2_annotation/annotation.gtf >> ${sp2_genes.baseName}.SCOs.gff' :::: ${sp2_genes}
+        parallel -j1 'grep "{}" sp1_annotation/*.gtf >> ${sp1_genes.baseName}.SCOs.gff' :::: ${sp1_genes}
+        parallel -j1 'grep "{}" sp2_annotation/*.gtf >> ${sp2_genes.baseName}.SCOs.gff' :::: ${sp2_genes}
         """
 }
 
