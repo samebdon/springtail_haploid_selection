@@ -1,3 +1,17 @@
+process agatAnnotation{
+
+        input:
+        path(annotation)
+
+        output:
+        path("${annotation.simpleName}.agat.gff3")
+
+        script:
+        """
+        agat_convert_sp_gxf2gxf.pl --gff ${annotation} -o ${annotation.simpleName}.agat.gff3
+        """
+}
+
 process makeGenomeFile{
         publishDir params.outdir, mode:'copy'
         conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
