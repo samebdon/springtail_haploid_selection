@@ -218,8 +218,8 @@ process filter_annotation{
 
         input:
         tuple path(sp1_genes), path(sp2_genes)
-        path(annotation_1, stageAs: "sp1_annotation/annotation.gtf")
-        path(annotation_2, stageAs: "sp2_annotation/annotation.gtf")
+        path(annotation_1, stageAs: "sp1_annotation/*")
+        path(annotation_2, stageAs: "sp2_annotation/*")
 
         output:
         path("${sp1_genes.baseName}.SCOs.gtf"), emit: sp1
