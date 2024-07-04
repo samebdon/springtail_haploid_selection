@@ -9,7 +9,7 @@ workflow braker2_flow {
         main:
           unmask_genome(meta, genome)
           earlGrey(unmask_genome.out)
-          mask_genome(genome, earlGrey.out)
+          mask_genome(genome, earlGrey.out.repeat_bed)
           braker2(mask_genome.out, prot_seq)
 }
 

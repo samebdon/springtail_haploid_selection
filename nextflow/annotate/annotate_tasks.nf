@@ -14,6 +14,7 @@ process unmask_genome {
 }
 
 process earlGrey {
+        publishDir params.outdir, mode:'copy'
         memory '200G'
         cpus 64
         queue 'basement'
@@ -22,11 +23,12 @@ process earlGrey {
         tuple val(meta), path(genome)
 
         output:
-        path("./results/*/*_summaryFiles/*.filteredRepeats.bed")
+        path("./results/*_EarlGrey"), emit: all
+        path("./results/*/*_summaryFiles/*.filteredRepeats.bed"), emit: repeat_bed
 
         script:
         """
-        earlGrey -g ${unmasked_genome} -s ${meta} -o ./results -t ${task.cpus}
+        earlGrey -g ${genome} -s ${meta} -o ./results -t ${task.cpus}
         """
 }
 
