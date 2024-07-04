@@ -1,8 +1,9 @@
 // MAKE SURE FASTA HEADERS ARE SIMPLE FOR EARLGREY AND BRAKER
+// awk '{print $1}' genome.fasta > genome.simple_header.fasta
 // PIPELINE WILL REMOVE EXISTING SOFTMASKING
 
 params.meta = "orchesella_flavescens"
-params.genome = "$launchDir/data/results/genomes/orchesella_flavescens/GCA_964034955.1.fasta"
+params.genome = "$launchDir/data/results/genomes/orchesella_flavescens/GCA_964034955.1.simple_header.fasta"
 params.prot_seq = "$launchDir/data/results/braker2/dbs/Arthropoda.allacmaFusca.fa"
 params.outdir = "$launchDir/data/results/annotations/${params.meta}_nf"
 
