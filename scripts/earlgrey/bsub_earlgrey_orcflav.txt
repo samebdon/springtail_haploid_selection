@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#BSUB -o logs/earlGrey.out.%J
+#BSUB -e logs/earlGrey.err.%J
+#BSUB -q basement
+#BSUB -n 64
+#BSUB -M 204800
+#BSUB -R "select[mem>204800] rusage[mem=204800]"
+
+module load earlgrey/3.0-c1
+earlGrey -g data/workdir/annotate/c4/412022ff4ad6ffd796e3ddd2239f2c/orchesellaFlavescens.unmasked.fa -s orchesellaFlavescens -o data/results/earlGrey/orchesella_flavescens -t 64
