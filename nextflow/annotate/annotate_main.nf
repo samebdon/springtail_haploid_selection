@@ -1,8 +1,8 @@
 // MAKE SURE FASTA HEADERS ARE SIMPLE FOR EARLGREY AND BRAKER
 // PIPELINE WILL REMOVE EXISTING SOFTMASKING
 
-params.meta = "dicyrtomina_minuta"
-params.genome = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.fa"
+params.meta = "orchesella_flavescens"
+params.genome = "$launchDir/data/results/genomes/orchesella_flavescens/GCA_964034955.1.fasta"
 params.prot_seq = "$launchDir/data/results/braker2/dbs/Arthropoda.allacmaFusca.fa"
 params.outdir = "$launchDir/data/results/annotations/${params.meta}_nf"
 
