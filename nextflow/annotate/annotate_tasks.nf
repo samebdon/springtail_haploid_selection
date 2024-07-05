@@ -18,6 +18,7 @@ process earlGrey {
         memory '200G'
         cpus 64
         queue 'basement'
+        container 'quay.io/sanger-tol/earlgrey:3.0-c1'
 
         input:
         tuple val(meta), path(genome)
