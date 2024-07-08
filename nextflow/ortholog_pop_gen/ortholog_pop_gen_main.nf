@@ -11,7 +11,7 @@ params.prot_fasta_1 = "$launchDir/data/results/braker3/allacma_fusca/braker.aa"
 // Species 2 data files
 params.species_2 = "dicyrtomina_minuta"
 params.genome_fasta_2 = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.fa"
-params.genome_dict_2 = "$launchDir/data/results/genomes/qeDicMinu4_1.earlGrey_masked.dict"
+params.genome_dict_2 = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.dict"
 params.vcf_2 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.hard_filtered.sorted.vcf.gz"
 params.vcf_index_2 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.hard_filtered.sorted.vcf.gz.csi"
 params.callable_bed_2 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.callable.bed"
