@@ -168,8 +168,8 @@ process calculatePiBed{
 
         script:
         """
-        calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.baseName} ${zero_bed_f} ) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi -g ${genome_file}
-        calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.baseName} ${four_bed_f} ) -n ${gene_bed_f.simpleName} -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi -g ${genome_file}
+        calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${zero_bed_f} ) -n ${gene_bed_f.baseName} -o ${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv -l 0D_pi -g ${genome_file}
+        calculatePiBed.py -v ${vcf_f} -b ${gene_bed_f} -a <(grep ${gene_bed_f.simpleName} ${four_bed_f} ) -n ${gene_bed_f.baseName} -o ${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv -l 4D_pi -g ${genome_file}
         """
 }
 
