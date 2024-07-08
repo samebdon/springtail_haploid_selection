@@ -41,6 +41,7 @@ workflow infer_orthology_flow {
           orthofinder.out.sco
           filter_annotation.out.sp1
           filter_annotation.out.sp2
+          get_SCO_genes.out.sc_orthogroups
 }
 
 // assuming 2 protein files in prot_dir for now. should generalise for any number of samples
@@ -56,7 +57,22 @@ workflow orthodiver_flow {
           translatorx_pair(mafft_batch.out, get_orthogroup_haps_batch.out.flatten())
           orthodiver(translatorx_pair.out)
           agg_orthodiver(orthodiver.out.flatten().collect())
+
+        emit:
+          agg_orthodiver.out
 }
+
+workflow merge_orthodiver_gene_pop {
+        take:
+          agg_orthodiver
+          gene_pop_1
+          gene_pop_2
+          orthogroups
+
+        main:
+          merge_results(agg_orthodiver, gene_pop_1, gene_pop_2, orthogroups)
+}
+
 
 // THOUGHTS AND TODOS
 

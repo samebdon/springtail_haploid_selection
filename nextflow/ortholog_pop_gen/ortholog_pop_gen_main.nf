@@ -34,7 +34,7 @@ log.info """\
 
 include { gen_haps_flow as gen_haps_flow_1 } from './ortholog_pop_gen_flows.nf'
 include { gen_haps_flow as gen_haps_flow_2 } from './ortholog_pop_gen_flows.nf'
-include { infer_orthology_flow; orthodiver_flow } from './ortholog_pop_gen_flows.nf'
+include { infer_orthology_flow; orthodiver_flow; merge_orthodiver_gene_pop} from './ortholog_pop_gen_flows.nf'
 include { gene_pop_flow_SFS as gene_pop_flow_SFS_1 } from './gene_pop_flows.nf'
 include { gene_pop_flow_SFS as gene_pop_flow_SFS_2 } from './gene_pop_flows.nf'
 
@@ -45,6 +45,7 @@ workflow {
         orthodiver_flow(gen_haps_flow_1.out[0], gen_haps_flow_2.out[0], infer_orthology_flow.out[1])
         gene_pop_flow_SFS_1(params.genome_fasta_1, params.genome_dict_1, params.vcf_1 ,params.vcf_index_1, infer_orthology_flow.out[2], params.species_1)
         gene_pop_flow_SFS_2(params.genome_fasta_2, params.genome_dict_2, params.vcf_2 ,params.vcf_index_2, infer_orthology_flow.out[3], params.species_2)
+        merge_orthodiver_gene_pop(orthodiver_flow.out, gene_pop_flow_SFS_1.out, gene_pop_flow_SFS_2.out, infer_orthology_flow.out[4])
 }
 
 // mamba activate ortholog_pop_gen

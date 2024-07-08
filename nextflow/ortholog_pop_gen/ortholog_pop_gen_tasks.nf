@@ -475,3 +475,22 @@ process agg_orthodiver {
         agg_orthodiver.py -i orthodiver_results
         """
 }
+
+process merge_results{
+        publishDir params.outdir, mode:'copy'
+        memory '4G'
+
+        input:
+        path(agg_orthodiver)
+        path(gene_pop_1)
+        path(gene_pop_2)
+        path(orthogroups)
+
+        output:
+        path("*")
+
+        script:
+        """
+        merge_results.py 
+        """
+}
