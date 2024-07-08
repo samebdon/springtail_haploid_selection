@@ -10,7 +10,7 @@ process trimReads {
         script:
         """
         mkdir fastp
-        fastp -i ${reads[0]} -I ${reads[1]} -o fastp/${sample_id}.1.fastp.fastq.gz -O fastp/${sample_id}.2.fastp.fastq.gz --length_required 33 --cut_front --cut_tail --cut_mean_quality 20 --thread 1
+        fastp -i ${reads[0]} -I ${reads[1]} -o fastp/${sample_id}.1.fastp.fastq.gz -O fastp/${sample_id}.2.fastp.fastq.gz --length_required 33 --cut_front --cut_tail --cut_mean_quality 20 --thread ${task.cpus}
         """
 }
 

@@ -18,9 +18,3 @@ workflow {
         raw_qc_flow( read_pairs_ch)
         rnaseq_aln_flow(params.genome, read_pairs_ch)
 }
-
-/*
-* Add CPU information to config
-* Add CPU information to tasks
-* How to link these?
-*/
