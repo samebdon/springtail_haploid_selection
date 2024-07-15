@@ -482,8 +482,8 @@ process merge_results{
 
         input:
         path(agg_orthodiver)
-        path(gene_pop_1)
-        path(gene_pop_2)
+        tuple val(sp1), path(gene_pop_1)
+        tuple val(sp1), path(gene_pop_2)
         path(orthogroups)
 
         output:
