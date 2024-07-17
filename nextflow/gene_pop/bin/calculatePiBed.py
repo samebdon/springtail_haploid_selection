@@ -103,7 +103,11 @@ if __name__ == "__main__":
     is_acc = asarray_ndim(accessible_array, 1, allow_none=True)
     pos, ac_is_acc = mask_inaccessible(is_acc, idx, ac)
     biallelic_ac = ac_is_acc.compress(ac_is_acc.is_biallelic()[:], axis=0)[:, :2]
-    # write biallelic_ac + pos
+
+    biallelic_pos = pos[ac_is_acc.is_biallelic()[:]]
+    biallelic_arr = np.append(biallelic_ac, biallelic_pos.reshape(len(biallelic_pos), 1), axis=1)
+    np.savetxt(f"{name}.{result_label}.biallelic_ac.txt", biallelic_arr, delimiter='\t', header='ref_allele_count\talt_allele_count\tpos', comments='')
+
     sfs = allel.sfs_folded(biallelic_ac)
 
     total = np.sum(accessible_array)
