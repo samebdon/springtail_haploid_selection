@@ -7,4 +7,4 @@
 #BSUB -M 204800
 #BSUB -R "select[mem>204800] rusage[mem=204800]"
 
-earlGrey -g /lustre/scratch126/tol/teams/jaron/data/assemblies_Sanger/insects/Bradysia_impatiens/assembly/curated/idBraImpa2.1/idBraImpa2.1.primary.curated.fa -s bradysiaImpatiens -o data/results/earlGrey/bradysia_impatiens/results -t 64
+earlGrey -g data/results/bradysia_earlgrey/idBraImpa2.1.primary.curated.fa -s bradysiaImpatiens -o data/results/bradysia_earlgrey/ -t 64
