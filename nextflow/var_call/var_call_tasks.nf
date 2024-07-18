@@ -13,7 +13,6 @@ process bwaIndex {
 }
 
 process bwaMem {
-        publishDir params.outdir, mode:'copy'
 
         input:
         path(genome_f)
@@ -32,6 +31,7 @@ process bwaMem {
 }
 
 process sortBamSambamba {
+        publishDir params.outdir, mode:'copy'
 
         input:
         tuple val(meta), path(bam_f)
@@ -62,6 +62,7 @@ process markDupesSambamba {
 }
 
 process indexBamSambamba{
+        publishDir params.outdir, mode:'copy'
 
         input:
         tuple val(meta), path(bam_f)

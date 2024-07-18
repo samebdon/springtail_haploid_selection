@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 
 """calculatePiBed.py
 
@@ -26,6 +26,7 @@ import numpy as np
 from docopt import docopt
 from allel.util import asarray_ndim, mask_inaccessible
 
+
 def parse_vcf(vcf, chromosome):
     query_fields = [
         "calldata/GT",
@@ -34,11 +35,7 @@ def parse_vcf(vcf, chromosome):
         "variants/is_snp",
     ]
 
-    vcf_dict = allel.read_vcf(
-        vcf,
-        fields=query_fields,
-        region=chromosome
-    )
+    vcf_dict = allel.read_vcf(vcf, fields=query_fields, region=chromosome)
 
     is_SNP_array = vcf_dict["variants/is_snp"]
 
@@ -48,21 +45,32 @@ def parse_vcf(vcf, chromosome):
     snp_pos = vcf_dict["variants/POS"][mask_array]
     snp_ga = allel.GenotypeArray(snp_gts)
 
+    gt_counts = []
+    for i in range(snp_ga.shape[1]):
+        homref = snp_ga[:, i].count_hom_ref()
+        het = snp_ga[:, i].count_het()
+        homalt = snp_ga[:, i].count_hom_alt()
+        gt_counts.append([homref, het, homalt])
+    gt_counts = np.array(gt_counts)
+
     ac = snp_ga.count_alleles()
 
-    return snp_pos, ac
+    return snp_pos, ac, gt_counts
+
 
 def get_accessible(bed, chrom):
-    df = pd.read_csv(bed, sep = '\t', names = ["chrom","start","stop"])
-    degen_pos = df[df['chrom']==chrom]["start"].to_numpy()
+    df = pd.read_csv(bed, sep="\t", names=["chrom", "start", "stop"])
+    degen_pos = df[df["chrom"] == chrom]["start"].to_numpy()
     n = get_length(chrom, genome_df)
     acc_arr = np.full((n), False)
-    acc_arr[degen_pos]=True
+    acc_arr[degen_pos] = True
     return acc_arr
 
+
 def get_length(chrom, genome_df):
-    length = genome_df.loc[genome_df['chrom']==chrom, 'length'].iloc[0]
+    length = genome_df.loc[genome_df["chrom"] == chrom, "length"].iloc[0]
     return length
+
 
 if __name__ == "__main__":
     args = docopt(__doc__)
@@ -89,9 +97,18 @@ if __name__ == "__main__":
 
     results = []
 
-    genome_df = pd.read_csv(genome_file, sep = '\t', names = ['chrom','length'])
+    genome_df = pd.read_csv(genome_file, sep="\t", names=["chrom", "length"])
     accessible_array = get_accessible(acc_bed_f, name)
-    snp_pos, ac = parse_vcf(vcf_f, chromosome=name)
+    snp_pos, ac, gt_count_arr = parse_vcf(vcf_f, chromosome=name)
+
+    np.savetxt(
+        f"{name}.{result_label}.gt_counts.txt",
+        gt_count_arr,
+        delimiter="\t",
+        header="hom_ref\thet\thom_alt",
+        comments="",
+    )
+
     idx = allel.SortedIndex(snp_pos)
     bed = pybedtools.BedTool(bed_f)
 
@@ -99,14 +116,25 @@ if __name__ == "__main__":
     # result_label = degeneracy
     # accessible array is true/false arr made of 0d or 4d site positions on one chrom
     # so this should get the 0d or 4d folded SFS for the analysed chrom
-    
+
     is_acc = asarray_ndim(accessible_array, 1, allow_none=True)
     pos, ac_is_acc = mask_inaccessible(is_acc, idx, ac)
     biallelic_ac = ac_is_acc.compress(ac_is_acc.is_biallelic()[:], axis=0)[:, :2]
 
+    # print MAC arr and pos
     biallelic_pos = pos[ac_is_acc.is_biallelic()[:]]
-    biallelic_arr = np.append(biallelic_ac, biallelic_pos.reshape(len(biallelic_pos), 1), axis=1)
-    np.savetxt(f"{name}.{result_label}.biallelic_ac.txt", biallelic_arr, delimiter='\t', header='ref_allele_count\talt_allele_count\tpos', comments='')
+    biallelic_arr = np.append(
+        biallelic_ac, biallelic_pos.reshape(len(biallelic_pos), 1), axis=1
+    )
+    np.savetxt(
+        f"{name}.{result_label}.biallelic_ac.txt",
+        biallelic_arr,
+        delimiter="\t",
+        header="ref_allele_count\talt_allele_count\tpos",
+        comments="",
+    )
+
+    # how can I count the genotypes per sample?
 
     sfs = allel.sfs_folded(biallelic_ac)
 
@@ -118,14 +146,17 @@ if __name__ == "__main__":
     for interval in bed:
         (chrom, start, stop, feature) = interval
         try:
-            pi = allel.sequence_diversity(idx, ac, start=int(start)+1, stop=int(stop), is_accessible=accessible_array)
+            pi = allel.sequence_diversity(
+                idx,
+                ac,
+                start=int(start) + 1,
+                stop=int(stop),
+                is_accessible=accessible_array,
+            )
             results.append((chrom, feature, pi))
         except KeyError:
-            results.append((chrom, feature, 'NaN'))
+            results.append((chrom, feature, "NaN"))
 
-
-
-    pd.DataFrame(results, columns=["chrom","feature", result_label]).to_csv(
+    pd.DataFrame(results, columns=["chrom", "feature", result_label]).to_csv(
         out_f, sep="\t", index=False
     )
-
