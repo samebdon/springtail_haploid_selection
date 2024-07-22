@@ -13,7 +13,7 @@ workflow var_call_flow {
 	  sortBamSambamba(bwaMem.out)
           markDupesSambamba(sortBamSambamba.out)
 	  indexBamSambamba(markDupesSambamba.out.meta_bam)
-          mosdepth(markDupesSambamba.out.meta_bam.join(indexBamSambamba.out), 8, 5)
+          mosdepth(markDupesSambamba.out.meta_bam.join(indexBamSambamba.out), 8, 4)
           intersectBeds(mosdepth.out.collect(), species)
 	  sambambaMerge(markDupesSambamba.out.bam_only.collect(), species)
 	  freebayes(genome, genome_index, sambambaMerge.out, intersectBeds.out.overlap)
