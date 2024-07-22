@@ -23,6 +23,7 @@ import allel
 import pybedtools
 import pandas as pd
 import numpy as np
+import sys
 from docopt import docopt
 from allel.util import asarray_ndim, mask_inaccessible
 
@@ -55,7 +56,7 @@ def parse_vcf(vcf, chromosome):
 
     ac = snp_ga.count_alleles()
 
-    return snp_pos, ac, gt_counts
+    return snp_pos, ac, gt_counts, snp_ga
 
 
 def get_accessible(bed, chrom):
@@ -99,7 +100,7 @@ if __name__ == "__main__":
 
     genome_df = pd.read_csv(genome_file, sep="\t", names=["chrom", "length"])
     accessible_array = get_accessible(acc_bed_f, name)
-    snp_pos, ac, gt_count_arr = parse_vcf(vcf_f, chromosome=name)
+    snp_pos, ac, gt_count_arr, snp_ga = parse_vcf(vcf_f, chromosome=name)
 
     np.savetxt(
         f"{name}.{result_label}.gt_counts.txt",
@@ -134,7 +135,26 @@ if __name__ == "__main__":
         comments="",
     )
 
-    # how can I count the genotypes per sample?
+    fifton_pos = biallelic_arr[biallelic_arr[:, 0] == biallelic_arr[:, 1]][:, 2]
+    fifton_arr = np.isin(snp_pos, fifton_pos)
+    fifton_ga = snp_ga[fifton_arr]
+
+    fifton_count_arr = np.array(
+        [
+            fifton_ga.count_hom(axis=1),
+            fifton_ga.count_het(axis=1),
+            fifton_ga.count_hom_alt(axis=1),
+            fifton_pos,
+        ]
+    ).transpose()
+
+    np.savetxt(
+        f"{name}.{result_label}.fifton_gc.txt",
+        fifton_count_arr,
+        delimiter="\t",
+        header="ref_hom_count\thet_count\talt_hom_count\tpos",
+        comments="",
+    )
 
     sfs = allel.sfs_folded(biallelic_ac)
 
