@@ -5,7 +5,7 @@ params.genome = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.s
 params.genome_index = "$launchDir/data/results/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta.fai"
 params.genome_dict = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.dict"
 params.reads = "$launchDir/data/raw_data/reseq/allacma_fusca/*/*.{1,2}.fastq.gz"
-params.outdir = "$launchDir/data/results/var_call/allacma_fusca_4cov/"
+params.outdir = "$launchDir/data/results/var_call/allacma_fusca_sdcovmax/"
 params.species = "allacma_fusca"
 
 log.info """\
