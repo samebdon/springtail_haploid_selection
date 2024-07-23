@@ -81,7 +81,6 @@ process mosdepth {
         input:
 	tuple val(meta), path(bam_f), path(bam_index)
         val(min_depth)
-        val(max_depth_factor)
 
         output:
         path("mosdepth/${bam_f.baseName}.callable.bed")
