@@ -34,6 +34,7 @@ def parse_vcf(vcf, chromosome):
         "variants/CHROM",
         "variants/POS",
         "variants/is_snp",
+        "calldata/DP"
     ]
 
     vcf_dict = allel.read_vcf(vcf, fields=query_fields, region=chromosome)
@@ -44,6 +45,7 @@ def parse_vcf(vcf, chromosome):
 
     snp_gts = vcf_dict["calldata/GT"][mask_array]
     snp_pos = vcf_dict["variants/POS"][mask_array]
+    snp_dp = vcf_dict["calldata/DP"][mask_array]
     snp_ga = allel.GenotypeArray(snp_gts)
 
     gt_counts = []
@@ -56,7 +58,7 @@ def parse_vcf(vcf, chromosome):
 
     ac = snp_ga.count_alleles()
 
-    return snp_pos, ac, gt_counts, snp_ga
+    return snp_pos, ac, gt_counts, snp_ga, snp_dp
 
 
 def get_accessible(bed, chrom):
@@ -100,7 +102,15 @@ if __name__ == "__main__":
 
     genome_df = pd.read_csv(genome_file, sep="\t", names=["chrom", "length"])
     accessible_array = get_accessible(acc_bed_f, name)
-    snp_pos, ac, gt_count_arr, snp_ga = parse_vcf(vcf_f, chromosome=name)
+    snp_pos, ac, gt_count_arr, snp_ga, snp_dp = parse_vcf(vcf_f, chromosome=name)
+
+    dp_arr = np.concatenate((snp_pos.reshape(-1, 1), snp_dp), axis=1)
+    
+    np.savetxt(
+        f"{name}.{result_label}.snp_dp.txt",
+        dp_arr,
+        delimiter="\t",
+    )
 
     np.savetxt(
         f"{name}.{result_label}.gt_counts.txt",
