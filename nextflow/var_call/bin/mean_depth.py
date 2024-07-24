@@ -26,7 +26,7 @@ def get_max_depth_mosdepth(bed_f):
     bed_df = bed_df[bed_df["depth"] > 0]
     bed_df["length"] = bed_df["end"] - bed_df["start"]
     mean = np.average(bed_df["depth"], weights=bed_df["length"])
-    variance = numpy.average((bed_df["depth"]-mean)**2, weights=bed_df["length"])
+    variance = np.average((bed_df["depth"]-mean)**2, weights=bed_df["length"])
     SD = np.sqrt(variance)
     return round(mean+(2*SD), 2)
 
