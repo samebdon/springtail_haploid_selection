@@ -106,9 +106,17 @@ if __name__ == "__main__":
 
     dp_arr = np.concatenate((snp_pos.reshape(-1, 1), snp_dp), axis=1)
     
+    ga_arr = np.concatenate((snp_pos.reshape(-1, 1), snp_ga), axis=1)
+
     np.savetxt(
         f"{name}.{result_label}.snp_dp.txt",
         dp_arr,
+        delimiter="\t",
+    )
+
+    np.savetxt(
+        f"{name}.{result_label}.snp_ga.txt",
+        ga_arr,
         delimiter="\t",
     )
 
