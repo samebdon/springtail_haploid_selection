@@ -79,7 +79,8 @@ process indexBamSambamba{
 }
 
 process mosdepth {
-
+        memory '4G'
+        
         input:
 	tuple val(meta), path(bam_f), path(bam_index)
         val(min_depth)
