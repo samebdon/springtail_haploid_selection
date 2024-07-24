@@ -48,6 +48,7 @@ process sortBamSambamba {
 }
 
 process markDupesSambamba {
+        memory '4G'
 
         input:
         tuple val(meta), path(bam_f)
