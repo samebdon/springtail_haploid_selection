@@ -78,8 +78,9 @@ process indexBamSambamba{
         """
 }
 
+// mosdepth could do with having a fail retry clause
 process mosdepth {
-        memory '10G'
+        memory '15G'
 
         input:
 	tuple val(meta), path(bam_f), path(bam_index)
