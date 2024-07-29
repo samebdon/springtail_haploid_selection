@@ -119,6 +119,7 @@ process intersectBeds{
 }
 
 process sambambaMerge {
+        memory '8G'
 
         input:
         path(bams)
