@@ -137,6 +137,7 @@ process sambambaMerge {
 
 process freebayes {
         queue 'basement'
+        memory '20G'
         cpus 1
 
         input:
