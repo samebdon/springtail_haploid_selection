@@ -2,7 +2,7 @@
 // need to figure out config files
 
 params.genome = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta"
-params.genome_index = "$launchDir/data/results/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta.fai"
+params.genome_index = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta.fai"
 params.genome_dict = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.dict"
 params.reads = "$launchDir/data/raw_data/reseq/allacma_fusca/*/*.{1,2}.fastq.gz"
 params.outdir = "$launchDir/data/results/var_call/allacma_fusca_sdcovmax/"
