@@ -66,7 +66,6 @@ process markDupesSambamba {
 }
 
 process indexBamSambamba{
-        publishDir params.outdir, mode:'copy'
 
         input:
         tuple val(meta), path(bam_f)
