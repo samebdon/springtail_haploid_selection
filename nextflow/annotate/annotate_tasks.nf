@@ -18,7 +18,7 @@ process earlGrey {
         memory '200G'
         cpus 64
         queue 'basement'
-        container 'quay.io/sanger-tol/earlgrey:3.0-c1'
+        conda '/software/treeoflife/conda/users/envs/team360/se13/earlgrey'
 
         input:
         tuple val(meta), path(genome)
@@ -59,11 +59,20 @@ process braker2 {
         path(prot_seq)
 
         output:
-        tuple val(meta), path("*")
+        tuple val(meta), path("wdir/*")
 
         script:
         """
-        braker.pl --genome=${genome} --softmasking --workingdir=. --threads ${task.cpus} --species=${meta} --gff3 --prot_seq=${prot_seq} --useexisting
+        mkdir wdir
+        singularity exec -B \${PWD}:\${PWD} \${BRAKER_SIF} braker.pl \
+                --genome=${genome} \
+                --softmasking \
+                --workingdir=wdir \
+                --threads ${task.cpus} \
+                --species=${meta} \
+                --gff3 \
+                --prot_seq=${prot_seq} \
+                --useexisting
         """
 }
 
