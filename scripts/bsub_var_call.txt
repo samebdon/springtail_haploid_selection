@@ -8,7 +8,7 @@
 #BSUB -R "select[mem>4096] rusage[mem=4096]"
 
 ## set bcftools plugin path to bcftools dir in libexec of conda environment
-export BCFTOOLS_PLUGINS=/software/treeoflife/conda/users/envs/team360/se13/var_call/libexec/bcftools
+#export BCFTOOLS_PLUGINS=/software/treeoflife/conda/users/envs/team360/se13/var_call/libexec/bcftools
 
 export MOSDEPTH_Q0=NO_COVERAGE
 export MOSDEPTH_Q1=LOW_COVERAGE
