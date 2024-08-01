@@ -188,7 +188,7 @@ process bcftools_filter {
         script:
         """
         bcftools norm --threads ${task.cpus} -Ov -f ${genome} ${vcf_f} | \
-        vcfallelicprimitives --keep-info --keep-geno -t decomposed | \
+        vcfwave -f decomposed | \
         bcftools +fill-tags --threads ${task.cpus} -Oz -- -t AN,AC,F_MISSING | \
         bcftools filter --threads ${task.cpus} -Oz -s Qual -m+ -e 'QUAL<10' | \
         bcftools filter --threads ${task.cpus} -Oz -s Balance -m+ -e 'RPL<1 | RPR<1 | SAF<1 | SAR<1' | \

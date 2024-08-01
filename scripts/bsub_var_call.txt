@@ -13,5 +13,5 @@ export MOSDEPTH_Q2=CALLABLE
 export MOSDEPTH_Q3=HIGH_COVERAGE
 
 module load nextflow/23.04.1-5866
-
+module load bcftools/1.20--h8b25389_0
 nextflow run nextflow/var_call/var_call_main.nf -c nextflow/conf/nextflow.config -with-conda /software/treeoflife/conda/users/envs/team360/se13/var_call -w data/workdir/var_call -resume #-with-report -with-trace -with-timeline -with-dag
