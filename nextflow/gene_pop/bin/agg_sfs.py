@@ -111,18 +111,21 @@ if __name__ == "__main__":
 
     sfs_exp = get_exp_sfs(nsamp)
 
+    degeneracy = ["exp"] * nsamp + ["0D"] * nsamp + ["4D"] * nsamp
+    itons = np.tile(np.arange(1, nsamp + 1), 3)
+
     a_sfs_df = pd.DataFrame(
         {
-            "degeneracy": ["exp"] * nsamp + ["0D"] * nsamp + ["4D"] * nsamp,
-            "itons": np.tile(np.arange(1, nsamp + 1), 3),
+            "degeneracy": degeneracy,
+            "itons": itons,
             "sfs": np.concatenate((sfs_exp, zero_A_sfs_norm, four_A_sfs_norm)),
         }
     )
 
     x_sfs_df = pd.DataFrame(
         {
-            "degeneracy": ["exp"] * nsamp + ["0D"] * nsamp + ["4D"] * nsamp,
-            "itons": np.tile(np.arange(1, nsamp + 1), 3),
+            "degeneracy": degeneracy,
+            "itons": itons,
             "sfs": np.concatenate((sfs_exp, zero_X_sfs_norm, four_X_sfs_norm)),
         }
     )
