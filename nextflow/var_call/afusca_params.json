@@ -1,0 +1,7 @@
+{
+	"genome" : "${launchDir}/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta",
+	"genome_index" : "${launchDir}/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta.fai",
+	"reads" : "${launchDir}/data/raw_data/reseq/allacma_fusca/*/*.{1,2}.fastq.gz",
+	"outdir" : "${launchDir}/data/results/var_call/allacma_fusca_sdcovmax/",
+	"species" : "allacma_fusca",
+}

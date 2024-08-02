@@ -150,6 +150,7 @@ process calculatePiBed{
 
         output:
         tuple val(species), val(gene_bed_f.simpleName), path("${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv"), path("${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv")
+        tuple val(species), path("*.sfs.txt"), emit: sfs
 
         script:
         """
@@ -187,5 +188,18 @@ process concat_all{
         script:
         """
         awk '(NR == 1) || (FNR > 1)' inputs/* > ${species}.longest_isoforms.pi.tsv
+        """
+}
+
+process concat_SFS{
+
+        input:
+        tuple val(species), path(files, stageAs: "inputs/*")
+
+        output:
+
+        script:
+        """
+        agg_sfs.py -i inputs -x OX359249.1,OX359250.1 -o ${species}
         """
 }
