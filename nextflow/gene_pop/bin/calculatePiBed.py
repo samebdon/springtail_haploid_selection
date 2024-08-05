@@ -34,7 +34,7 @@ def parse_vcf(vcf, chromosome):
         "variants/CHROM",
         "variants/POS",
         "variants/is_snp",
-        "calldata/DP"
+        "calldata/DP",
     ]
 
     vcf_dict = allel.read_vcf(vcf, fields=query_fields, region=chromosome)
@@ -105,8 +105,6 @@ if __name__ == "__main__":
     snp_pos, ac, gt_count_arr, snp_ga, snp_dp = parse_vcf(vcf_f, chromosome=name)
 
     dp_arr = np.concatenate((snp_pos.reshape(-1, 1), snp_dp), axis=1)
-    
-    ga_arr = np.concatenate((snp_pos.reshape(-1, 1), snp_ga), axis=1)
 
     np.savetxt(
         f"{name}.{result_label}.snp_dp.txt",
@@ -114,11 +112,13 @@ if __name__ == "__main__":
         delimiter="\t",
     )
 
-    np.savetxt(
-        f"{name}.{result_label}.snp_ga.txt",
-        ga_arr,
-        delimiter="\t",
-    )
+    # ga_arr = np.concatenate((snp_pos.reshape(-1, 1), snp_ga), axis=1)
+
+    # np.savetxt(
+    #    f"{name}.{result_label}.snp_ga.txt",
+    #    ga_arr,
+    #    delimiter="\t",
+    # )
 
     np.savetxt(
         f"{name}.{result_label}.gt_counts.txt",
