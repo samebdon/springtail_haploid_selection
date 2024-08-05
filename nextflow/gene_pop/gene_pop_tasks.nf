@@ -202,6 +202,6 @@ process concat_SFS{
 
         script:
         """
-        agg_sfs.py -i inputs -x OX359249.1,OX359250.1 -o ${species}
+        agg_sfs.py -i inputs -x OX359249,OX359250 -o ${species}
         """
 }
