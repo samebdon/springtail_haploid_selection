@@ -150,7 +150,7 @@ process calculatePiBed{
 
         output:
         tuple val(species), val(gene_bed_f.simpleName), path("${species}.${gene_bed_f.simpleName}.0D.longest_isoforms.pi.tsv"), path("${species}.${gene_bed_f.simpleName}.4D.longest_isoforms.pi.tsv"), emit: pi
-        tuple val(species), path("*.sfs.txt"), emit: sfs
+        path("*.sfs.txt"), emit: sfs
 
         script:
         """
