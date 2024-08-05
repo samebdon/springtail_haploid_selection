@@ -200,6 +200,7 @@ process bcftools_filter {
 
 process generate_fail_bed {
         publishDir params.outdir, mode:'copy'
+        memory '4G'
 
         input:
         tuple val(species), path(vcf_f)
