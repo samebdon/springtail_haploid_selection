@@ -117,11 +117,6 @@ if __name__ == "__main__":
 	degeneracy = ["exp"] * nsamp + ["0D"] * nsamp + ["4D"] * nsamp
 	itons = np.tile(np.arange(1, nsamp + 1), 3)
 
-	print(nsamp)
-	print(sfs_exp)
-	print(degeneracy)
-	print(itons)
-
 	a_sfs_df = pd.DataFrame(
 		{
 			"degeneracy": degeneracy,
