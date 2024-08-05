@@ -18,7 +18,7 @@ workflow gene_pop_flow_SFS {
                 calculatePiBed(vcf, vcf_index, filterBed.out, bed_ch, makeGenomeFile.out)
                 mergePi(calculatePiBed.out.pi)
                 concat_all(mergePi.out.collect(), species)
-                concat_SFS(calculatePiBed.out.sfs.collect())
+                concat_SFS(calculatePiBed.out.sfs.collect(), species)
 }
 
 workflow gene_pop_flow_GFF {

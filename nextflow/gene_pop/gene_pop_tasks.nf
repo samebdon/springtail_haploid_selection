@@ -194,9 +194,11 @@ process concat_all{
 process concat_SFS{
         publishDir params.outdir, mode:'copy'
         input:
-        tuple val(species), path(files, stageAs: "inputs/*")
+        path(files, stageAs: "inputs/*")
+        val(species)
 
         output:
+        path('*')
 
         script:
         """
