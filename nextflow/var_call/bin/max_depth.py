@@ -15,7 +15,7 @@ import pandas as pd
 import numpy as np
 from docopt import docopt
 
-def get_max_depth_mosdepth(bed_f):
+def get_max_depth_mosdepth(bed_f, factor):
     bed_df = pd.read_csv(
         bed_f,
         compression="gzip",
@@ -28,14 +28,17 @@ def get_max_depth_mosdepth(bed_f):
     mean = np.average(bed_df["depth"], weights=bed_df["length"])
     variance = np.average((bed_df["depth"]-mean)**2, weights=bed_df["length"])
     SD = np.sqrt(variance)
-    return round(mean+(2*SD), 2)
+    #SD = np.std(bed_df["depth"])
+    return int(mean+(factor*SD))
+    
+    
 
 if __name__ == "__main__":
     args = docopt(__doc__)
     bed_f = args["--bed"]
     if args["--multiplier"]:
-        factor = int(args["--multiplier"])
+        factor = float(args["--multiplier"])
     else:
         factor = int(2)
         
-    print(int(get_max_depth_mosdepth(bed_f)))
+    print(get_max_depth_mosdepth(bed_f, factor))

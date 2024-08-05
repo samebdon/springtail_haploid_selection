@@ -105,17 +105,20 @@ process intersectBeds{
 
         input:
         path(beds, stageAs: "inputs/*")
+        path(repeat_bed)
+        path(genome_index)
         val(species)
 
         output:
-        tuple val(species), path("${species}.callable.all.bed"), emit: all
-        tuple val(species), path("${species}.callable.freebayes.bed"), emit: overlap
+        tuple val(species), path("${species}.callable.all.norepeats.bed"), emit: all
+        tuple val(species), path("${species}.callable.freebayes.norepeats.bed"), emit: freebayes
 
         script:
         """
         N_FILES="\$(ls inputs/*.bed | wc -l)"
-        bedtools multiinter -i $beds | cut -f1-5 > ${species}.callable.all.bed
-        cat ${species}.callable.all.bed | awk -v var=\$N_FILES '\$4==var'  | cut -f1-3 > ${species}.callable.freebayes.bed
+        bedtools multiinter -i $beds | cut -f1-5 | bedtools sort -faidx ${genome_index} | bedtools merge > ${species}.callable.all.bed
+        bedtools subtract -a ${species}.callable.all.bed -b ${repeat_bed} | bedtools sort -faidx ${genome_index} | bedtools merge > ${species}.callable.all.norepeats.bed
+        cat ${species}.callable.all.norepeats.bed | awk -v var=\$N_FILES '\$4==var'  | cut -f1-3 > ${species}.callable.freebayes.norepeats.bed
         """
 }
 
@@ -204,6 +207,7 @@ process generate_fail_bed {
 
         input:
         tuple val(species), path(vcf_f)
+        path(genome_index)
 
         output:
         tuple val(species), path("${species}.vcf_filter_fails.bed")
@@ -212,7 +216,7 @@ process generate_fail_bed {
         """
         bcftools view --threads ${task.cpus} -H -i "FILTER!='PASS'" ${vcf_f} | \
         perl -lane '\$pad=0; print(\$F[0]."\\t".(\$F[1]-1)."\\t".((\$F[1]-1)+length(\$F[3]))."\\t".\$F[6])' | \
-        bedtools sort | \
+        bedtools sort -faidx ${genome_index} | \
         bedtools merge > ${species}.vcf_filter_fails.bed
         """
 }
@@ -238,13 +242,14 @@ process bedtools_subtract {
         input:
         tuple val(species), path(a_bed)
         tuple val(species), path(b_bed)
+        path(genome_index)
 
         output:
         tuple val(species), path("${species}.callable.bed")
 
         script:
         """
-        bedtools subtract -a ${a_bed} -b ${b_bed} > ${species}.callable.bed
+        bedtools subtract -a ${a_bed} -b ${b_bed} | bedtools sort -faidx ${genome_index} | bedtools merge > ${species}.callable.bed
         """
 }
 
