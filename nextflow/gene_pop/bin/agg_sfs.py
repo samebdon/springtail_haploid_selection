@@ -135,6 +135,6 @@ if __name__ == "__main__":
 
     plot_sfs(a_sfs_df, x_sfs_df)
     df.to_csv(f"{str(args['--output'])}.sfs.chrom.tsv", sep="\t", index=False)
-    df.groupby(['linkage','iton']).sum().reset_index().to_csv(
+    df.groupby(['linkage','iton','degeneracy']).sum().reset_index().['linkage','degeneracy','iton','count'].to_csv(
         f"{str(args['--output'])}.sfs.total.tsv", sep="\t", index=False
     )
