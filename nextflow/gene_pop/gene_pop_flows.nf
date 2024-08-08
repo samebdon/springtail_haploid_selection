@@ -1,4 +1,4 @@
-include {makeGenomeFile; getGeneBedGTF; getGeneBedGFF; getExonBedGFF; splitBed; degenotate; filterBed; subsetVCF; calculatePiBed; mergePi; concat_all; concat_SFS} from './gene_pop_tasks.nf'
+include {agatAnnotation; makeGenomeFile; getGeneBedGTF; getGeneBedGFF; getExonBedGFF; splitBed; degenotate; filterBed; subsetVCF; calculatePiBed; mergePi; concat_all; concat_SFS} from './gene_pop_tasks.nf'
 
 workflow gene_pop_flow_SFS {
         take:
@@ -9,16 +9,19 @@ workflow gene_pop_flow_SFS {
                 annotation
                 species
         main:
+                agatAnnotation(annotation)
                 makeGenomeFile(genome_dict, species)
-                getGeneBedGFF(annotation, species)
+                getGeneBedGFF(agatAnnotation.out, species)
                 splitBed(getGeneBedGFF.out)
                 bed_ch = splitBed.out.flatten()
-                degenotate(genome, annotation, species)
+                degenotate(genome, agatAnnotation.out, species)
                 filterBed(degenotate.out.degen, degenotate.out.longest_isoforms)
                 calculatePiBed(vcf, vcf_index, filterBed.out, bed_ch, makeGenomeFile.out)
                 mergePi(calculatePiBed.out.pi)
                 concat_all(mergePi.out.collect(), species)
                 concat_SFS(calculatePiBed.out.sfs.collect(), species)
+        emit:
+                concat_all.out
 }
 
 workflow gene_pop_flow_GFF {

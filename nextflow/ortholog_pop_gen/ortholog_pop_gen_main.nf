@@ -35,8 +35,8 @@ log.info """\
 include { gen_haps_flow as gen_haps_flow_1 } from './ortholog_pop_gen_flows.nf'
 include { gen_haps_flow as gen_haps_flow_2 } from './ortholog_pop_gen_flows.nf'
 include { infer_orthology_flow; orthodiver_flow; merge_orthodiver_gene_pop} from './ortholog_pop_gen_flows.nf'
-include { gene_pop_flow_SFS as gene_pop_flow_SFS_1 } from './gene_pop_flows.nf'
-include { gene_pop_flow_SFS as gene_pop_flow_SFS_2 } from './gene_pop_flows.nf'
+include { gene_pop_flow_SFS as gene_pop_flow_SFS_1 } from '../gene_pop/gene_pop_flows.nf'
+include { gene_pop_flow_SFS as gene_pop_flow_SFS_2 } from '../gene_pop/gene_pop_flows.nf'
 
 workflow {
         gen_haps_flow_1(params.species_1, params.genome_fasta_1, params.vcf_1, params.callable_bed_1, params.annot_1, params.prot_fasta_1)

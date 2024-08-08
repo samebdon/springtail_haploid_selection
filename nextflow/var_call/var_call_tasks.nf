@@ -34,7 +34,7 @@ process bwaMem {
 
 process sortBamSambamba {
         publishDir params.outdir, mode:'copy'
-        memory '4G'
+        memory '8G'
 
         input:
         tuple val(meta), path(bam_f)
