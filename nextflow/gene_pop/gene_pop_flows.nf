@@ -9,12 +9,12 @@ workflow gene_pop_flow_SFS {
                 annotation
                 species
         main:
-                getLongestIsoform(annotation)
+                getLongestIsoformAGAT(annotation)
                 makeGenomeFile(genome_dict, species)
-                getGeneBedAGAT(getLongestIsoform.out, species)
+                getGeneBedAGAT(getLongestIsoformAGAT.out, species)
                 splitBed(getGeneBedGFF.out)
                 bed_ch = splitBed.out.flatten()
-                degenotate(genome, getLongestIsoform.out, species)
+                degenotate(genome, getLongestIsoformAGAT.out, species)
                 filterBed(degenotate.out.degen, degenotate.out.longest_isoforms)
                 calculatePiBed(vcf, vcf_index, filterBed.out, bed_ch, makeGenomeFile.out)
                 mergePi(calculatePiBed.out.pi)
