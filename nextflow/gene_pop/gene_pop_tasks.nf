@@ -1,4 +1,5 @@
 process getLongestIsoformAGAT{
+        memory '4G'
 
         input:
         path(annotation)
