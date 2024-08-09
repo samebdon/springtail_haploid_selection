@@ -63,7 +63,11 @@ def parse_vcf(vcf, chromosome):
 
 def get_accessible(bed, chrom):
     df = pd.read_csv(bed, sep="\t", names=["chrom", "start", "stop"])
-    degen_pos = df[df["chrom"] == chrom]["start"].to_numpy()
+    degen_pos = df[df["chrom"] == chrom]["stop"].to_numpy()
+    ## i think if the degen pos are single positions
+    ## in a 0 based system the position of a one based system is the end
+    ## so i should use the stop rather than the start?
+    ## so this should be right now, but i feel like i should check if there are any other errors..
     n = get_length(chrom, genome_df)
     acc_arr = np.full((n), False)
     acc_arr[degen_pos] = True
@@ -156,6 +160,7 @@ if __name__ == "__main__":
     fifton_pos = biallelic_arr[biallelic_arr[:, 0] == biallelic_arr[:, 1]][:, 2]
     fifton_arr = np.isin(snp_pos, fifton_pos)
     fifton_ga = snp_ga[fifton_arr]
+    ## is this bit using the right pos?
 
     fifton_count_arr = np.array(
         [
@@ -188,7 +193,7 @@ if __name__ == "__main__":
                 idx,
                 ac,
                 start=int(start) + 1,
-                stop=int(stop),
+                stop=int(stop), #is this right for indexing, i think it is?
                 is_accessible=accessible_array,
             )
             results.append((chrom, feature, pi))
