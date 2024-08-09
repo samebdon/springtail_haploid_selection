@@ -1,4 +1,4 @@
-process getLongestIsoform{
+process getLongestIsoformAGAT{
 
         input:
         path(annotation)
@@ -29,7 +29,9 @@ process makeGenomeFile{
         """
 }
 
-process getGeneBedAGAT {
+// agat_convert_sp_gff2bed.pl -gff ${annotation} -o ${species}.gene.bed --sub gene
+
+process getGeneBed {
         publishDir params.outdir, mode:'copy'
 
         input:
@@ -42,7 +44,6 @@ process getGeneBedAGAT {
         script:
         """
         cat ${annotation} |  awk 'OFS="\t" {if (\$3=="gene") {print \$1,\$4-1,\$5,\$9}}' | tr -d '";' > ${species}.gene.bed
-        agat_convert_sp_gff2bed.pl -gff ${annotation} -o ${species}.gene.bed --sub gene
         """
 }
 

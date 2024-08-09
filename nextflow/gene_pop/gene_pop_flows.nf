@@ -1,4 +1,4 @@
-include {getLongestIsoformAGAT; makeGenomeFile; getGeneBedAGAT; splitBed; degenotate; filterBed; subsetVCF; calculatePiBed; mergePi; concat_all; concat_SFS} from './gene_pop_tasks.nf'
+include {getLongestIsoformAGAT; makeGenomeFile; getGeneBed; splitBed; degenotate; filterBed; subsetVCF; calculatePiBed; mergePi; concat_all; concat_SFS} from './gene_pop_tasks.nf'
 
 workflow gene_pop_flow_SFS {
         take:
@@ -11,8 +11,8 @@ workflow gene_pop_flow_SFS {
         main:
                 getLongestIsoformAGAT(annotation)
                 makeGenomeFile(genome_dict, species)
-                getGeneBedAGAT(getLongestIsoformAGAT.out, species)
-                splitBed(getGeneBedGFF.out)
+                getGeneBed(getLongestIsoformAGAT.out, species)
+                splitBed(getGeneBed.out)
                 bed_ch = splitBed.out.flatten()
                 degenotate(genome, getLongestIsoformAGAT.out, species)
                 filterBed(degenotate.out.degen, degenotate.out.longest_isoforms)
