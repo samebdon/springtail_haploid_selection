@@ -14,7 +14,7 @@ process bwaIndex {
 
 process bwaMem {
         queue 'long'
-        memory '4G'
+        memory '8G'
 
         input:
         path(genome_f)
