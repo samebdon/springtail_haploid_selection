@@ -1,14 +1,14 @@
-process agatAnnotation{
+process getLongestIsoform{
 
         input:
         path(annotation)
 
         output:
-        path("${annotation.simpleName}.agat.gff3")
+        path("${annotation.simpleName}.agat.longest_isoform.gff3")
 
         script:
         """
-        agat_convert_sp_gxf2gxf.pl --gff ${annotation} -o ${annotation.simpleName}.agat.gff3
+        agat_sp_keep_longest_isoform.pl -gff ${annotation} -o ${annotation.simpleName}.agat.longest_isoform.gff3
         """
 }
 
@@ -29,11 +29,11 @@ process makeGenomeFile{
         """
 }
 
-process getGeneBedGTF {
+process getGeneBedAGAT {
         publishDir params.outdir, mode:'copy'
 
         input:
-        path(gtf_f)
+        path(annotation)
         val(species)
 
         output:
@@ -41,40 +41,8 @@ process getGeneBedGTF {
 
         script:
         """
-        cat ${gtf_f} |  awk 'OFS="\t" {if (\$3=="gene") {print \$1,\$4-1,\$5,\$9}}' | tr -d '";' > ${species}.gene.bed
-        """
-}
-
-process getGeneBedGFF {
-        publishDir params.outdir, mode:'copy'
-        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
-
-        input:
-        path(gff_f)
-        val(species)
-
-        output:
-        tuple val(species), path("${species}.gene.bed")
-
-        script:
-        """
-        cat ${gff_f}| awk 'OFS="\t" {if (\$3=="gene") {print \$1,\$4-1,\$5,\$9}}' | tr -d '";' | sed 's/ID=//'> ${species}.gene.bed
-        """
-}
-
-process getExonBedGFF {
-        publishDir params.outdir, mode:'copy'
-
-        input:
-        path(gff_f)
-        val(species)
-
-        output:
-        tuple val(species), path("${species}.exon.bed")
-
-        script:
-        """
-        cat ${gff_f}| awk 'OFS="\t" {if (\$3=="exon") {print \$1,\$4-1,\$5,\$9}}' | tr -d '";' | sed 's/ID=//'> ${species}.exon.bed
+        cat ${annotation} |  awk 'OFS="\t" {if (\$3=="gene") {print \$1,\$4-1,\$5,\$9}}' | tr -d '";' > ${species}.gene.bed
+        agat_convert_sp_gff2bed.pl -gff ${annotation} -o ${species}.gene.bed --sub gene
         """
 }
 
