@@ -4,7 +4,7 @@
 	"genome_dict" : "${launchDir}/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.dict",
 	"vcf" : "${launchDir}/data/results/var_call/allacma_fusca_sdcovmax/allacma_fusca.hard_filtered.sorted.vcf.gz",
 	"vcf_index" : "${launchDir}/data/results/var_call/allacma_fusca_sdcovmax/allacma_fusca.hard_filtered.sorted.vcf.gz.csi",
-	"annotation" : "${launchDir}/data/results/braker3/allacma_fusca/braker.agat.gff3",
+	"annotation" : "${launchDir}/data/results/braker3/allacma_fusca/braker.agat.rm_collapsed.gff3",
 	"outdir" : "${launchDir}/data/results/gene_pop",
 	"species" : "allacma_fusca",
 }
