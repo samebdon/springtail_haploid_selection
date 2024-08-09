@@ -104,25 +104,8 @@ process filterBed{
         """
 }
 
-process subsetVCF{
-
-        input:
-        tuple val(species), path(zero_bed_f), path(four_bed_f)
-        path(vcf_f)
-        path(vcf_index)
-
-        output:
-        tuple val(species), path("${species}.0D.longest_isoforms.vcf.gz"), path("${species}.4D.longest_isoforms.vcf.gz"), path("${species}.0D.longest_isoforms.vcf.gz.tbi"), path("${species}.4D.longest_isoforms.vcf.gz.tbi")
-
-        script:
-        """
-        bcftools view --threads ${task.cpus} -Ov -R ${zero_bed_f} -o ${species}.0D.longest_isoforms.vcf ${vcf_f}
-        bcftools view --threads ${task.cpus} -Ov -R ${four_bed_f} -o ${species}.4D.longest_isoforms.vcf ${vcf_f}
-        bgzip ${species}.0D.longest_isoforms.vcf && tabix ${species}.0D.longest_isoforms.vcf.gz
-        bgzip ${species}.4D.longest_isoforms.vcf && tabix ${species}.4D.longest_isoforms.vcf.gz
-        """
-}
-
+// if the zero_bed_f and four_bed_f are per chromosome, how is the gene_bed_f and zero_bed_f lining up?
+// is getting gene names from zero/four bed files enough?
 process calculatePiBed{
         conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 

@@ -1,4 +1,4 @@
-include {getLongestIsoformAGAT; makeGenomeFile; getGeneBedAGAT; splitBed; degenotate; filterBed; subsetVCF; calculatePiBed; mergePi; concat_all; concat_SFS} from './gene_pop_tasks.nf'
+include {getLongestIsoformAGAT; makeGenomeFile; getGeneBedAGAT; splitBed; degenotate; filterBed; calculatePiBed; mergePi; concat_all; concat_SFS} from './gene_pop_tasks.nf'
 
 workflow gene_pop_flow_SFS {
         take:

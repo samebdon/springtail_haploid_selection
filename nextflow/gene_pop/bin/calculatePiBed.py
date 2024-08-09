@@ -63,7 +63,7 @@ def parse_vcf(vcf, chromosome):
 
 def get_accessible(bed, chrom):
     df = pd.read_csv(bed, sep="\t", names=["chrom", "start", "stop"])
-    degen_pos = df[df["chrom"] == chrom]["stop"].to_numpy()
+    degen_pos = df[df["chrom"] == chrom]["start"].to_numpy()
     ## i think if the degen pos are single positions
     ## in a 0 based system the position of a one based system is the end
     ## so i should use the stop rather than the start?
