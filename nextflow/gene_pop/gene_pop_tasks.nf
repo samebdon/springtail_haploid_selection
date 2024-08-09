@@ -30,9 +30,10 @@ process makeGenomeFile{
         """
 }
 
-// agat_convert_sp_gff2bed.pl -gff ${annotation} -o ${species}.gene.bed --sub gene
+// cat ${annotation} |  awk 'OFS="\t" {if (\$3=="gene") {print \$1,\$4-1,\$5,\$9}}' | tr -d '";' > 
 
-process getGeneBed {
+process getGeneBedAGAT {
+        memory '4G'
         publishDir params.outdir, mode:'copy'
 
         input:
@@ -44,7 +45,7 @@ process getGeneBed {
 
         script:
         """
-        cat ${annotation} |  awk 'OFS="\t" {if (\$3=="gene") {print \$1,\$4-1,\$5,\$9}}' | tr -d '";' > ${species}.gene.bed
+        agat_convert_sp_gff2bed.pl -gff ${annotation} -o ${species}.gene.bed --sub gene -o ${species}.gene.bed
         """
 }
 
