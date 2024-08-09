@@ -41,7 +41,7 @@ process getGeneBedAGAT {
         val(species)
 
         output:
-        tuple val(species), path("${species}.gene.bed")
+        tuple val(species), path("${species}.gene.AGAT.bed")
 
         script:
         """
