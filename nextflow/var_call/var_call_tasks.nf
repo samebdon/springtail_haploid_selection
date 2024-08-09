@@ -26,7 +26,7 @@ process bwaMem {
 
         script:
         """
-        mkdir bwamem
+        mkdir -p bwamem
         bwa mem -t ${task.cpus} -R "@RG\\tID:${meta}\\tSM:${meta}\\tPL:ILLUMINA\\tPU:${meta}\\tLB:${meta}\\tDS:${meta}" ${genome_f} ${reads[0]} ${reads[1]} | \
         sambamba view -t ${task.cpus} -S -f bam /dev/stdin > bwamem/${meta}.${genome_f.baseName}.bam
         """
@@ -92,7 +92,7 @@ process mosdepth {
 
         script:
         """
-        mkdir mosdepth
+        mkdir -p mosdepth
         mosdepth --fast-mode -t ${task.cpus} tmp ${bam_f}
         MAX_DEPTH="\$(max_depth.py -b tmp.per-base.bed.gz)" 
 	mosdepth -t ${task.cpus} -n --quantize 0:1:${min_depth}:\${MAX_DEPTH}: ${meta} ${bam_f}
