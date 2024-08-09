@@ -45,7 +45,7 @@ process getGeneBedAGAT {
 
         script:
         """
-        agat_convert_sp_gff2bed.pl -gff ${annotation} -o ${species}.gene.bed --sub gene -o ${species}.gene.bed
+        agat_convert_sp_gff2bed.pl -gff ${annotation} -o ${species}.gene.AGAT.bed --sub gene
         """
 }
 
