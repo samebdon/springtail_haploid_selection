@@ -111,17 +111,19 @@ process intersectBeds{
         val(species)
 
         output:
-        tuple val(species), path("${species}.callable.all.norepeats.bed"), emit: all
+        tuple val(species), path("${species}.callable.all.bed"), emit: all
         tuple val(species), path("${species}.callable.freebayes.norepeats.bed"), emit: freebayes
 
         script:
         """
         N_FILES="\$(ls inputs/*.bed | wc -l)"
-        bedtools multiinter -i $beds | cut -f1-5 | bedtools sort -faidx ${genome_index} | bedtools merge > ${species}.callable.all.bed
-        bedtools subtract -a ${species}.callable.all.bed -b ${repeat_bed} | bedtools sort -faidx ${genome_index} | bedtools merge > ${species}.callable.all.norepeats.bed
-        cat ${species}.callable.all.norepeats.bed | awk -v var=\$N_FILES '\$4==var'  | cut -f1-3 > ${species}.callable.freebayes.norepeats.bed
+        bedtools multiinter -i $beds | cut -f1-5 | bedtools sort -faidx ${genome_index} > ${species}.callable.all.bed
+        cat ${species}.callable.all.bed | awk -v var=\$N_FILES '\$4==var'  | cut -f1-3 > ${species}.callable.freebayes.bed
+        bedtools subtract -a ${species}.callable.freebayes.bed -b ${repeat_bed} | bedtools sort -faidx ${genome_index} | bedtools merge > ${species}.callable.freebayes.norepeats.bed
         """
 }
+
+// could make a separate process to remove repeats which is optional for if you have a repeat annotation
 
 process sambambaMerge {
         memory '8G'
