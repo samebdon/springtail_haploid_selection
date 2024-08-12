@@ -102,6 +102,7 @@ process mosdepth {
 
 process intersectBeds{
         publishDir params.outdir, mode:'copy'
+        memory '4G'
 
         input:
         path(beds, stageAs: "inputs/*")
