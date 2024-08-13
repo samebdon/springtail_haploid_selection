@@ -61,7 +61,7 @@ process splitBed {
         script:
         """
         cat ${bed_f} | cut -f1-4 > cut.bed
-        bash cut.bed ${bed_f}
+        bash splitBed.sh cut.bed
         """
 }
 
