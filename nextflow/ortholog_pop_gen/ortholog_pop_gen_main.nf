@@ -1,28 +1,3 @@
-// Species 1 data files
-params.species_1 = "allacma_fusca"
-params.genome_fasta_1 = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta"
-params.genome_dict_1 = "$launchDir/data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.dict"
-params.vcf_1 = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz"
-params.vcf_index_1 = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.hard_filtered.sorted.vcf.gz.csi"
-params.callable_bed_1 = "$launchDir/data/results/var_call/allacma_fusca/allacma_fusca.all_callable.bed"
-params.annot_1 = "$launchDir/data/results/braker3/allacma_fusca/braker.gtf"
-params.prot_fasta_1 = "$launchDir/data/results/braker3/allacma_fusca/braker.aa"
-
-// Species 2 data files
-params.species_2 = "dicyrtomina_minuta"
-params.genome_fasta_2 = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.fa"
-params.genome_dict_2 = "$launchDir/data/results/genomes/dicyrtomina_minuta/qeDicMinu4_1.earlGrey_masked.dict"
-params.vcf_2 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.hard_filtered.sorted.vcf.gz"
-params.vcf_index_2 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.hard_filtered.sorted.vcf.gz.csi"
-params.callable_bed_2 = "$launchDir/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.callable.bed"
-params.annot_2 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.gtf"
-params.prot_fasta_2 = "$launchDir/data/results/braker2/dicyrtomina_minuta/braker.aa"
-
-// add genome dicts and vcf indices
-
-// Output Directory
-params.outdir = "$launchDir/data/results/ortholog_pop_gen/allacma_fusca.vs.dicyrtomina_minuta"
-
 log.info """\
          O R T H O L O G  P O P  G E N   N F   P I P E L I N E    
          ===================================
