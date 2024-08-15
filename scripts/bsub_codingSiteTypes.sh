@@ -10,7 +10,7 @@
 /software/team360/smartin/genomics_general/codingSiteTypes.py \
 -a data/results/braker3/allacma_fusca/agat/braker.agat.fix.models.phases.overlap.pseudo.longest_isoform.gff3 \
 -f gff3 \
--o data/workdir/codingSiteTypessiteTypes.txt \
+-o data/workdir/codingSiteTypes/codingSiteTypes.txt \
 -v data/results/var_call/allacma_fusca_rm_repeats/allacma_fusca.hard_filtered.sorted.vcf.gz \
 -r data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.earlGrey_masked.fasta \
 --ignoreConflicts
