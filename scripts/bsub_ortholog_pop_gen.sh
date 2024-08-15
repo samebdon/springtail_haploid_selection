@@ -2,7 +2,7 @@
 
 #BSUB -o logs/ortholog_pop_gen.out.%J
 #BSUB -e logs/ortholog_pop_gen.err.%J
-#BSUB -q normal
+#BSUB -q basement
 #BSUB -n 4
 #BSUB -M 8192
 #BSUB -R "select[mem>8192] rusage[mem=8192]"
