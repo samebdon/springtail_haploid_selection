@@ -91,10 +91,10 @@ if __name__ == "__main__":
     acc_bed_f = args["--accessible"]
     genome_file = args["--genome"]
 
-    if args["--name"]:
-        name = str(args["--name"])
-    else:
-        name = "NA"
+    #if args["--name"]:
+    #    name = str(args["--name"])
+    #else:
+    #    name = "NA"
 
     if args["--output"]:
         out_f = str(args["--output"])
@@ -107,6 +107,8 @@ if __name__ == "__main__":
         result_label = "pi"
 
     results = []
+
+    name = '.'.join(bed_f.split('.')[0:-1])
 
     genome_df = pd.read_csv(genome_file, sep="\t", names=["chrom", "length"])
     accessible_array = get_accessible(acc_bed_f, name)
