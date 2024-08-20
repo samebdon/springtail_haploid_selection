@@ -18,8 +18,8 @@ workflow {
         gen_haps_flow_2(params.species_2, params.genome_fasta_2, params.vcf_2, params.callable_bed_2, params.annot_2, params.prot_fasta_2)
         infer_orthology_flow(gen_haps_flow_1.out[1].concat(gen_haps_flow_2.out[1]).collect(), params.annot_1, params.annot_2)
         orthodiver_flow(gen_haps_flow_1.out[0], gen_haps_flow_2.out[0], infer_orthology_flow.out[1])
-        gene_pop_flow_SFS_1(params.genome_fasta_1, params.genome_dict_1, params.vcf_1 ,params.vcf_index_1, infer_orthology_flow.out[2], params.species_1)
-        gene_pop_flow_SFS_2(params.genome_fasta_2, params.genome_dict_2, params.vcf_2 ,params.vcf_index_2, infer_orthology_flow.out[3], params.species_2)
+        gene_pop_flow_SFS_1(params.genome_fasta_1, params.genome_dict_1, params.vcf_1 ,params.vcf_index_1, infer_orthology_flow.out[2], params.species_1, params.sex_linked_contigs_1)
+        gene_pop_flow_SFS_2(params.genome_fasta_2, params.genome_dict_2, params.vcf_2 ,params.vcf_index_2, infer_orthology_flow.out[3], params.species_2, params.sex_linked_contigs_2)
         merge_orthodiver_gene_pop(orthodiver_flow.out, gene_pop_flow_SFS_1.out, gene_pop_flow_SFS_2.out, infer_orthology_flow.out[4])
 }
 

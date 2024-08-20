@@ -8,6 +8,7 @@ workflow gene_pop_flow_SFS {
                 vcf_index
                 annotation
                 species
+                sex_linked_contigs
         main:
                 getLongestIsoformAGAT(annotation)
                 makeGenomeFile(genome_dict, species)
@@ -19,7 +20,7 @@ workflow gene_pop_flow_SFS {
                 calculatePiBed(vcf, vcf_index, filterBed.out, bed_ch, makeGenomeFile.out)
                 mergePi(calculatePiBed.out.pi)
                 concat_all(mergePi.out.collect(), species)
-                concat_SFS(calculatePiBed.out.sfs.collect(), species)
+                concat_SFS(calculatePiBed.out.sfs.collect(), species, sex_linked_contigs)
         emit:
                 concat_all.out
 }
