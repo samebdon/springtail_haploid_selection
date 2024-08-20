@@ -7,4 +7,5 @@
 	"annotation" : "${launchDir}/data/results/braker3/allacma_fusca/agat/braker.agat.fix.models.phases.overlap.pseudo.gff3",
 	"outdir" : "${launchDir}/data/results/gene_pop_rm_repeats",
 	"species" : "allacma_fusca",
+	"sex_linked_contigs" : "OX359249,OX359250"
 }

@@ -168,12 +168,13 @@ process concat_SFS{
         input:
         path(files, stageAs: "inputs/*")
         val(species)
+        val(sl_contigs)
 
         output:
         path('*')
 
         script:
         """
-        agg_sfs.py -i inputs -x OX359249,OX359250 -o ${species}
+        agg_sfs.py -i inputs -x ${sl_contigs} -o ${species}
         """
 }
