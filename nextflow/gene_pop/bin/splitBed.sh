@@ -11,4 +11,5 @@ do
 	count=$(cat beds/$chr.bed | wc -l)
 	if [["$count" -lt "100"]]; then
 		rm beds/$chr.bed
+	fi
 done

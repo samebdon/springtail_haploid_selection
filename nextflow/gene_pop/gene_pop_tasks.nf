@@ -56,7 +56,7 @@ process splitBed {
         tuple val(species), path(bed_f)
 
         output:
-        path("beds/OX*[567890].1.bed")
+        path("beds/*.bed")
 
         script:
         """
