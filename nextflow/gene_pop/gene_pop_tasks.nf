@@ -35,6 +35,7 @@ process makeGenomeFile{
 process getGeneBedAGAT {
         memory '4G'
         publishDir params.outdir, mode:'copy'
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
 
         input:
         path(annotation)
@@ -163,6 +164,7 @@ process concat_all{
 
 process concat_SFS{
         publishDir params.outdir, mode:'copy'
+        conda '/software/treeoflife/conda/users/envs/team360/se13/gene_pop'
         input:
         path(files, stageAs: "inputs/*")
         val(species)
