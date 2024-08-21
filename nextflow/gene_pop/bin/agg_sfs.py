@@ -31,7 +31,7 @@ def create_df(dir_name, x_chroms):
 
     df_list = []
     for file in files:
-        chromosome = file.split(".")[2].split("_")[0]
+        chromosome = file.split(".")[2]#.split("_")[0]
         degen = file.split(".")[1].split("/")[2].split("_")[0]
         df = pd.read_csv(file, sep="\t", header=0, names=["count"])
         df["chromosome"] = chromosome
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     args = docopt(__doc__)
 
     df = create_df(args["--inputs"], args["--x_chroms"])
-
+    print(df)
     sfs_list = []
 
     for degen, linkage in [("0D", "A"), ("4D", "A"), ("0D", "X"), ("4D", "X")]:
@@ -124,6 +124,10 @@ if __name__ == "__main__":
             "sfs": np.concatenate((sfs_exp, zero_A_sfs_norm, four_A_sfs_norm)),
         }
     )
+
+    print(degeneracy)
+    print(itons)
+    print(np.concatenate((sfs_exp, zero_X_sfs_norm, four_X_sfs_norm)))
 
     x_sfs_df = pd.DataFrame(
         {

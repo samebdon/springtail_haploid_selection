@@ -64,19 +64,10 @@ def parse_vcf(vcf, chromosome):
 def get_accessible(bed, chrom):
     df = pd.read_csv(bed, sep="\t", names=["chrom", "start", "stop"])
     degen_pos = df[df["chrom"] == chrom]["start"].to_numpy()
-    ## i think if the degen pos are single positions
-    ## in a 0 based system the position of a one based system is the end
-    ## so i should use the stop rather than the start?
-    ## so this should be right now, but i feel like i should check if there are any other errors..
-    ## maybe it was ok because python is 0 based, 
-    ## so if im assuming first position of acc array is base 1, 
-    ## 0 in the array corresponds to 1, so if base 1 is acc, i want to set 0 to true not 1, so using start is right?
-    ## diversity is prob the best QC. but i can run with the change to see if it now looks wrong
     n = get_length(chrom, genome_df)
     acc_arr = np.full((n), False)
     acc_arr[degen_pos] = True
     return acc_arr
-
 
 def get_length(chrom, genome_df):
     length = genome_df.loc[genome_df["chrom"] == chrom, "length"].iloc[0]
