@@ -1,15 +1,3 @@
-#deseq2
-
-R
-
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-
-BiocManager::install("Rsubread")
-BiocManager::install("DESeq2")
-BiocManager::install("genefilter")
-install.packages('gplots')
-
 library("tibble")
 library("Rsubread")
 library("DESeq2")
@@ -17,17 +5,17 @@ library( "gplots" )
 library( "RColorBrewer" )
 library( "genefilter" )
 
-version = 1
+version = 2
 dir_base = 'figures/deseq2/allacma_fusca/v_'
 fig_dir = paste(dir_base, version, sep = '')
-results_file_base = 'data/results/deseq2/allacma_fusca/v_'
+results_file_base = 'data/results/diff_expr/allacma_fusca/deseq2/v_'
 results_dir = paste(results_file_base, version, sep = '')
 
 dir.create(file.path(fig_dir), recursive = TRUE)
 dir.create(file.path(results_dir), recursive = TRUE)
 
-featureCounts_file = 'data/results/deseq/allacma_fusca.tsebra.augustus.featureCounts.txt' 
-sampleInfo_file = 'data/results/deseq/sampleinfo.tsv'
+featureCounts_file = 'data/results/diff_expr/allacma_fusca/featureCounts/allacma_fusca.braker3.featureCounts.txt' 
+sampleInfo_file = 'data/results/diff_expr/allacma_fusca/sampleinfo.tsv'
 
 featureCounts_table <- read.table(featureCounts_file, sep = '\t', header = 1, row.names='Geneid')
 sampleInfo <- read.table(sampleInfo_file, sep='\t', header=1)
@@ -53,8 +41,9 @@ write.table(as.data.frame(counts(dds)) %>% rownames_to_column('Geneid'),
 res <- results(dds, name="sex_male_vs_female")
 resFilt <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1), ]
 # test: sex male vs female
-# 5085 positive
-# 1991 negative
+# 8326
+# 5816 positive
+# 2510 negative
 # whats the polarity of male and female bias? positive male biased negative female biased?
 
 write.table(as.data.frame(res) %>% rownames_to_column('Geneid'), 
@@ -92,8 +81,8 @@ barplot(ratios, xlab="mean normalized count", ylab="ratio of small $p$ values")
 dev.off()
 
 metadata(res)$filterThreshold
-## 22.61227% 
-## 0.528017 
+##  1.375557% 
+## 0.02148373 
 
 png(filename=paste(fig_dir, 'filter_rej_dist.png', sep = '/'))
 plot(metadata(res)$filterNumRej,type="b", xlab="quantiles of 'baseMean'", ylab="number of rejections")
@@ -135,5 +124,3 @@ dev.off()
 
 # or to shrink log fold changes association with condition:
 #res <- lfcShrink(dds, coef="sex_male_vs_female", type="apeglm")
-
-# make a deseq2 first run qc plots folder and push to github
