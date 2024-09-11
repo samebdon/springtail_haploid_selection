@@ -1,3 +1,15 @@
+R
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("Rsubread")
+BiocManager::install("DESeq2")
+BiocManager::install("genefilter")
+install.packages('gplots')
+
+
+
 library("tibble")
 library("Rsubread")
 library("DESeq2")
