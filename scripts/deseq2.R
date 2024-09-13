@@ -6,16 +6,27 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("Rsubread")
 BiocManager::install("DESeq2")
 BiocManager::install("genefilter")
+BiocManager::install("DEGreport")
+BiocManager::install("apeglm")
+
 install.packages('gplots')
+install.packages('pheatmap')
 
-
-
+#deseq
 library("tibble")
 library("Rsubread")
 library("DESeq2")
 library( "gplots" )
 library( "RColorBrewer" )
 library( "genefilter" )
+
+#visualisation
+library("tidyverse")
+library("ggplot2")
+library("ggrepel")
+library("DEGreport")
+library("pheatmap")
+
 
 version = 2
 dir_base = 'figures/deseq2/allacma_fusca/v_'
@@ -49,6 +60,13 @@ write.table(as.data.frame(counts(dds)) %>% rownames_to_column('Geneid'),
     sep = '\t', 
     row.names = FALSE, 
     quote = FALSE)
+
+write.table(as.data.frame(counts(dds, normalized=TRUE)) %>% rownames_to_column('Geneid'), 
+    file=paste(results_dir, 'allacma_fusca.DEseq2_counts_normalised.tsv', sep = '/'), 
+    sep = '\t', 
+    row.names = FALSE, 
+    quote = FALSE)
+
 
 res <- results(dds, name="sex_male_vs_female")
 resFilt <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1), ]
@@ -136,3 +154,59 @@ dev.off()
 
 # or to shrink log fold changes association with condition:
 #res <- lfcShrink(dds, coef="sex_male_vs_female", type="apeglm")
+
+# do a volcano plot to finish
+meta = sampleInfo 
+normalized_counts <- counts(dds, normalized=TRUE)
+
+sample_meta <- meta %>% 
+  rownames_to_column(var="samplename") %>% 
+  as_tibble()
+        
+normalized_counts <- normalized_counts %>% 
+  data.frame() %>%
+  rownames_to_column(var="gene") %>% 
+  as_tibble()
+
+#res_tableOE_unshrunken <- results(dds, name="sex_male_vs_female", alpha = 0.05)
+#res_tableOE <- lfcShrink(dds, contrast="sex_male_vs_female", res=res_tableOE_unshrunken)
+
+res_tableOE_tb <- res %>%
+  data.frame() %>%
+  rownames_to_column(var="gene") %>% 
+  as_tibble()
+
+#is this just repeating?
+res_tableOE_tb <- res_tableOE_tb %>% 
+                  mutate(threshold_OE = padj < 0.05 & abs(log2FoldChange) >= 1)
+
+png(filename=paste(fig_dir, 'volcano.png', sep = '/'))
+ggplot(res_tableOE_tb) +
+        geom_point(aes(x = log2FoldChange, y = -log10(padj), colour = threshold_OE)) +
+        #ggtitle("title") +
+        xlab("log2 fold change") + 
+        ylab("-log10 adjusted p-value") +
+        #scale_y_continuous(limits = c(0,50)) +
+        theme_bw() + 
+        theme(legend.position = "none",
+              plot.title = element_text(size = rel(1.5), hjust = 0.5),
+              axis.title = element_text(size = rel(1.25))) 
+dev.off()
+
+#DEGreport plots
+png(filename=paste(fig_dir, 'degPlot.png', sep = '/'))
+DEGreport::degPlot(dds = dds, res = res, n = 20, xs = "sex", group = "sex_male_vs_female") # dds object is output from DESeq2
+dev.off()
+
+#no id in results so not working
+png(filename=paste(fig_dir, 'degVolcano.png', sep = '/'))
+DEGreport::degVolcano(
+    data.frame(res[,c("log2FoldChange","padj")]), # table - 2 columns
+    plot_text = data.frame(res[1:10 ,c("log2FoldChange","padj","id")])) # table to add names
+dev.off()
+
+# Available in the newer version for R 3.4
+#not working
+png(filename=paste(fig_dir, 'degPlotWide.png', sep = '/'))
+DEGreport::degPlotWide(dds = dds, genes = row.names(res)[1:5], group = "sex_male_vs_female") 
+dev.off()

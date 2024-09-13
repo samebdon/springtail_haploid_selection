@@ -1,0 +1,52 @@
+A
+N1 100 N2 55 t2 93.7665 Nw 74.19 b 0.1609 Es -1.307019 f0 0.994641334 L -99255.2470
+
+X
+N1 100 N2 13 t2 92.7581 Nw 15.46 b 0.3806 Es -0.277386 f0 0.997730359 L -15375.3052
+
+
+## Shared div file
+A
+lambda 1.217188 selected_divergence 0.038494 alpha -10.067286 omega_A -0.318383
+
+X
+lambda 1.222272 selected_divergence 0.038891 alpha -5.122494 omega_A -0.162991
+
+## Separate div file
+## Need to make a process in ortholog pop gen which splits orthogroups into X and A then gets the total number of 0D and 4D sites and fixed differences for each category
+#get a and x linked SCO genes
+grep -e OX359245.1 -e OX359246.1 -e OX359247.1 -e OX359248.1 data/results/ortholog_pop_gen/allacma_fusca.vs.dicyrtomina_minuta/allacma_fusca.gene.AGAT.bed > data/workdir/dfe_alpha/a_genes.bed
+cat data/workdir/dfe_alpha/a_genes.bed | cut -f4 > data/workdir/dfe_alpha/a_genes.txt
+grep -e OX359249.1 -e OX359250.1 data/results/ortholog_pop_gen/allacma_fusca.vs.dicyrtomina_minuta/allacma_fusca.gene.AGAT.bed > data/workdir/dfe_alpha/x_genes.bed
+cat data/workdir/dfe_alpha/x_genes.bed | cut -f4 > data/workdir/dfe_alpha/x_genes.txt
+
+
+#get a and x linked orthogroups
+parallel 'grep allacma_fusca.{} data/workdir/ortholog_pop_gen/9e/ea1e1bfa067240b853bc52124ef8f8/results/Results_Aug20/Orthogroups/Orthogroups.tsv | cut -f1' :::: data/workdir/dfe_alpha/a_genes.txt > data/workdir/dfe_alpha/a_sco.txt
+
+parallel 'grep allacma_fusca.{} data/workdir/ortholog_pop_gen/9e/ea1e1bfa067240b853bc52124ef8f8/results/Results_Aug20/Orthogroups/Orthogroups.tsv | cut -f1' :::: data/workdir/dfe_alpha/x_genes.txt > data/workdir/dfe_alpha/x_sco.txt
+
+parallel 'grep {} data/workdir/ortholog_pop_gen/95/c188829c7663c6be5be49e07ec76ca/WW2-5.LR44_EDSW200011441-1a_HJ5JVDSXY_L2.results.0d_sites_by_locus.txt' :::: data/workdir/dfe_alpha/a_sco.txt > data/workdir/dfe_alpha/a_sco_div_0d.txt
+
+parallel 'grep {} data/workdir/ortholog_pop_gen/95/c188829c7663c6be5be49e07ec76ca/WW2-5.LR44_EDSW200011441-1a_HJ5JVDSXY_L2.results.0d_sites_by_locus.txt' :::: data/workdir/dfe_alpha/x_sco.txt > data/workdir/dfe_alpha/x_sco_div_0d.txt
+
+parallel 'grep {} data/workdir/ortholog_pop_gen/95/c188829c7663c6be5be49e07ec76ca/WW2-5.LR44_EDSW200011441-1a_HJ5JVDSXY_L2.results.4d_sites_by_locus.txt' :::: data/workdir/dfe_alpha/a_sco.txt > data/workdir/dfe_alpha/a_sco_div_4d.txt
+
+parallel 'grep {} data/workdir/ortholog_pop_gen/95/c188829c7663c6be5be49e07ec76ca/WW2-5.LR44_EDSW200011441-1a_HJ5JVDSXY_L2.results.4d_sites_by_locus.txt' :::: data/workdir/dfe_alpha/x_sco.txt > data/workdir/dfe_alpha/x_sco_div_4d.txt
+
+
+#second column is total, second last column is fixed count
+
+awk -F'\t' '{sum+=$2;}END{print sum;}' data/workdir/dfe_alpha/a_sco_div_0d.txt
+awk -F'\t' '{sum+=$6;}END{print sum;}' data/workdir/dfe_alpha/a_sco_div_0d.txt
+awk -F'\t' '{sum+=$2;}END{print sum;}' data/workdir/dfe_alpha/a_sco_div_4d.txt
+awk -F'\t' '{sum+=$6;}END{print sum;}' data/workdir/dfe_alpha/a_sco_div_4d.txt
+1 3732258 150355
+0 759572 464932
+
+awk -F'\t' '{sum+=$2;}END{print sum;}' data/workdir/dfe_alpha/x_sco_div_0d.txt
+awk -F'\t' '{sum+=$6;}END{print sum;}' data/workdir/dfe_alpha/x_sco_div_0d.txt
+awk -F'\t' '{sum+=$2;}END{print sum;}' data/workdir/dfe_alpha/x_sco_div_4d.txt
+awk -F'\t' '{sum+=$6;}END{print sum;}' data/workdir/dfe_alpha/x_sco_div_4d.txt
+1 2851508 102999
+0 585309 347601
