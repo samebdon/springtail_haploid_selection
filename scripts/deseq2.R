@@ -8,11 +8,14 @@ BiocManager::install("DESeq2")
 BiocManager::install("genefilter")
 BiocManager::install("DEGreport")
 BiocManager::install("apeglm")
+BiocManager::install("tximportData")
 
 install.packages('gplots')
 install.packages('pheatmap')
 
 #deseq
+library("tximportData")
+library("tximport")
 library("tibble")
 library("Rsubread")
 library("DESeq2")
@@ -28,7 +31,7 @@ library("DEGreport")
 library("pheatmap")
 
 
-version = 2
+version = 3
 dir_base = 'figures/deseq2/allacma_fusca/v_'
 fig_dir = paste(dir_base, version, sep = '')
 results_file_base = 'data/results/diff_expr/allacma_fusca/deseq2/v_'
@@ -37,20 +40,29 @@ results_dir = paste(results_file_base, version, sep = '')
 dir.create(file.path(fig_dir), recursive = TRUE)
 dir.create(file.path(results_dir), recursive = TRUE)
 
-featureCounts_file = 'data/results/diff_expr/allacma_fusca/featureCounts/allacma_fusca.braker3.featureCounts.txt' 
 sampleInfo_file = 'data/results/diff_expr/allacma_fusca/sampleinfo.tsv'
-
-featureCounts_table <- read.table(featureCounts_file, sep = '\t', header = 1, row.names='Geneid')
 sampleInfo <- read.table(sampleInfo_file, sep='\t', header=1)
 
-colnames(featureCounts_table) <- c('Chr','Start','End','Strand','Length',
-    'AF_F_1','AF_F_2','AF_F_3','AF_F_4','AF_F_5','AF_F_6','AF_F_7','AF_F_8','AF_F_9','AF_F_10',
-    'AF_M_1','AF_M_2','AF_M_3','AF_M_4','AF_M_5','AF_M_6','AF_M_7','AF_M_8','AF_M_9','AF_M_10')
+#Featurecounts
+#featureCounts_file = 'data/results/diff_expr/allacma_fusca/featureCounts/allacma_fusca.braker3.featureCounts.txt' 
+#featureCounts_table <- read.table(featureCounts_file, sep = '\t', header = 1, row.names='Geneid')
+#colnames(featureCounts_table) <- c('Chr','Start','End','Strand','Length',
+#    'AF_F_1','AF_F_2','AF_F_3','AF_F_4','AF_F_5','AF_F_6','AF_F_7','AF_F_8','AF_F_9','AF_F_10',
+#    'AF_M_1','AF_M_2','AF_M_3','AF_M_4','AF_M_5','AF_M_6','AF_M_7','AF_M_8','AF_M_9','AF_M_10')
+#counts <- featureCounts_table[, 6:25]
+#dds <- DESeqDataSetFromMatrix(countData=counts, colData=sampleInfo, design=~sex)
 
-counts <- featureCounts_table[, 6:25]
-#counts <- featureCounts(bams, blablabla_restofcommand)$
-#do we want a more complicated design, modelling the number of samples per dataset or sampling location?
-dds <- DESeqDataSetFromMatrix(countData=counts, colData=sampleInfo, design=~sex)
+
+#RSEM GENES (txIn=False, txOut=False)
+rsem_dir = 'data/results/diff_expr/allacma_fusca/rsem'
+files <- file.path(rsem_dir, paste0(sampleInfo$id, ".genes.results"))
+names(files) <- sampleInfo$id
+txi.rsem <- tximport(files, type = "rsem", txIn = FALSE, txOut = FALSE)
+
+txi.rsem$length[txi.rsem$length == 0] <- 1
+
+dds <- DESeqDataSetFromTximport(txi.rsem, colData=sampleInfo, design=~sex)
+
 
 dds <- DESeq(dds) #, betaPrior = betaPrior)
 resultsNames(dds) # lists the coefficients
@@ -167,9 +179,6 @@ normalized_counts <- normalized_counts %>%
   data.frame() %>%
   rownames_to_column(var="gene") %>% 
   as_tibble()
-
-#res_tableOE_unshrunken <- results(dds, name="sex_male_vs_female", alpha = 0.05)
-#res_tableOE <- lfcShrink(dds, contrast="sex_male_vs_female", res=res_tableOE_unshrunken)
 
 res_tableOE_tb <- res %>%
   data.frame() %>%
