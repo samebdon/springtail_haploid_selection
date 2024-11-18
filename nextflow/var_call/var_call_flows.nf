@@ -16,7 +16,7 @@ workflow var_call_flow {
           mosdepth(markDupesSambamba.out.meta_bam.join(indexBamSambamba.out), 8)
           intersectBeds(mosdepth.out.collect(), repeat_bed, genome_index, species)
 				  // sambambaMerge(markDupesSambamba.out.bam_only.collect(), species)
-				  freebayes(genome, genome_index, markDupesSambamba.out.meta_bam.join(indexBamSambamba), intersectBeds.out.freebayes)
+				  freebayes(genome, genome_index, markDupesSambamba.out.meta_bam.join(indexBamSambamba.out), intersectBeds.out.freebayes)
 				  // freebayes(genome, genome_index, sambambaMerge.out, intersectBeds.out.freebayes)
 				  bcftools_filter(genome, freebayes.out)
 				  generate_fail_bed(bcftools_filter.out, genome_index)
