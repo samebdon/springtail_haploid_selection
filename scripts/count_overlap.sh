@@ -1,0 +1,1 @@
+grep -Fxf <(awk '{print $1}' data/results/diff_expr/allacma_fusca/deseq2/v_2/allacma_fusca.DEseq2_results_filtered.tsv) <(awk '{print $1}' data/results/diff_expr/allacma_fusca/deseq2/v_3/allacma_fusca.DEseq2_results_filtered.tsv) | wc -l

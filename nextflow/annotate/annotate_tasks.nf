@@ -26,25 +26,11 @@ process earlGrey {
         output:
         path("./results/*_EarlGrey"), emit: all
         path("./results/*/*_summaryFiles/*.filteredRepeats.bed"), emit: repeat_bed
-
-        script:
+	tuple val(meta), path("./results/*/*_summaryFiles/*.softmasked.fasta"), emit: softmasked_genome
+        
+	script:
         """
-        earlGrey -g ${genome} -s ${meta} -o ./results -t ${task.cpus}
-        """
-}
-
-process mask_genome {
-
-        input:
-        tuple val(meta), path(genome)
-        path(bed)
-
-        output:
-        tuple val(meta), path("${meta}.masked.fa")
-
-        script:
-        """
-        bedtools maskfasta -soft -fi ${genome} -bed ${bed} -fo ${meta}.masked.fa
+        earlGrey -g ${genome} -s ${meta} -o ./results -t ${task.cpus} -d yes
         """
 }
 
@@ -64,7 +50,7 @@ process braker2 {
         script:
         """
         mkdir wdir
-        singularity exec -B \${PWD}:\${PWD} \${BRAKER_SIF} braker.pl \
+        braker.pl \
                 --genome=${genome} \
                 --softmasking \
                 --workingdir=wdir \
@@ -75,5 +61,3 @@ process braker2 {
                 --useexisting
         """
 }
-
-// if this doesnt work I could probably get it working using the singularity image

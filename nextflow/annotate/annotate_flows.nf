@@ -1,4 +1,4 @@
-include {unmask_genome; earlGrey; mask_genome; braker2} from './annotate_tasks.nf'
+include {unmask_genome; earlGrey; braker2} from './annotate_tasks.nf'
 
 workflow braker2_flow {
         take:
@@ -9,8 +9,7 @@ workflow braker2_flow {
         main:
           unmask_genome(meta, genome)
           earlGrey(unmask_genome.out)
-          mask_genome(genome, earlGrey.out.repeat_bed)
-          braker2(mask_genome.out, prot_seq)
+          braker2(earlGrey.out.softmasked_genome, prot_seq)
 }
 
 workflow braker2_only_flow {

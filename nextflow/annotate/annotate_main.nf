@@ -2,6 +2,9 @@
 // awk '{print $1}' genome.fasta > genome.simple_header.fasta
 // PIPELINE WILL REMOVE EXISTING SOFTMASKING
 
+// add simple fasta headers to script?
+// make tsv input to annotate row by row
+
 params.meta = "orchesellaFlavescens"
 params.genome = "$launchDir/data/results/genomes/orchesella_flavescens/GCA_964034955.1.simple_header.fasta"
 params.prot_seq = "$launchDir/data/results/braker2/dbs/Arthropoda.allacmaFusca.fa"
