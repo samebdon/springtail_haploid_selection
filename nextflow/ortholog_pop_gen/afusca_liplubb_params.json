@@ -12,7 +12,7 @@
 	"sex_linked_contigs_2" : "",
 	"genome_fasta_2" : "${launchDir}/data/results/genomes/lipothrix_lubbocki/GCA_034696945.1_ASM3469694v1_genomic.fna",
 	"genome_dict_2" : "${launchDir}/data/results/genomes/lipothrix_lubbocki/GCA_034696945.1_ASM3469694v1_genomic.fna.dict",
-	"vcf_2" : "${launchDir}/data/results/var_call/dicyrtomina_minuta/dicyrtomina_minuta.hard_filtered.sorted.vcf.gz",
+	"vcf_2" : "${launchDir}/data/results/var_call/lipothrix_lubbocki/lipothrix_lubbocki.hard_filtered.sorted.vcf.gz",
 	"vcf_index_2" : "${launchDir}/data/results/var_call/lipothrix_lubbocki/lipothrix_lubbocki.hard_filtered.sorted.vcf.gz.csi",
 	"callable_bed_2" : "${launchDir}/data/results/var_call/lipothrix_lubbocki/lipothrix_lubbocki.callable.bed",
 	"annot_2" : "${launchDir}/data/results/braker2/lipothrix_lubbocki/braker.gtf",
