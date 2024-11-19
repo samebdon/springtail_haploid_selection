@@ -139,6 +139,25 @@ process intersectBeds{
         """
 }
 
+process intersectBed{
+        publishDir params.outdir, mode:'copy'
+        memory '4G'
+
+        input:
+        path(bed)
+        path(repeat_bed)
+        path(genome_index)
+        val(species)
+
+        output:
+        tuple val(species), path("${species}.callable.freebayes.norepeats.bed")
+
+        script:
+        """
+        bedtools subtract -a ${bed} -b ${repeat_bed} | bedtools sort -faidx ${genome_index} | bedtools merge > ${species}.callable.freebayes.norepeats.bed
+        """
+}
+
 // could make a separate process to remove repeats which is optional for if you have a repeat annotation
 
 process sambambaMerge {
