@@ -78,12 +78,21 @@ remove_poly 1
 172 1173 520 337 278 298 183 117 170 155 142 231 364 0 0 0 0 0 0 0 0 0 0 0 0 0
 187 597 521 344 296 201 198 161 198 153 153 161 251 0 0 0 0 0 0 0 0 0 0 0 0 0
 
-#divergence_file.txt
-#1,total number of 0d sites, number of 4d fixed differences
+# construct divergence_file.txt from *{0,4}d_sites_summary.txt 
+#1,total number of 0d sites, number of 0d fixed differences
 #2,number of 4d sites, number of 4d fixed differences
-# should be able to get these counts from ortholog_pop_gen
+
+#afusca v dicmin
 1 6588078 253571 
 0 1345742 813059
+
+#afusca v liplubb
+1 5339072 181148
+0 1130462 599042
+
+#afusca v liplubb A
+
+#afusca v liplubb X
 
 module load dfe_alpha/2.16-c1
 
