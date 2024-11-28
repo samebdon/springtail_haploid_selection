@@ -1,1 +1,0 @@
-/lustre/scratch126/tol/teams/jaron/projects/springtails_haploid_selection/nextflow/gene_pop/bin/mergePi.py

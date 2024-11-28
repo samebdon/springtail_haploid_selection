@@ -1,8 +1,0 @@
-{
-	"genome" : "${launchDir}/data/results/genomes/lipothrix_lubbocki/GCA_034696945.1_ASM3469694v1_genomic.fna",
-	"genome_index" : "${launchDir}/data/results/genomes/lipothrix_lubbocki/GCA_034696945.1_ASM3469694v1_genomic.fna.fai",
-	"reads" : "${launchDir}/data/raw_data/reseq/lipothrix_lubbocki/*_{1,2}.fastp.fastq",
-	"repeat_bed" : "${launchDir}/data/results/earlGrey/lipothrix_lubbocki/results/lipothrixLubbocki_EarlGrey/lipothrixLubbocki_summaryFiles/lipothrixLubbocki.filteredRepeats.bed",
-	"outdir" : "${launchDir}/data/results/var_call/lipothrix_lubbocki/",
-	"species" : "lipothrix_lubbocki",
-}

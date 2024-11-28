@@ -14,18 +14,20 @@ annotation:
 	scripts describe_gtf.py
 	scripts agat
 differential expression:
-	scripts featurecounts
+	scripts RSEM/featurecounts # which one of these is input for DESEQ2?
 	scripts R deseq2.R
 	scripts jupyter SBG exploration
-pop gen initial:
+Genetic diversity and SFS:
 	nextflow var_call
 	nextflow gene_pop
 dn/ds
 	route 1:
-		scripts orthofinder
+		scripts orthologr
 	route 2:
-		scripts R orthologr
+		nextflow ortholog_pop_gen
 	route 3:
 		scripts toga_annotation_preprocessing.sh
 		scripts make_chains
 		scripts TOGA
+alpha
+	scripts dfe_alpha
