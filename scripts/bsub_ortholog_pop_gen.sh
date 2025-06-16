@@ -9,4 +9,4 @@
 
 module load nextflow/23.04.1-5866
 module load bcftools/1.20--h8b25389_0 
-nextflow run nextflow/ortholog_pop_gen/ortholog_pop_gen_main.nf -params-file nextflow/ortholog_pop_gen/afusca_liplubb_params.json -c nextflow/conf/nextflow.config -with-conda /software/treeoflife/conda/users/envs/team360/se13/ortholog_pop_gen -w data/workdir/ortholog_pop_gen -resume # -with-report -with-trace -with-timeline -with-dag
+nextflow run $NF_PATH/ortholog_pop_gen/ortholog_pop_gen_main.nf -params-file $NF_PATH/ortholog_pop_gen/afusca_smivir_params.json -c $NF_PATH/conf/nextflow.config -with-conda /software/treeoflife/conda/users/envs/team360/se13/ortholog_pop_gen -w data/workdir/ortholog_pop_gen -resume # -with-report -with-trace -with-timeline -with-dag

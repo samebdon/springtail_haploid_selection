@@ -8,4 +8,4 @@
 #BSUB -R "select[mem>4096] rusage[mem=4096]"
 
 module load nextflow/23.04.1-5866
-nextflow run nextflow/gene_pop/gene_pop_main.nf -params-file nextflow/gene_pop/lipothrix_lubbocki_params.json -c nextflow/conf/nextflow.config -with-conda /software/treeoflife/conda/users/envs/team360/se13/gene_pop -w data/workdir/gene_pop -resume # -with-report -with-trace -with-timeline -with-dag
+nextflow run $NF_PATH/gene_pop/gene_pop_main.nf -params-file $NF_PATH/gene_pop/afusca_params.sex_bias.json -c $NF_PATH/conf/nextflow.config -with-conda /software/treeoflife/conda/users/envs/team360/se13/gene_pop -w data/workdir/gene_pop -resume # -with-report -with-trace -with-timeline -with-dag

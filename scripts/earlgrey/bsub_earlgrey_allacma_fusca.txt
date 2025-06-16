@@ -7,4 +7,5 @@
 #BSUB -M 204800
 #BSUB -R "select[mem>204800] rusage[mem=204800]"
 
-earlGrey -g data/results/earlGrey/allacma_fusca/genomes/GCA_947179485.1.simple_header.unmasked.fasta -s allacmaFusca -o data/results/earlGrey/allacma_fusca/results -t 64
+conda activate earlgrey
+earlGrey -g data/genomes/GCA_947179485.1_qeAllFusc8.1_genomic.simple_header.fna -s allacmaFusca -o data/results/earlGrey/allacma_fusca/results -t 64
