@@ -1,0 +1,52 @@
+cp data/results/afusca_liplubb/Untitled.ipynb scripts/afusca_liplubb.ipynb
+cp data/results/gt_counts/Untitled.ipynb scripts/gt_counts.ipynb
+cp data/results/gt_counts/fiftons.ipynb scripts/fiftons.ipynb
+cp data/results/gt_counts/SFS.ipynb scripts/gt_SFS.ipynb
+cp data/results/dosage_compensation/dosage_compensation.ipynb scripts/dosage_compensation.ipynb
+cp data/results/ase/ase.ipynb scripts/ase.ipynb
+cp data/results/deseq2/allacma_fusca/SBG.ipynb scripts/SBG.ipynb
+cp 'data/results/deseq2/allacma_fusca/Afusca Svir ortholog pop gen.ipynb' scripts/'Afusca Svir ortholog pop gen.ipynb'
+cp data/results/gene_pop/Untitled.ipynb scripts/gene_pop.ipynb
+cp data/results/fastdfe/fastdfe.ipynb scripts/fastdfe.ipynb
+cp data/results/itons/iton_cov.ipynb scripts/iton_cov.ipynb
+cp 'data/results/dfe_resampling/summarise_resamples/summarise dfe alpha bootstrap.ipynb' scripts/'summarise dfe alpha bootstrap.ipynb'
+cp data/results/windowed_pi/Untitled.ipynb scripts/windowed_pi.ipynb
+cp 'data/results/afusca_svir/Afusca Svir ortholog pop gen.ipynb' scripts/'Afusca Svir ortholog pop gen.ipynb'
+cp 'data/results/afusca_svir/summarise dfe alpha bootstrap.ipynb' scripts/'summarise dfe alpha bootstrap.ipynb'
+cp data/results/afusca_svir/dnds.ipynb scripts/dnds.ipynb
+cp data/results/afusca_svir/SFS.ipynb scripts/SFS.ipynb
+cp data/results/fastga/busco2synteny/scripts/busco3synteny.py scripts/busco3synteny.py
+cp data/results/fastga/busco2synteny/scripts/describe_liftover.py scripts/describe_liftover.py
+cp data/results/fastga/busco2synteny/scripts/busco2synteny.py scripts/busco2synteny.py
+cp data/results/fastga/busco2synteny/scripts/paf2synteny.py scripts/paf2synteny.py
+cp data/results/fastga/get_divergent_sites.py scripts/get_divergent_sites.py
+cp data/results/ase/plot_ase.py scripts/plot_ase.py
+cp data/results/braker3/allacma_fusca/get_isoform_file.py scripts/get_isoform_file.py
+cp data/results/braker3/allacma_earlgrey_premasked/describe_gtf.py scripts/describe_gtf.py
+cp data/results/toga/prep_orthodiver.py scripts/prep_orthodiver.py
+cp data/results/toga/orthodiver.py scripts/orthodiver.py
+cp data/results/toga/orthodiver_output/process_orthodiver.py scripts/process_orthodiver.py
+cp data/results/synteny/fastga/busco2synteny/scripts/busco3synteny.py scripts/busco3synteny.py
+cp data/results/synteny/fastga/busco2synteny/scripts/describe_liftover.py scripts/describe_liftover.py
+cp data/results/synteny/fastga/busco2synteny/scripts/busco2synteny.py scripts/busco2synteny.py
+cp data/results/synteny/fastga/busco2synteny/scripts/paf2synteny.py scripts/paf2synteny.py
+cp data/results/synteny/fastga/paf2liftover.py scripts/paf2liftover.py
+cp data/results/synteny/fastga/paf2synteny.py scripts/paf2synteny.py
+cp data/results/synteny/busco2synteny/scripts/busco3synteny.py scripts/busco3synteny.py
+cp data/results/synteny/busco2synteny/scripts/describe_liftover.py scripts/describe_liftover.py
+cp data/results/synteny/busco2synteny/scripts/busco2synteny.py scripts/busco2synteny.py
+cp data/results/synteny/create_liftover_from_busco.py scripts/create_liftover_from_busco.py
+cp data/results/synteny/minimap2synteny.py scripts/minimap2synteny.py
+cp data/results/dfe_resampling/SCO/resample_sfs.py scripts/resample_sfs.py
+cp data/results/dfe_resampling/all/resample_sfs.py scripts/resample_sfs.py
+cp data/results/dfe_resampling/resample_sfs.py scripts/resample_sfs.py
+cp data/results/windowed_pi/windowed_diversity.py scripts/windowed_diversity.py
+cp data/results/synteny/synteny_plotter/scripts/helper_functions.R scripts/helper_functions.R
+cp data/results/synteny/synteny_plotter/scripts/dev_generate_chromosome_file.R scripts/dev_generate_chromosome_file.R
+cp data/results/synteny/synteny_plotter/scripts/interactive_args.R scripts/interactive_args.R
+cp data/results/synteny/synteny_plotter/scripts/generate_synteny_plot.R scripts/generate_synteny_plot.R
+cp data/results/synteny/synteny_plotter/scripts/dev_reoerientation_trials.R scripts/dev_reoerientation_trials.R
+cp data/results/fastga/busco2synteny/scripts/arthropod_synteny.sh scripts/arthropod_synteny.sh
+cp data/results/synteny/fastga/busco2synteny/scripts/arthropod_synteny.sh scripts/arthropod_synteny.sh
+cp data/results/synteny/busco2synteny/scripts/arthropod_synteny.sh scripts/arthropod_synteny.sh
+cp data/results/synteny/plot_wrapper.sh scripts/plot_wrapper.sh

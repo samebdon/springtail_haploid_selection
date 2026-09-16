@@ -1,6 +1,0 @@
-[2025-08-26 12:39:50,202] multiqc.core.version_check                         [WARNING]  MultiQC Version v1.30 now available!
-[2025-08-26 12:39:50,203] multiqc.core.file_search                           [INFO   ]  Search path: /lustre/scratch126/tol/teams/jaron/projects/springtail_haploid_selection/data/results/fastqc_trimmed_afusca
-[2025-08-26 12:39:52,524] multiqc.modules.fastqc.fastqc                      [INFO   ]  Found 24 reports
-[2025-08-26 12:39:53,579] multiqc.core.write_results                         [INFO   ]  Data        : afusca_multiqc/multiqc_data
-[2025-08-26 12:39:53,945] multiqc.core.write_results                         [INFO   ]  Report      : afusca_multiqc/multiqc_report.html
-[2025-08-26 12:39:53,949] multiqc.multiqc                                    [INFO   ]  MultiQC complete

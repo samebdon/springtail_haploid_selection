@@ -1,0 +1,1 @@
+script synteny_plotter/scripts/generate_synteny_plot.R -busco1 busco_results/fol_ang/run_arthropoda_odb10/full_table.tsv -busco2 busco_results/smi_aqu/run_arthropoda_odb10/full_table.tsv -chrom1 busco_results/fol_ang/fol_ang_info.tsv -chrom2 busco_results/smi_aqu/smi_aqu_info.tsv -o output

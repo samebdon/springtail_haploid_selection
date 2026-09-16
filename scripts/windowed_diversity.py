@@ -11,7 +11,7 @@ positions = callset['variants/POS']
 chroms = callset['variants/CHROM']
 sample_names = callset['samples']
 
-win_size = 200000
+win_size = 10000  # 10 kb windows
 all_results = []
 
 for chrom in np.unique(chroms):
@@ -36,10 +36,9 @@ for chrom in np.unique(chroms):
             called_counts = g.count_called(axis=0)
             het_per_sample = np.where(
                 called_counts > 0,
-                het_counts / win_size, #called_counts,
+                het_counts / called_counts,
                 np.nan
             )
-
         else:
             het_per_sample = np.full(len(sample_names), np.nan)
         

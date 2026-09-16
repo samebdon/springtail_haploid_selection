@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import joypy
 
 X_CHROMS = {"OX359249.1","OX359250.1"}
 MIN_DP = 8
@@ -33,40 +34,55 @@ sample_means = (
 
 sns.set(style="whitegrid")
 
-plt.figure(figsize=(8, 5))
-
-ax = sns.violinplot(
-    data=sample_means,
-    x="chrom_class",
-    y="mean_alt_prop",
-    hue="sex",
-    cut=0,
-    inner=None,
-    alpha=0.6
+#density plot
+g = sns.FacetGrid(
+    sample_means,
+    col="sex",
+    hue="chrom_class",
+    height=4,
+    aspect=1.2,
+    sharex=True,
+    sharey=True
 )
 
-sns.stripplot(
-    data=sample_means,
-    x="chrom_class",
-    y="mean_alt_prop",
-    hue="sex",
-    dodge=True,
-    jitter=True,
-    size=6,
-    linewidth=0.5,
-    edgecolor="black"
+g.map(
+    sns.kdeplot,
+    "mean_alt_prop",
+    fill=True,
+    alpha=0.4,
+    linewidth=1.5
 )
 
-plt.axhline(0.5, linestyle="--", color="black")
+# Reference line
+for ax in g.axes.flat:
+    ax.axvline(0.5, linestyle="--", color="black")
 
-plt.ylim(0, 1)
-plt.xlabel("")
-plt.ylabel("Mean ALT allele proportion")
-plt.title("Biallelic expression across chromosomes")
-
-handles, labels = ax.get_legend_handles_labels()
-plt.legend(handles[:2], labels[:2], title="Sex")
+g.set_axis_labels("Mean ALT allele proportion", "Density")
+g.add_legend(title="Chromosome")
 
 plt.tight_layout()
-plt.savefig("ase_alt_proportion_violin.png", dpi=300)
+plt.savefig("ase_alt_proportion_density.png", dpi=300)
+plt.close()
+
+# ridgeplot
+fig, axes = joypy.joyplot(
+    sample_means,
+    by="chrom_class",
+    column="mean_alt_prop",
+    hue="sex",
+    overlap=0.6,
+    figsize=(8, 5),
+    alpha=0.6,
+    legend=True,
+    linewidth=1
+)
+
+# Reference line
+for ax in axes:
+    ax.axvline(0.5, linestyle="--", color="black", linewidth=1)
+
+axes[-1].set_xlabel("Mean ALT allele proportion")
+
+plt.tight_layout()
+plt.savefig("ase_alt_proportion_ridge.png", dpi=300)
 plt.close()

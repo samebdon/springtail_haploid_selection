@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """describe_gtf.py
 
 Usage:
@@ -131,4 +129,3 @@ if __name__ == "__main__":
     print(
         f"Ratio of monoexonic to multi-exonic genes: {np.round(n_mono_exonic_genes/n_multi_exonic_genes, 5)}"
     )
-
