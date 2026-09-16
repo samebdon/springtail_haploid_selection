@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#BSUB -o logs/var_call.out.%J
-#BSUB -e logs/var_call.err.%J
-#BSUB -q normal
+#BSUB -o logs/rna_var_call.out.%J
+#BSUB -e logs/rna_var_call.err.%J
+#BSUB -q week
 #BSUB -n 4
 #BSUB -M 4096
 #BSUB -R "select[mem>4096] rusage[mem=4096]"
@@ -13,5 +13,7 @@ export MOSDEPTH_Q2=CALLABLE
 export MOSDEPTH_Q3=HIGH_COVERAGE
 
 module load nextflow/23.04.1-5866
-module load bcftools/1.20--h8b25389_0
-nextflow run $NF_PATH/var_call/var_call_main.nf -params-file $NF_PATH/var_call/svir_params.json -c $NF_PATH/conf/nextflow.config -with-conda /software/treeoflife/conda/users/envs/team360/se13/var_call -w data/workdir/var_call -resume #-with-report -with-trace -with-timeline -with-dag
+module load bcftools/1.20--h8b25389_0 #bcftools/25.04.1-5946
+module load picard/3.1.1--hdfd78af_0
+#nextflow run $NF_PATH/var_call/var_call_main.nf -params-file $NF_PATH/var_call/afusca_params.json -c $NF_PATH/conf/nextflow.config -with-conda /software/treeoflife/conda/users/envs/team360/se13/var_call -w data/workdir/var_call -resume #-with-report -with-trace -with-timeline -with-dag
+nextflow run $NF_PATH/var_call/var_call_main.nf -params-file $NF_PATH/var_call/afusca_rnaseq.json -c $NF_PATH/conf/nextflow.config -with-conda /software/treeoflife/conda/users/envs/team360/se13/var_call -w data/workdir/var_call

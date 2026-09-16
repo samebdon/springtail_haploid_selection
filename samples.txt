@@ -1,0 +1,11 @@
+sample	sex
+AF_M_6	M
+AF_M_7	M
+AF_M_8	M
+AF_M_9	M
+AF_M_10	M
+AF_F_6	M
+AF_F_7	M
+AF_F_8	M
+AF_F_9	M
+AF_F_10	M

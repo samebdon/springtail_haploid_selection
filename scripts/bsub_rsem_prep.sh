@@ -8,4 +8,4 @@
 #BSUB -R "select[mem>4096] rusage[mem=4096]"
 
 conda activate dosage_comp
-rsem-prepare-reference -gtf data/results/braker3/allacma_fusca/braker.gtf --bowtie data/results/genomes/allacma_fusca/GCA_947179485.1.simple_header.fasta data/results/diff_expr/allacma_fusca/rsem/afusca
+rsem-prepare-reference -gtf data/results/braker3/allacma_fusca/braker.gtf --bowtie data/genomes/GCA_947179485.1_qeAllFusc8.1_genomic.simple_header.earlgrey_masked.fna data/results/diff_expr/allacma_fusca/rsem/afusca
